@@ -1,0 +1,80 @@
+# 简历智能筛选系统 · 使用说明
+
+> 面向企业 HR 的完整操作手册。本文档为总入口：系统简介 + 全部分层章节索引；详细内容见下方目录，各章节独立成文件、可点击直达。
+
+[下一篇：一、快速上手 →](./docs/01-quickstart.md)
+
+| 项目 | 内容 |
+|------|------|
+| **文档性质** | 系统使用说明 / 操作手册 |
+| **适用对象** | HR 招聘人员、招聘管理员 |
+| **适用范围** | 简历收取、AI 评估、跟进管理、企微同步等全部功能 |
+| **版本日期** | 2026 年 8 月 |
+
+---
+
+## 一、系统简介
+
+简历智能筛选系统是一套面向企业 HR 的自动化招聘辅助工具。系统自动连接企业邮箱收取简历附件，自动完成解析、文本提取与 AI 智能评估，并提供跟进管理、企业微信智能表格同步与趋势分析看板，帮助 HR 团队大幅提升招聘效率。
+
+**核心流程**：配置 → 收取 → 评估 → 跟进 → 同步
+
+| 阶段 | 说明 |
+|------|------|
+| **配置** | 配置邮箱、AI 模型与招聘职位（含评估权重与提示词） |
+| **收取** | 手动收取或系统定时自动收取简历邮件 |
+| **评估** | 自动解析简历并分配职位，AI 按该职位提示词打分评估 |
+| **跟进** | HR 按状态机推进面试、offer、入职等流程 |
+| **同步** | 跟进记录进入「待面试」及之后阶段后自动同步企业微信智能表格 |
+
+**访问方式**：内网 Web 应用，浏览器直接访问服务器地址（如 `http://hr.ruiyigroup.com/resume/dashboard`）；无登录认证；全中文界面，支持电脑端与手机端。
+**导航结构**：左侧导航共 5 大模块 —— 数据概览、系统配置、招聘中心、任务管理、邮件管理。
+
+---
+
+## 二、教程目录
+
+### 入门必读
+
+- [一、快速上手（新用户必读）](./docs/01-quickstart.md) — 基础配置清单与日常操作主线
+- [二、数据概览](./docs/02-dashboard.md) — 统计卡片、趋势图表、跟进看板
+
+### 招聘中心（日常业务主阵地）
+
+- [三、招聘中心 · 组内总览](./docs/03-recruiting/README.md)
+  - [01 · 简历列表](./docs/03-recruiting/01-resume-list.md) — 查看 / 分配职位 / 批量操作
+  - [02 · 简历详情](./docs/03-recruiting/02-resume-detail.md) — 完整信息与 AI 评估结果
+  - [03 · 已筛选简历](./docs/03-recruiting/03-screened-resumes.md) — 处理评估结果、跟进 / 不合适
+  - [04 · 简历复用评估](./docs/03-recruiting/04-resume-reuse.md) — 跨职位批量复用评估
+  - [05 · 跟进管理（核心）](./docs/03-recruiting/05-follow-up.md) — 沟通到入职（或淘汰）全流程
+
+### 邮件与任务
+
+- [四、邮件管理](./docs/04-email-management.md) — 邮件列表、邮箱状态、手动收取
+- [五、任务管理 · 简历任务](./docs/05-task-batches.md) — 批次进度追踪
+
+### 系统配置
+
+- [六、系统配置 · 组内总览](./docs/06-system-config/README.md)
+  - [01 · 邮箱配置](./docs/06-system-config/01-email-config.md) — IMAP 邮箱接入与测试
+  - [02 · AI 模型](./docs/06-system-config/02-ai-models.md) — 模型管理与默认配置
+  - [03 · 简历来源](./docs/06-system-config/03-resume-sources.md) — 来源渠道与解析规则
+  - [04 · 职位管理](./docs/06-system-config/04-position-management.md) — 职位、权重模型与提示词
+  - [05 · 提示词管理（高级）](./docs/06-system-config/05-prompt-management.md) — 版本管理与回滚
+  - [06 · 跟进标签](./docs/06-system-config/06-follow-up-tags.md) — 标签分类管理
+  - [07 · 企微同步](./docs/06-system-config/07-wecom-sync.md) — 企业微信智能表格同步
+  - [08 · 数据模块（技术 / 管理员使用）](./docs/06-system-config/08-data-module.md) — 数据库只读查询
+
+### 问题排查与附录
+
+- [七、常见问题与异常处理](./docs/07-faq.md)
+- [附录 A · 跟进状态机速查表](./docs/08-appendix/01-follow-up-state-machine.md)
+- [附录 B · 冰山模型评分体系](./docs/08-appendix/02-iceberg-model.md)
+- [附录 C · 简历状态流转](./docs/08-appendix/03-resume-status-flow.md)
+- [附录 D · 常用术语对照](./docs/08-appendix/04-terminology.md)
+
+[下一篇：一、快速上手 →](./docs/01-quickstart.md)
+
+---
+
+> **简历智能筛选系统** — 让 AI 助力招聘，从简历海洋中精准发现人才。

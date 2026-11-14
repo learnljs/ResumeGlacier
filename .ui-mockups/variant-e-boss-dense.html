@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Variant E · Boss 直聘紧凑版 · ResumeGlacier</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        boss: { DEFAULT: '#00b8a9', light: '#e6faf8', deep: '#009688' },
+        warn: '#fa8c16',
+        danger: '#f5222d',
+        success: '#52c41a',
+        ink: { 900:'#1f1f1f', 700:'#434343', 500:'#8c8c8c', 300:'#d9d9d9', 100:'#f5f5f5', 50:'#fafafa' },
+      },
+    },
+  },
+};
+</script>
+<style>
+  body { background: #f0f2f5; color: #1f1f1f; font-family: 'Inter', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif; }
+  .card { background: white; border-radius: 8px; box-shadow: 0 1px 2px rgba(0,0,0,0.03); }
+  .num { font-feature-settings: "tnum"; font-variant-numeric: tabular-nums; }
+  .nav-active { background: #e6faf8; color: #00b8a9; font-weight: 500; position: relative; }
+  .nav-active::before { content:""; position:absolute; left:0; top:8px; bottom:8px; width:3px; background:#00b8a9; border-radius:0 2px 2px 0; }
+  .tag { display:inline-flex; align-items:center; padding:1px 8px; border-radius:4px; font-size:11px; line-height:18px; border:1px solid; }
+  .btn-primary { background:#00b8a9; color:white; }
+  .btn-primary:hover { background:#009688; }
+  .btn-ghost { background:white; border:1px solid #d9d9d9; color:#434343; }
+  .btn-ghost:hover { border-color:#00b8a9; color:#00b8a9; }
+  .pulse-dot { width:6px; height:6px; border-radius:999px; background:#52c41a; box-shadow:0 0 0 0 rgba(82,196,26,0.5); animation:p 1.6s infinite; }
+  @keyframes p { 0%{box-shadow:0 0 0 0 rgba(82,196,26,0.5);} 70%{box-shadow:0 0 0 6px rgba(82,196,26,0);} 100%{box-shadow:0 0 0 0 rgba(82,196,26,0);} }
+  .progress-fill { transition: width 0.3s ease; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ============ 左侧导航 ============ -->
+<aside class="fixed left-0 top-0 bottom-0 w-56 bg-white border-r border-ink-100 z-30 flex flex-col text-sm">
+  <div class="h-12 px-4 flex items-center gap-2.5 border-b border-ink-100">
+    <div class="w-7 h-7 rounded-md bg-gradient-to-br from-boss to-boss-deep flex items-center justify-center">
+      <svg viewBox="0 0 24 24" class="w-4 h-4" fill="none">
+        <path d="M3 20 L8 11 L12 16 L16 8 L21 20 Z" fill="white"/>
+        <line x1="3" y1="20" x2="21" y2="20" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="font-semibold tracking-tight text-[14px]">ResumeGlacier</div>
+  </div>
+
+  <div class="px-2 pt-2">
+    <button class="w-full btn-primary rounded h-8 text-xs font-medium flex items-center justify-center gap-1.5">
+      <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="12 5 12 19"/><polyline points="5 12 12 19 19 12"/></svg>
+      收取邮件
+    </button>
+  </div>
+
+  <nav class="flex-1 px-2 py-2 space-y-0.5 overflow-y-auto">
+    <a class="relative flex items-center gap-2 px-3 py-2 rounded nav-active">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      数据概览
+    </a>
+    <a class="flex items-center gap-2 px-3 py-2 rounded text-ink-700 hover:bg-ink-50">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24"/></svg>
+      系统配置
+    </a>
+
+    <div class="text-[10px] text-ink-500 uppercase tracking-wider font-medium pt-3 pb-1 px-3">招聘中心</div>
+    <a class="flex items-center gap-2 px-3 py-1.5 rounded text-ink-700 hover:bg-ink-50 pl-7">
+      <span class="w-1 h-1 rounded-full bg-ink-300"></span>简历列表
+      <span class="ml-auto text-[10px] bg-ink-100 text-ink-700 px-1.5 rounded num">186</span>
+    </a>
+    <a class="flex items-center gap-2 px-3 py-1.5 rounded text-ink-700 hover:bg-ink-50 pl-7">
+      <span class="w-1 h-1 rounded-full bg-ink-300"></span>已筛选
+      <span class="ml-auto text-[10px] bg-ink-100 text-ink-700 px-1.5 rounded num">2.4K</span>
+    </a>
+    <a class="flex items-center gap-2 px-3 py-1.5 rounded text-ink-700 hover:bg-ink-50 pl-7">
+      <span class="w-1 h-1 rounded-full bg-ink-300"></span>简历复用评估
+    </a>
+    <a class="flex items-center gap-2 px-3 py-1.5 rounded text-ink-700 hover:bg-ink-50 pl-7">
+      <span class="w-1 h-1 rounded-full bg-ink-300"></span>跟进管理
+      <span class="ml-auto text-[10px] bg-warn/15 text-warn px-1.5 rounded num font-medium">52</span>
+    </a>
+
+    <div class="text-[10px] text-ink-500 uppercase tracking-wider font-medium pt-3 pb-1 px-3">任务管理</div>
+    <a class="flex items-center gap-2 px-3 py-1.5 rounded text-ink-700 hover:bg-ink-50">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      简历任务
+    </a>
+
+    <div class="text-[10px] text-ink-500 uppercase tracking-wider font-medium pt-3 pb-1 px-3">邮件管理</div>
+    <a class="flex items-center gap-2 px-3 py-1.5 rounded text-ink-700 hover:bg-ink-50">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      邮件列表
+    </a>
+    <a class="flex items-center gap-2 px-3 py-1.5 rounded text-ink-700 hover:bg-ink-50">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg>
+      邮箱状态
+    </a>
+  </nav>
+
+  <div class="p-2 border-t border-ink-100">
+    <div class="flex items-center gap-2 p-1.5 rounded hover:bg-ink-50 cursor-pointer">
+      <div class="w-7 h-7 rounded-full bg-gradient-to-br from-boss to-boss-deep flex items-center justify-center text-white text-xs font-medium">HR</div>
+      <div class="flex-1 min-w-0 text-[11px]">
+        <div class="font-medium leading-tight">张晓琳</div>
+        <div class="text-ink-500 leading-tight">管理员</div>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- ============ 主内容 ============ -->
+<main class="ml-56 min-h-screen">
+
+  <!-- 顶部栏 -->
+  <header class="sticky top-0 z-20 bg-white border-b border-ink-100">
+    <div class="px-5 h-12 flex items-center gap-3 text-sm">
+      <h1 class="font-semibold">数据概览</h1>
+      <div class="flex-1 max-w-sm relative">
+        <input type="text" placeholder="搜索候选人..." class="w-full h-8 pl-8 pr-3 text-xs rounded border border-ink-300 bg-ink-50 focus:bg-white focus:border-boss focus:outline-none placeholder:text-ink-500"/>
+        <svg class="absolute left-2 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-ink-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <button class="w-8 h-8 rounded hover:bg-ink-50 flex items-center justify-center relative">
+        <svg class="w-4 h-4 text-ink-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span class="absolute top-1 right-1 w-2 h-2 rounded-full bg-danger"></span>
+      </button>
+      <button class="w-8 h-8 rounded hover:bg-ink-50 flex items-center justify-center">
+        <svg class="w-4 h-4 text-ink-700" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <div class="p-5 space-y-4">
+
+    <!-- ============ 顶部 4 指标 + 状态 ============ -->
+    <section class="grid grid-cols-12 gap-3">
+      <div class="card p-4 col-span-2">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-ink-500">本日收取</span>
+          <span class="tag bg-boss-light text-boss border-boss-light" style="font-size:10px;padding:0 6px;">实时</span>
+        </div>
+        <div class="flex items-baseline gap-1">
+          <span class="num text-[28px] font-semibold leading-none">23</span>
+          <span class="text-[11px] text-ink-500">份</span>
+        </div>
+        <div class="mt-2 flex items-center gap-1 text-[11px]">
+          <span class="text-success font-medium">↑ 12.5%</span>
+          <span class="text-ink-500">vs 昨日</span>
+        </div>
+      </div>
+      <div class="card p-4 col-span-2">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-ink-500">本周收取</span>
+        </div>
+        <div class="flex items-baseline gap-1">
+          <span class="num text-[28px] font-semibold leading-none">148</span>
+          <span class="text-[11px] text-ink-500">份</span>
+        </div>
+        <div class="mt-2 flex items-center gap-1 text-[11px]">
+          <span class="text-success font-medium">↑ 8.2%</span>
+          <span class="text-ink-500">vs 上周</span>
+        </div>
+      </div>
+      <div class="card p-4 col-span-2">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-ink-500">本月收取</span>
+        </div>
+        <div class="flex items-baseline gap-1">
+          <span class="num text-[28px] font-semibold leading-none">612</span>
+          <span class="text-[11px] text-ink-500">份</span>
+        </div>
+        <div class="mt-2 flex items-center gap-1 text-[11px]">
+          <span class="text-danger font-medium">↓ 2.1%</span>
+          <span class="text-ink-500">vs 上月</span>
+        </div>
+      </div>
+      <div class="card p-4 col-span-2 bg-gradient-to-br from-boss-light">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs text-ink-500">简历总数</span>
+        </div>
+        <div class="flex items-baseline gap-1">
+          <span class="num text-[28px] font-semibold leading-none text-boss">6,517</span>
+        </div>
+        <div class="mt-2 text-[11px] text-ink-500">累计 <span class="font-semibold text-ink-700 num">148</span> 天</div>
+      </div>
+      <!-- 状态紧凑 -->
+      <div class="card p-4 col-span-4">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs font-medium text-ink-900">状态分布</span>
+          <span class="num text-xs text-ink-500">通过率 <span class="text-boss font-semibold">37.4%</span></span>
+        </div>
+        <div class="grid grid-cols-4 gap-3 text-center">
+          <div>
+            <div class="num text-lg font-semibold text-success">2,438</div>
+            <div class="text-[10px] text-ink-500 mt-0.5">已评估</div>
+          </div>
+          <div>
+            <div class="num text-lg font-semibold text-warn">186</div>
+            <div class="text-[10px] text-ink-500 mt-0.5">待评估</div>
+          </div>
+          <div>
+            <div class="num text-lg font-semibold text-boss">32</div>
+            <div class="text-[10px] text-ink-500 mt-0.5">解析中</div>
+          </div>
+          <div>
+            <div class="num text-lg font-semibold text-danger">17</div>
+            <div class="text-[10px] text-ink-500 mt-0.5">错误</div>
+          </div>
+        </div>
+        <div class="mt-3 h-1.5 bg-ink-100 rounded-full overflow-hidden flex">
+          <div class="bg-success progress-fill" style="width: 58%"></div>
+          <div class="bg-warn progress-fill" style="width: 12%"></div>
+          <div class="bg-boss progress-fill" style="width: 4%"></div>
+          <div class="bg-danger progress-fill" style="width: 2%"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 候选人优先：紧凑跟进看板 + 趋势 ============ -->
+    <section class="grid grid-cols-12 gap-3">
+      <!-- 紧凑跟进看板 -->
+      <div class="card col-span-8">
+        <div class="px-4 py-3 border-b border-ink-100 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <h3 class="text-sm font-semibold">候选人</h3>
+            <div class="flex items-center gap-1 text-xs">
+              <button class="px-2 py-0.5 rounded bg-boss text-white text-[11px]">全部 <span class="num ml-1">56</span></button>
+              <button class="px-2 py-0.5 rounded text-ink-700 hover:bg-ink-50 text-[11px]">沟通 <span class="num ml-1 text-ink-500">28</span></button>
+              <button class="px-2 py-0.5 rounded text-ink-700 hover:bg-ink-50 text-[11px]">面试 <span class="num ml-1 text-warn font-medium">20</span></button>
+              <button class="px-2 py-0.5 rounded text-ink-700 hover:bg-ink-50 text-[11px]">已发 offer <span class="num ml-1 text-success font-medium">3</span></button>
+              <button class="px-2 py-0.5 rounded text-ink-700 hover:bg-ink-50 text-[11px]">入职 <span class="num ml-1 text-boss-deep font-medium">5</span></button>
+            </div>
+          </div>
+          <div class="flex items-center gap-1.5">
+            <button class="btn-ghost rounded h-7 px-2.5 text-[11px] flex items-center gap-1">
+              <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
+              筛选
+            </button>
+            <button class="btn-primary rounded h-7 px-2.5 text-[11px]">批量跟进</button>
+          </div>
+        </div>
+        <table class="w-full text-xs">
+          <thead class="bg-ink-50 text-ink-500">
+            <tr>
+              <th class="text-left pl-4 py-2 font-medium w-8"><input type="checkbox"/></th>
+              <th class="text-left px-2 py-2 font-medium">候选人</th>
+              <th class="text-left px-2 py-2 font-medium">目标职位</th>
+              <th class="text-left px-2 py-2 font-medium">评分</th>
+              <th class="text-left px-2 py-2 font-medium">阶段</th>
+              <th class="text-left px-2 py-2 font-medium">标签</th>
+              <th class="text-left px-2 py-2 font-medium">最近联系</th>
+              <th class="text-right pr-4 py-2 font-medium">操作</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-ink-100">
+            <tr class="hover:bg-boss-light/40">
+              <td class="pl-4 py-2.5"><input type="checkbox"/></td>
+              <td class="px-2 py-2.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-blue-400 to-purple-400 flex items-center justify-center text-white text-xs font-medium">张</div>
+                  <div>
+                    <div class="font-medium text-ink-900">张明远</div>
+                    <div class="text-[10px] text-ink-500">13800138001</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-700">前端工程师</td>
+              <td class="px-2 py-2.5"><span class="num text-boss font-semibold text-sm">87</span><span class="text-ink-500 text-[10px]">/100</span></td>
+              <td class="px-2 py-2.5"><span class="tag bg-boss-light text-boss border-boss-light">沟通中</span></td>
+              <td class="px-2 py-2.5">
+                <div class="flex gap-1">
+                  <span class="tag bg-boss-light text-boss border-boss-light" style="font-size:9px;padding:0 5px;">985</span>
+                  <span class="tag bg-warn/10 text-warn border-warn/20" style="font-size:9px;padding:0 5px;">大厂</span>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-500 num">2 天前</td>
+              <td class="px-2 py-2.5 text-right">
+                <button class="text-boss hover:text-boss-deep font-medium">跟进</button>
+              </td>
+            </tr>
+            <tr class="hover:bg-warn/10">
+              <td class="pl-4 py-2.5"><input type="checkbox"/></td>
+              <td class="px-2 py-2.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-pink-400 to-orange-400 flex items-center justify-center text-white text-xs font-medium">李</div>
+                  <div>
+                    <div class="font-medium text-ink-900">李思琪</div>
+                    <div class="text-[10px] text-ink-500">13800138002</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-700">数据分析师</td>
+              <td class="px-2 py-2.5"><span class="num text-ink-500 text-sm">—</span></td>
+              <td class="px-2 py-2.5"><span class="tag bg-warn/10 text-warn border-warn/20">待评估</span></td>
+              <td class="px-2 py-2.5">
+                <span class="tag bg-boss-light text-boss border-boss-light" style="font-size:9px;padding:0 5px;">211</span>
+              </td>
+              <td class="px-2 py-2.5 text-ink-500 num">未联系</td>
+              <td class="px-2 py-2.5 text-right">
+                <button class="text-boss hover:text-boss-deep font-medium">查看</button>
+              </td>
+            </tr>
+            <tr class="hover:bg-boss-light/40">
+              <td class="pl-4 py-2.5"><input type="checkbox"/></td>
+              <td class="px-2 py-2.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-green-400 to-teal-400 flex items-center justify-center text-white text-xs font-medium">陈</div>
+                  <div>
+                    <div class="font-medium text-ink-900">陈思远</div>
+                    <div class="text-[10px] text-ink-500">13800138003</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-700">HRBP</td>
+              <td class="px-2 py-2.5"><span class="num text-success font-semibold text-sm">92</span><span class="text-ink-500 text-[10px]">/100</span></td>
+              <td class="px-2 py-2.5"><span class="tag bg-success/10 text-success border-success/20">已入职</span></td>
+              <td class="px-2 py-2.5">
+                <div class="flex gap-1">
+                  <span class="tag bg-boss-light text-boss border-boss-light" style="font-size:9px;padding:0 5px;">985</span>
+                  <span class="tag bg-warn/10 text-warn border-warn/20" style="font-size:9px;padding:0 5px;">5年</span>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-500 num">3 天前</td>
+              <td class="px-2 py-2.5 text-right">
+                <button class="text-boss hover:text-boss-deep font-medium">跟进</button>
+              </td>
+            </tr>
+            <tr class="hover:bg-warn/10">
+              <td class="pl-4 py-2.5"><input type="checkbox"/></td>
+              <td class="px-2 py-2.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-orange-400 flex items-center justify-center text-white text-xs font-medium">王</div>
+                  <div>
+                    <div class="font-medium text-ink-900">王晓琳</div>
+                    <div class="text-[10px] text-ink-500">13800138004</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-700">前端工程师</td>
+              <td class="px-2 py-2.5"><span class="num text-warn font-semibold text-sm">85</span><span class="text-ink-500 text-[10px]">/100</span></td>
+              <td class="px-2 py-2.5"><span class="tag bg-warn/10 text-warn border-warn/20">待面试</span></td>
+              <td class="px-2 py-2.5">
+                <div class="flex gap-1">
+                  <span class="tag bg-boss-light text-boss border-boss-light" style="font-size:9px;padding:0 5px;">985</span>
+                  <span class="tag bg-purple-500/10 text-purple-500 border-purple-500/20" style="font-size:9px;padding:0 5px;">3年</span>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-warn num font-medium">8/26 14:00</td>
+              <td class="px-2 py-2.5 text-right">
+                <button class="text-boss hover:text-boss-deep font-medium">查看</button>
+              </td>
+            </tr>
+            <tr class="hover:bg-boss-light/40">
+              <td class="pl-4 py-2.5"><input type="checkbox"/></td>
+              <td class="px-2 py-2.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-purple-400 to-pink-400 flex items-center justify-center text-white text-xs font-medium">赵</div>
+                  <div>
+                    <div class="font-medium text-ink-900">赵雨欣</div>
+                    <div class="text-[10px] text-ink-500">13800138005</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-700">产品经理</td>
+              <td class="px-2 py-2.5"><span class="num text-success font-semibold text-sm">88</span><span class="text-ink-500 text-[10px]">/100</span></td>
+              <td class="px-2 py-2.5"><span class="tag bg-purple-500/10 text-purple-500 border-purple-500/20">已面试</span></td>
+              <td class="px-2 py-2.5">
+                <span class="tag bg-success/10 text-success border-success/20" style="font-size:9px;padding:0 5px;">推荐</span>
+              </td>
+              <td class="px-2 py-2.5 text-ink-500 num">昨天</td>
+              <td class="px-2 py-2.5 text-right">
+                <button class="text-boss hover:text-boss-deep font-medium">发 offer</button>
+              </td>
+            </tr>
+            <tr class="hover:bg-success/5">
+              <td class="pl-4 py-2.5"><input type="checkbox"/></td>
+              <td class="px-2 py-2.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-teal-400 to-green-400 flex items-center justify-center text-white text-xs font-medium">周</div>
+                  <div>
+                    <div class="font-medium text-ink-900">周怡然</div>
+                    <div class="text-[10px] text-ink-500">13800138006</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-700">HRBP</td>
+              <td class="px-2 py-2.5"><span class="num text-success font-semibold text-sm">90</span><span class="text-ink-500 text-[10px]">/100</span></td>
+              <td class="px-2 py-2.5"><span class="tag bg-success/10 text-success border-success/20">已发 offer</span></td>
+              <td class="px-2 py-2.5">
+                <span class="tag bg-ink-100 text-ink-700 border-ink-100" style="font-size:9px;padding:0 5px;">25-30K</span>
+              </td>
+              <td class="px-2 py-2.5 text-warn num font-medium">3 天前</td>
+              <td class="px-2 py-2.5 text-right">
+                <button class="text-boss hover:text-boss-deep font-medium">跟进</button>
+              </td>
+            </tr>
+            <tr class="hover:bg-boss-light/40">
+              <td class="pl-4 py-2.5"><input type="checkbox"/></td>
+              <td class="px-2 py-2.5">
+                <div class="flex items-center gap-2">
+                  <div class="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-400 to-blue-400 flex items-center justify-center text-white text-xs font-medium">刘</div>
+                  <div>
+                    <div class="font-medium text-ink-900">刘子涵</div>
+                    <div class="text-[10px] text-ink-500">13800138007</div>
+                  </div>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-700">前端工程师</td>
+              <td class="px-2 py-2.5"><span class="num text-success font-semibold text-sm">86</span><span class="text-ink-500 text-[10px]">/100</span></td>
+              <td class="px-2 py-2.5"><span class="tag bg-purple-500/10 text-purple-500 border-purple-500/20">已面试</span></td>
+              <td class="px-2 py-2.5">
+                <div class="flex gap-1">
+                  <span class="tag bg-success/10 text-success border-success/20" style="font-size:9px;padding:0 5px;">面试过</span>
+                </div>
+              </td>
+              <td class="px-2 py-2.5 text-ink-500 num">昨天</td>
+              <td class="px-2 py-2.5 text-right">
+                <button class="text-boss hover:text-boss-deep font-medium">发 offer</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="px-4 py-3 border-t border-ink-100 flex items-center justify-between text-xs">
+          <span class="text-ink-500">共 <span class="font-semibold text-ink-900 num">56</span> 位候选人</span>
+          <button class="text-boss hover:text-boss-deep font-medium">查看全部 →</button>
+        </div>
+      </div>
+
+      <!-- 趋势 + 职位 -->
+      <div class="col-span-4 space-y-3">
+        <div class="card p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold">收取趋势</h3>
+            <div class="flex gap-0.5 bg-ink-50 rounded p-0.5 text-[10px]">
+              <button class="px-1.5 py-0.5 rounded bg-white text-ink-900 font-medium">日</button>
+              <button class="px-1.5 py-0.5 text-ink-500">周</button>
+              <button class="px-1.5 py-0.5 text-ink-500">月</button>
+            </div>
+          </div>
+          <div class="h-[140px]">
+            <svg viewBox="0 0 400 130" class="w-full h-full">
+              <defs>
+                <linearGradient id="gd-boss2" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stop-color="#00b8a9" stop-opacity="0.20"/>
+                  <stop offset="100%" stop-color="#00b8a9" stop-opacity="0"/>
+                </linearGradient>
+              </defs>
+              <line x1="0" y1="40" x2="400" y2="40" stroke="#f0f0f0" stroke-dasharray="2 3"/>
+              <line x1="0" y1="80" x2="400" y2="80" stroke="#f0f0f0" stroke-dasharray="2 3"/>
+              <path d="M0,95 L20,85 L40,90 L60,70 L80,75 L100,55 L120,65 L140,45 L160,55 L180,40 L200,50 L220,35 L240,42 L260,25 L280,38 L300,30 L320,40 L340,22 L360,32 L380,15 L400,25" fill="none" stroke="#00b8a9" stroke-width="2" stroke-linecap="round"/>
+              <path d="M0,95 L20,85 L40,90 L60,70 L80,75 L100,55 L120,65 L140,45 L160,55 L180,40 L200,50 L220,35 L240,42 L260,25 L280,38 L300,30 L320,40 L340,22 L360,32 L380,15 L400,25 L400,130 L0,130 Z" fill="url(#gd-boss2)"/>
+              <circle cx="400" cy="25" r="3.5" fill="#00b8a9" stroke="white" stroke-width="2"/>
+            </svg>
+          </div>
+          <div class="flex justify-between text-[9px] text-ink-500 mt-1 px-1">
+            <span>7/26</span><span>8/9</span><span>8/24</span>
+          </div>
+        </div>
+
+        <div class="card p-4">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-sm font-semibold">职位热度</h3>
+            <button class="text-[11px] text-boss">全部</button>
+          </div>
+          <div class="space-y-2.5">
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-medium">前端工程师</span>
+                <span class="num text-ink-700">186</span>
+              </div>
+              <div class="h-1 bg-ink-100 rounded-full overflow-hidden">
+                <div class="h-full bg-boss rounded-full progress-fill" style="width: 78%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-medium">HRBP</span>
+                <span class="num text-ink-700">142</span>
+              </div>
+              <div class="h-1 bg-ink-100 rounded-full overflow-hidden">
+                <div class="h-full bg-boss rounded-full progress-fill" style="width: 60%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-medium">数据分析师</span>
+                <span class="num text-ink-700">98</span>
+              </div>
+              <div class="h-1 bg-ink-100 rounded-full overflow-hidden">
+                <div class="h-full bg-boss rounded-full progress-fill" style="width: 41%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-medium">产品经理</span>
+                <span class="num text-ink-700">76</span>
+              </div>
+              <div class="h-1 bg-ink-100 rounded-full overflow-hidden">
+                <div class="h-full bg-warn rounded-full progress-fill" style="width: 32%"></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center justify-between text-xs mb-1">
+                <span class="font-medium">市场运营</span>
+                <span class="num text-ink-700">54</span>
+              </div>
+              <div class="h-1 bg-ink-100 rounded-full overflow-hidden">
+                <div class="h-full bg-boss rounded-full progress-fill" style="width: 23%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 系统状态条 ============ -->
+    <section class="grid grid-cols-3 gap-3">
+      <div class="card p-4">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="pulse-dot"></span>
+          <h3 class="text-sm font-semibold">邮箱</h3>
+        </div>
+        <div class="space-y-2 text-xs">
+          <div class="flex items-center justify-between p-2 rounded border border-ink-100">
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+              <span class="font-medium">hr@company.com</span>
+            </div>
+            <span class="num text-ink-500">10 分钟前</span>
+          </div>
+          <div class="flex items-center justify-between p-2 rounded border border-ink-100">
+            <div class="flex items-center gap-2">
+              <span class="w-1.5 h-1.5 rounded-full bg-success"></span>
+              <span class="font-medium">careers@company.com</span>
+            </div>
+            <span class="num text-ink-500">25 分钟前</span>
+          </div>
+        </div>
+      </div>
+      <div class="card p-4">
+        <h3 class="text-sm font-semibold mb-3">后台队列</h3>
+        <div class="space-y-3 text-xs">
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="font-medium">解析</span>
+              <span class="num"><span class="font-semibold">3</span> / 1</span>
+            </div>
+            <div class="h-1.5 bg-ink-100 rounded-full overflow-hidden">
+              <div class="h-full bg-boss rounded-full progress-fill" style="width: 33%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="font-medium">AI 筛选</span>
+              <span class="num"><span class="font-semibold">12</span> / 2</span>
+            </div>
+            <div class="h-1.5 bg-ink-100 rounded-full overflow-hidden">
+              <div class="h-full bg-boss rounded-full progress-fill" style="width: 67%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between mb-1">
+              <span class="font-medium">企微同步</span>
+              <span class="num text-success font-medium">空闲</span>
+            </div>
+            <div class="h-1.5 bg-ink-100 rounded-full overflow-hidden">
+              <div class="h-full bg-success rounded-full progress-fill" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="card p-4">
+        <h3 class="text-sm font-semibold mb-3">今日处理</h3>
+        <div class="grid grid-cols-3 gap-2 text-center">
+          <div class="p-2 rounded bg-ink-50">
+            <div class="num text-base font-semibold">52</div>
+            <div class="text-[10px] text-ink-500">解析</div>
+          </div>
+          <div class="p-2 rounded bg-ink-50">
+            <div class="num text-base font-semibold">38</div>
+            <div class="text-[10px] text-ink-500">筛选</div>
+          </div>
+          <div class="p-2 rounded bg-ink-50">
+            <div class="num text-base font-semibold text-danger">2</div>
+            <div class="text-[10px] text-ink-500">失败</div>
+          </div>
+        </div>
+        <div class="mt-3 pt-3 border-t border-ink-100 flex items-center justify-between text-xs">
+          <span class="text-ink-500">运行总时长</span>
+          <span class="num font-semibold text-ink-900">148 天</span>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+
+</body>
+</html>

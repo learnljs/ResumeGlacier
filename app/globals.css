@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* ============================================================
+   * ResumeGlacier 石墨主题（唯一主题，极简 · 高级）
+   * 设计基准：大面积低饱和中性色做底 + 少量品牌色（蓝紫）强调，
+   * 语义色只做语义（成功/警告/错误/信息），侧边栏深石墨。
+   * ============================================================ */
+  :root {
+    --background: 220 20% 99%;
+    --foreground: 220 15% 15%;
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 15% 15%;
+    --primary: 220 18% 22%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 220 15% 95%;
+    --secondary-foreground: 220 12% 28%;
+    --muted: 220 12% 94%;
+    --muted-foreground: 220 8% 45%;
+    --accent: 250 55% 48%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 75% 55%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 15% 90%;
+    --input: 220 15% 90%;
+    --ring: 250 55% 48%;
+    --radius: 0.5rem;
+
+    --success: 150 65% 35%;
+    --warning: 38 85% 52%;
+    --info: 210 80% 50%;
+    --gradient-primary: linear-gradient(135deg, hsl(220 18% 22%), hsl(250 55% 48%));
+    --shadow-soft: 0 4px 20px -4px hsl(220 15% 15% / 0.06);
+    --shadow-card: 0 8px 30px -8px hsl(220 15% 15% / 0.08);
+
+    /* 深石墨侧边栏 + 蓝紫活跃项 */
+    --sidebar: 220 12% 12%;
+    --sidebar-foreground: 220 15% 92%;
+    --sidebar-border: 220 10% 20%;
+    --sidebar-muted: 220 8% 18%;
+    --sidebar-muted-foreground: 220 10% 65%;
+    --sidebar-primary: 250 60% 58%;
+    --sidebar-primary-foreground: 0 0% 100%;
+
+    --chart-1: 250 55% 48%;
+    --chart-2: 220 18% 22%;
+    --chart-3: 150 65% 35%;
+    --chart-4: 200 80% 50%;
+    --chart-5: 38 80% 50%;
+    --chart-6: 330 60% 55%;
+    --chart-7: 90 60% 45%;
+    --chart-8: 280 50% 55%;
+    --chart-9: 10 60% 50%;
+    --chart-10: 190 70% 40%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  }
+  /* 移除 SVG 元素的 focus outline，避免图表点击时显示黑色边框 */
+  svg:focus,
+  svg *:focus,
+  [data-recharts-wrapper]:focus,
+  [data-recharts-wrapper] *:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+}
+
+@layer components {
+  .shadow-soft {
+    box-shadow: var(--shadow-soft);
+  }
+
+  /* 应用画布：极淡径向光晕，让白卡片浮起来，避免整页死白 */
+  .app-canvas {
+    background-image:
+      radial-gradient(1200px 620px at 14% -16%, hsl(var(--accent) / 0.055), transparent 70%),
+      radial-gradient(900px 520px at 100% -6%, hsl(var(--primary) / 0.04), transparent 65%);
+    background-repeat: no-repeat;
+  }
+
+  /* 横幅底色纹理：22px 细网格，向右上淡出，仅作质感不抢内容 */
+  .bg-grid-faint {
+    background-image:
+      linear-gradient(to right, hsl(var(--foreground) / 0.035) 1px, transparent 1px),
+      linear-gradient(to bottom, hsl(var(--foreground) / 0.035) 1px, transparent 1px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(120% 130% at 0% 0%, #000 0%, transparent 72%);
+    mask-image: radial-gradient(120% 130% at 0% 0%, #000 0%, transparent 72%);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-card);
+  }
+
+  /* 表格冻结列：底色必须不透明，否则滚动内容会透出来；
+     悬停态用叠加渐变模拟 bg-muted/30，保持不透明度 */
+  .table-frozen-cell {
+    background-color: hsl(var(--card));
+  }
+  .group:hover .table-frozen-cell {
+    background-image: linear-gradient(
+      hsl(var(--muted) / 0.3),
+      hsl(var(--muted) / 0.3)
+    );
+  }
+  .table-frozen-left {
+    box-shadow: 2px 0 5px -2px hsl(var(--foreground) / 0.12);
+  }
+  .table-frozen-right {
+    box-shadow: -2px 0 5px -2px hsl(var(--foreground) / 0.12);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+}

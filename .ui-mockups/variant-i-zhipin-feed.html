@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Variant I · Boss 直聘真实视觉 · 候选人 Feed · ResumeGlacier</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        teal: {
+          50:'#f0faf8', 100:'#d8f0eb', 200:'#a8e6d8', 300:'#7ad9c5',
+          400:'#3fc8ad', 500:'#1dcba8', 600:'#00b5a5', 700:'#008075', 800:'#006655', 900:'#00443a',
+        },
+        ink: '#1a1a1a',
+        accent: { DEFAULT:'#ff7a45', light:'#fff3e8' },
+        ok: '#00c896', warn: '#ffa940', danger: '#ff4d4f',
+        mute: { 50:'#fafbfc', 100:'#f5f7fa', 200:'#e8eaed', 300:'#d9d9d9', 500:'#8c8c8c', 700:'#595959' },
+      },
+      fontFamily: { sans: ['Inter', '"PingFang SC"', '"Microsoft YaHei"', 'system-ui', 'sans-serif'] },
+    },
+  },
+};
+</script>
+<style>
+  body { background:#f5f7fa; color:#1a1a1a; font-family:'Inter','PingFang SC','Microsoft YaHei',system-ui,sans-serif; }
+  .card { background:white; border-radius:10px; box-shadow:0 1px 2px rgba(26,26,26,0.04); }
+  .num { font-feature-settings:"tnum"; font-variant-numeric:tabular-nums; }
+  .nav-active { background:#f0faf8; color:#00b5a5; font-weight:500; position:relative; }
+  .nav-active::before { content:""; position:absolute; left:0; top:8px; bottom:8px; width:3px; background:#00b5a5; border-radius:0 2px 2px 0; }
+  .chip { display:inline-flex; align-items:center; padding:1px 8px; border-radius:4px; font-size:11px; line-height:18px; font-weight:500; }
+  .online-dot { width:10px; height:10px; border-radius:999px; background:#00c896; border:2px solid white; position:absolute; bottom:-2px; right:-2px; }
+  .pulse-dot { width:6px; height:6px; border-radius:999px; background:#00c896; box-shadow:0 0 0 0 rgba(0,200,150,0.5); animation:p 1.6s infinite; }
+  @keyframes p { 0%{box-shadow:0 0 0 0 rgba(0,200,150,0.5);} 70%{box-shadow:0 0 0 5px rgba(0,200,150,0);} 100%{box-shadow:0 0 0 0 rgba(0,200,150,0);} }
+  .btn-teal { background:linear-gradient(135deg, #00b5a5, #1dcba8); color:white; }
+  .btn-teal:hover { background:linear-gradient(135deg, #008075, #00b5a5); }
+  .scroll-chip::-webkit-scrollbar { display:none; }
+  .scroll-chip { scrollbar-width:none; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ============ 顶部黑色 Logo Bar ============ -->
+<div class="bg-ink text-white">
+  <div class="mx-auto max-w-[1280px] px-6 h-12 flex items-center gap-8 text-sm">
+    <div class="flex items-center gap-2.5">
+      <div class="w-7 h-7 rounded-md bg-teal-500 flex items-center justify-center">
+        <svg viewBox="0 0 28 28" class="w-4 h-4" fill="none">
+          <path d="M4 22 L11 11 L15 16 L19 9 L24 22 Z" fill="#1a1a1a"/>
+          <line x1="4" y1="22" x2="24" y2="22" stroke="#1a1a1a" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="text-teal-400 font-bold tracking-tight">ResumeGlacier</span>
+      <span class="text-white/40 text-xs ml-1">· 自托管 AI 简历筛选</span>
+    </div>
+    <nav class="flex items-center gap-6 text-white/80 text-xs">
+      <a class="text-white font-medium">数据概览</a>
+      <a class="hover:text-white">简历</a>
+      <a class="hover:text-white">职位</a>
+      <a class="hover:text-white">跟进</a>
+      <a class="hover:text-white">任务</a>
+      <a class="hover:text-white">邮件</a>
+      <a class="hover:text-white">配置</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-3 text-xs">
+      <button class="text-white/70 hover:text-white flex items-center gap-1">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span>通知</span>
+        <span class="bg-accent text-white text-[9px] px-1 rounded-full">8</span>
+      </button>
+      <div class="flex items-center gap-1.5 cursor-pointer">
+        <div class="w-6 h-6 rounded-full bg-teal-500 flex items-center justify-center text-[10px] font-bold text-ink">HR</div>
+        <span class="text-white/80">张晓琳</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="flex">
+<!-- ============ 左侧导航 ============ -->
+<aside class="w-56 bg-white border-r border-mute-100 sticky top-12 self-start h-[calc(100vh-3rem)] flex flex-col">
+  <div class="px-3 pt-3">
+    <button class="w-full btn-teal rounded-md h-8 text-xs font-medium flex items-center justify-center gap-1.5">
+      <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="12 5 12 19"/><polyline points="5 12 12 19 19 12"/></svg>
+      收取邮件
+    </button>
+  </div>
+  <nav class="flex-1 px-2 py-2 space-y-0.5 text-sm overflow-y-auto">
+    <a class="relative flex items-center gap-2.5 px-3 py-2 rounded-md nav-active">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+      数据概览
+    </a>
+    <a class="flex items-center gap-2.5 px-3 py-2 rounded-md text-mute-700 hover:bg-mute-50">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 10v6M4.22 4.22l4.24 4.24"/></svg>
+      系统配置
+    </a>
+    <div class="pt-3 pb-1 px-3 text-[10px] text-mute-500 uppercase tracking-wider font-medium">招聘中心</div>
+    <a class="flex items-center gap-2.5 px-3 py-1.5 rounded-md text-mute-700 hover:bg-mute-50 pl-7">
+      <span class="w-1 h-1 rounded-full bg-mute-300"></span>简历列表
+      <span class="ml-auto text-[10px] bg-mute-100 text-mute-700 px-1.5 py-0.5 rounded num font-medium">186</span>
+    </a>
+    <a class="flex items-center gap-2.5 px-3 py-1.5 rounded-md text-mute-700 hover:bg-mute-50 pl-7">
+      <span class="w-1 h-1 rounded-full bg-mute-300"></span>已筛选
+      <span class="ml-auto text-[10px] bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded num font-medium">2.4K</span>
+    </a>
+    <a class="flex items-center gap-2.5 px-3 py-1.5 rounded-md text-mute-700 hover:bg-mute-50 pl-7">
+      <span class="w-1 h-1 rounded-full bg-mute-300"></span>简历复用评估
+    </a>
+    <a class="flex items-center gap-2.5 px-3 py-1.5 rounded-md text-mute-700 hover:bg-mute-50 pl-7">
+      <span class="w-1 h-1 rounded-full bg-accent"></span>跟进管理
+      <span class="ml-auto text-[10px] bg-accent/10 text-accent px-1.5 py-0.5 rounded num font-medium">52</span>
+    </a>
+    <div class="pt-3 pb-1 px-3 text-[10px] text-mute-500 uppercase tracking-wider font-medium">任务管理</div>
+    <a class="flex items-center gap-2.5 px-3 py-1.5 rounded-md text-mute-700 hover:bg-mute-50">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      简历任务
+    </a>
+    <div class="pt-3 pb-1 px-3 text-[10px] text-mute-500 uppercase tracking-wider font-medium">邮件管理</div>
+    <a class="flex items-center gap-2.5 px-3 py-1.5 rounded-md text-mute-700 hover:bg-mute-50">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+      邮件列表
+    </a>
+    <a class="flex items-center gap-2.5 px-3 py-1.5 rounded-md text-mute-700 hover:bg-mute-50">
+      <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      邮箱状态
+    </a>
+  </nav>
+</aside>
+
+<!-- ============ 主内容 ============ -->
+<main class="flex-1 min-w-0">
+
+  <!-- ============ Hero 区（窄高，青绿渐变 + 扁平插画） ============ -->
+  <section class="relative overflow-hidden" style="background: linear-gradient(135deg, #00b5a5 0%, #1dcba8 70%, #a8e6d8 100%);">
+    <div class="absolute top-4 right-8 w-40 h-40 rounded-full bg-white/10 blur-2xl"></div>
+    <svg viewBox="0 0 320 180" class="absolute right-16 bottom-0 w-80 h-44 hidden lg:block" aria-hidden>
+      <!-- 人物1 -->
+      <circle cx="90" cy="55" r="22" fill="#a8e6d8"/>
+      <rect x="63" y="77" width="55" height="68" rx="8" fill="#fff3e8"/>
+      <rect x="76" y="83" width="28" height="4" rx="2" fill="#1a1a1a"/>
+      <!-- 人物2 -->
+      <circle cx="200" cy="45" r="24" fill="#1dcba8"/>
+      <rect x="170" y="69" width="60" height="76" rx="8" fill="white"/>
+      <rect x="186" y="75" width="28" height="4" rx="2" fill="#1a1a1a"/>
+      <!-- 聊天气泡 -->
+      <rect x="40" y="15" width="60" height="24" rx="12" fill="white"/>
+      <text x="70" y="31" font-size="10" text-anchor="middle" fill="#1a1a1a">Hi 👋</text>
+      <rect x="225" y="5" width="65" height="24" rx="12" fill="#1a1a1a"/>
+      <text x="257" y="21" font-size="10" text-anchor="middle" fill="white">面试见!</text>
+      <circle cx="155" cy="110" r="3" fill="#ff7a45"/>
+      <circle cx="265" cy="140" r="5" fill="white" opacity="0.6"/>
+      <circle cx="30" cy="160" r="4" fill="#ff7a45" opacity="0.7"/>
+    </svg>
+
+    <div class="px-8 py-8 relative">
+      <div class="text-white/80 text-sm mb-1">下午好，晓琳 ☀️</div>
+      <h1 class="text-[28px] font-bold text-white leading-tight">今天 <span class="text-[36px]">8</span> 位新候选人 · <span class="text-[36px]">3</span> 位来自 985</h1>
+      <p class="text-white/85 text-sm mt-2">AI 已完成 52 份解析 · 38 份筛选 · 通过率 37.4%</p>
+    </div>
+  </section>
+
+  <div class="p-8 space-y-5 max-w-[1100px]">
+
+    <!-- ============ 数据条（极简） ============ -->
+    <section class="card p-4">
+      <div class="grid grid-cols-5 gap-4">
+        <div>
+          <div class="text-xs text-mute-500">本日</div>
+          <div class="mt-1 flex items-baseline gap-1">
+            <span class="num text-2xl font-bold">23</span>
+            <span class="chip bg-ok/15 text-ok" style="font-size:10px;padding:0 5px;">↑12.5%</span>
+          </div>
+        </div>
+        <div class="border-l border-mute-100 pl-4">
+          <div class="text-xs text-mute-500">本周</div>
+          <div class="mt-1 flex items-baseline gap-1">
+            <span class="num text-2xl font-bold">148</span>
+            <span class="chip bg-ok/15 text-ok" style="font-size:10px;padding:0 5px;">↑8.2%</span>
+          </div>
+        </div>
+        <div class="border-l border-mute-100 pl-4">
+          <div class="text-xs text-mute-500">本月</div>
+          <div class="mt-1 flex items-baseline gap-1">
+            <span class="num text-2xl font-bold">612</span>
+            <span class="chip bg-danger/10 text-danger" style="font-size:10px;padding:0 5px;">↓2.1%</span>
+          </div>
+        </div>
+        <div class="border-l border-mute-100 pl-4">
+          <div class="text-xs text-mute-500">总数</div>
+          <div class="mt-1">
+            <span class="num text-2xl font-bold text-teal-600">6,517</span>
+          </div>
+        </div>
+        <div class="border-l border-mute-100 pl-4">
+          <div class="text-xs text-mute-500 mb-1">状态分布</div>
+          <div class="h-2 bg-mute-100 rounded-full overflow-hidden flex">
+            <div class="bg-ok" style="width: 58%"></div>
+            <div class="bg-warn" style="width: 12%"></div>
+            <div class="bg-teal-500" style="width: 4%"></div>
+            <div class="bg-danger" style="width: 2%"></div>
+          </div>
+          <div class="flex justify-between text-[10px] mt-1 text-mute-500">
+            <span class="num">已评 <span class="text-ok font-medium">2,438</span></span>
+            <span class="num">解析 <span class="text-teal-600 font-medium">32</span></span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ 筛选 Chip 条 ============ -->
+    <section class="flex items-center gap-2 overflow-x-auto scroll-chip pb-1">
+      <button class="chip bg-teal-600 text-white shrink-0">全部 <span class="num ml-1">56</span></button>
+      <button class="chip bg-white border border-mute-200 text-mute-700 hover:border-teal-500 hover:text-teal-700 shrink-0">沟通中 <span class="num ml-1 text-mute-500">28</span></button>
+      <button class="chip bg-white border border-mute-200 text-mute-700 hover:border-teal-500 hover:text-teal-700 shrink-0">待面试 <span class="num ml-1 text-accent font-bold">12</span></button>
+      <button class="chip bg-white border border-mute-200 text-mute-700 hover:border-teal-500 hover:text-teal-700 shrink-0">已面试 <span class="num ml-1 text-mute-500">8</span></button>
+      <button class="chip bg-white border border-mute-200 text-mute-700 hover:border-teal-500 hover:text-teal-700 shrink-0">已发 offer <span class="num ml-1 text-ok font-bold">3</span></button>
+      <button class="chip bg-white border border-mute-200 text-mute-700 hover:border-teal-500 hover:text-teal-700 shrink-0">已入职 <span class="num ml-1 text-teal-700 font-bold">5</span></button>
+      <div class="w-px h-4 bg-mute-200 shrink-0"></div>
+      <button class="chip bg-white border border-mute-200 text-mute-700 hover:border-teal-500 hover:text-teal-700 shrink-0">全部职位</button>
+      <button class="chip bg-white border border-mute-200 text-mute-700 hover:border-teal-500 hover:text-teal-700 shrink-0">前端工程师</button>
+      <button class="chip bg-white border border-mute-200 text-mute-700 hover:border-teal-500 hover:text-teal-700 shrink-0">HRBP</button>
+    </section>
+
+    <!-- ============ 候选人 Feed（绝对主角） ============ -->
+    <section>
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-base font-bold flex items-center gap-2">
+          推荐候选人
+          <span class="chip bg-accent-light text-accent">8 位新到</span>
+        </h2>
+        <div class="flex items-center gap-1.5 text-xs">
+          <span class="text-mute-500">排序</span>
+          <button class="chip bg-mute-100 text-ink font-medium">AI 推荐分</button>
+          <button class="chip bg-white text-mute-500 hover:text-ink">最近活跃</button>
+        </div>
+      </div>
+
+      <div class="space-y-3">
+
+        <!-- 卡 1 - 急聘 -->
+        <div class="card p-5 hover:shadow-soft transition-all border-l-4 border-l-accent">
+          <div class="flex items-start gap-4">
+            <!-- 大头像 -->
+            <div class="relative shrink-0">
+              <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-teal-500 to-teal-700 flex items-center justify-center text-white text-xl font-bold shadow-card">张</div>
+              <div class="online-dot"></div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline gap-2">
+                <span class="text-lg font-bold text-ink">张明远</span>
+                <span class="chip bg-accent text-white">
+                  <svg class="w-2.5 h-2.5 mr-0.5" viewBox="0 0 24 24" fill="currentColor"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                  急聘 · 前端
+                </span>
+                <span class="chip bg-teal-50 text-teal-700">985</span>
+                <span class="chip bg-accent-light text-accent">大厂</span>
+                <span class="text-xs text-mute-500 ml-1">3 年经验 · 北京</span>
+              </div>
+              <div class="mt-1.5 text-sm text-mute-700">
+                <span class="font-semibold text-ink">北京大学 · 硕士 · 计算机</span>
+                <span class="text-mute-300 mx-1.5">|</span>
+                字节跳动 · 高级前端
+              </div>
+              <div class="mt-2.5 flex flex-wrap gap-1.5 text-xs">
+                <span class="chip bg-mute-100 text-mute-700">React</span>
+                <span class="chip bg-mute-100 text-mute-700">TypeScript</span>
+                <span class="chip bg-mute-100 text-mute-700">Node.js</span>
+                <span class="chip bg-mute-100 text-mute-700">+3 项</span>
+              </div>
+              <!-- AI 摘要 -->
+              <div class="mt-3 px-3 py-2 bg-teal-50 rounded-md text-xs leading-relaxed">
+                <span class="font-medium text-teal-700">AI 摘要：</span>
+                <span class="text-mute-700">主导抖音创作者平台前端架构（DAU 8000万），熟悉 React 生态与微前端方案</span>
+              </div>
+            </div>
+            <!-- 评分 + 操作 -->
+            <div class="shrink-0 flex flex-col items-end gap-3">
+              <div class="text-center">
+                <div class="flex items-baseline gap-0.5 justify-end">
+                  <span class="num text-4xl font-bold text-teal-600 leading-none">87</span>
+                  <span class="text-xs text-mute-500">/100</span>
+                </div>
+                <div class="text-[10px] text-mute-500 mt-0.5">AI 推荐</div>
+              </div>
+              <div class="flex flex-col gap-1.5 w-32">
+                <button class="btn-teal text-xs font-medium h-8 rounded-md flex items-center justify-center gap-1">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  立即沟通
+                </button>
+                <button class="border border-mute-200 hover:border-teal-500 hover:text-teal-700 text-mute-700 text-xs h-7 rounded-md">查看简历</button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-mute-100 flex items-center justify-between text-xs text-mute-500">
+            <span class="flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-accent"></span>
+              沟通中 · 2 天前联系 · 已读未回
+            </span>
+            <span class="num">收取 12 分钟前</span>
+          </div>
+        </div>
+
+        <!-- 卡 2 - 待面试 -->
+        <div class="card p-5 hover:shadow-soft transition-all border-l-4 border-l-warn">
+          <div class="flex items-start gap-4">
+            <div class="relative shrink-0">
+              <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-accent to-orange-600 flex items-center justify-center text-white text-xl font-bold shadow-card">王</div>
+              <div class="online-dot"></div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline gap-2">
+                <span class="text-lg font-bold text-ink">王晓琳</span>
+                <span class="chip bg-warn/15 text-warn">
+                  <svg class="w-2.5 h-2.5 mr-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  8/26 14:00 面试
+                </span>
+                <span class="chip bg-teal-50 text-teal-700">985</span>
+                <span class="chip bg-warn/15 text-warn">5 年经验</span>
+                <span class="text-xs text-mute-500 ml-1">上海</span>
+              </div>
+              <div class="mt-1.5 text-sm text-mute-700">
+                <span class="font-semibold text-ink">清华大学 · 本科 · 软件工程</span>
+                <span class="text-mute-300 mx-1.5">|</span>
+                美团 · 高级前端
+              </div>
+              <div class="mt-2.5 flex flex-wrap gap-1.5 text-xs">
+                <span class="chip bg-mute-100 text-mute-700">Vue3</span>
+                <span class="chip bg-mute-100 text-mute-700">微前端</span>
+                <span class="chip bg-mute-100 text-mute-700">性能优化</span>
+                <span class="chip bg-mute-100 text-mute-700">架构设计</span>
+              </div>
+              <div class="mt-3 px-3 py-2 bg-warn/10 rounded-md text-xs">
+                <div class="flex items-center gap-3">
+                  <span class="flex items-center gap-1.5 text-warn font-medium">
+                    <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                    8/26 14:00
+                  </span>
+                  <span class="text-mute-700">技术主管 张工 + HRBP</span>
+                  <span class="text-mute-300">|</span>
+                  <span class="text-mute-700">腾讯会议</span>
+                </div>
+              </div>
+            </div>
+            <div class="shrink-0 flex flex-col items-end gap-3">
+              <div class="text-center">
+                <div class="flex items-baseline gap-0.5 justify-end">
+                  <span class="num text-4xl font-bold text-warn leading-none">85</span>
+                  <span class="text-xs text-mute-500">/100</span>
+                </div>
+                <div class="text-[10px] text-warn mt-0.5 font-medium">待面试</div>
+              </div>
+              <div class="flex flex-col gap-1.5 w-32">
+                <button class="bg-accent hover:bg-accent/90 text-white text-xs font-medium h-8 rounded-md flex items-center justify-center gap-1">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/></svg>
+                  面试提醒
+                </button>
+                <button class="border border-mute-200 hover:border-teal-500 hover:text-teal-700 text-mute-700 text-xs h-7 rounded-md">修改时间</button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-mute-100 flex items-center justify-between text-xs text-warn font-medium">
+            <span class="flex items-center gap-1.5">
+              <span class="w-1.5 h-1.5 rounded-full bg-warn animate-pulse"></span>
+              距离面试还有 23 小时
+            </span>
+            <span class="num text-mute-500 font-normal">收取 2 小时前</span>
+          </div>
+        </div>
+
+        <!-- 卡 3 - 已面试 -->
+        <div class="card p-5 hover:shadow-soft transition-all">
+          <div class="flex items-start gap-4">
+            <div class="relative shrink-0">
+              <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white text-xl font-bold shadow-card">刘</div>
+              <span class="absolute -bottom-1 -right-1 w-5 h-5 rounded-full bg-ok border-2 border-white flex items-center justify-center">
+                <svg class="w-2.5 h-2.5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>
+              </span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline gap-2">
+                <span class="text-lg font-bold text-ink">刘子涵</span>
+                <span class="chip bg-ok/15 text-ok">面试通过</span>
+                <span class="chip bg-teal-50 text-teal-700">985</span>
+                <span class="text-xs text-mute-500 ml-1">4 年经验 · 杭州</span>
+              </div>
+              <div class="mt-1.5 text-sm text-mute-700">
+                <span class="font-semibold text-ink">浙江大学 · 本科 · 计算机</span>
+                <span class="text-mute-300 mx-1.5">|</span>
+                阿里巴巴 · 前端开发
+              </div>
+              <div class="mt-2.5 flex flex-wrap gap-1.5 text-xs">
+                <span class="chip bg-mute-100 text-mute-700">React</span>
+                <span class="chip bg-mute-100 text-mute-700">设计系统</span>
+                <span class="chip bg-mute-100 text-mute-700">TS</span>
+              </div>
+              <div class="mt-3 px-3 py-2 bg-ok/10 rounded-md text-xs">
+                <div class="flex items-center gap-1.5 text-ok font-medium">
+                  <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  面试官评价：技术扎实 · 沟通良好 · 推荐发 offer
+                </div>
+              </div>
+            </div>
+            <div class="shrink-0 flex flex-col items-end gap-3">
+              <div class="text-center">
+                <div class="flex items-baseline gap-0.5 justify-end">
+                  <span class="num text-4xl font-bold text-ok leading-none">86</span>
+                  <span class="text-xs text-mute-500">/100</span>
+                </div>
+                <div class="text-[10px] text-ok mt-0 font-medium">推荐 offer</div>
+              </div>
+              <div class="flex flex-col gap-1.5 w-32">
+                <button class="bg-accent hover:bg-accent/90 text-white text-xs font-medium h-8 rounded-md">发 offer</button>
+                <button class="border border-mute-200 hover:border-teal-500 hover:text-teal-700 text-mute-700 text-xs h-7 rounded-md">面试详情</button>
+              </div>
+            </div>
+          </div>
+          <div class="mt-3 pt-3 border-t border-mute-100 flex items-center justify-between text-xs text-mute-500">
+            <span>面试完成于 1 天前</span>
+            <span class="num">收取 3 天前</span>
+          </div>
+        </div>
+
+        <!-- 卡 4 - 已发 offer -->
+        <div class="card p-5 hover:shadow-soft transition-all">
+          <div class="flex items-start gap-4">
+            <div class="relative shrink-0">
+              <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-teal-300 to-teal-500 flex items-center justify-center text-white text-xl font-bold shadow-card">周</div>
+              <div class="online-dot"></div>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-baseline gap-2">
+                <span class="text-lg font-bold text-ink">周怡然</span>
+                <span class="chip bg-ok/15 text-ok">已接受 offer</span>
+                <span class="chip bg-teal-50 text-teal-700">985</span>
+                <span class="text-xs text-mute-500 ml-1">6 年经验 · 深圳</span>
+              </div>
+              <div class="mt-1.5 text-sm text-mute-700">
+                <span class="font-semibold text-accent">→ HRBP · 25-30K · 15 薪</span>
+                <span class="text-mute-300 mx-1.5">|</span>
+                中山大学 · 硕士 · 人力资源
+              </div>
+              <div class="mt-2.5 flex flex-wrap gap-1.5 text-xs">
+                <span class="chip bg-accent-light text-accent font-bold">25-30K · 15薪</span>
+                <span class="chip bg-mute-100 text-mute-700">招聘体系</span>
+                <span class="chip bg-mute-100 text-mute-700">雇主品牌</span>
+              </div>
+              <div class="mt-3 px-3 py-2 bg-ok/10 rounded-md text-xs">
+                <div class="text-ok font-medium">入职进度：</div>
+                <div class="text-mute-700 mt-1 flex items-center gap-1.5">
+                  <span class="line-through opacity-60">offer 已签</span>
+                  <span>→</span>
+                  <span class="line-through opacity-60">体检通过</span>
+                  <span>→</span>
+                  <span class="font-medium text-ok">预计 9/5 入职</span>
+                </div>
+              </div>
+            </div>
+            <div class="shrink-0 flex flex-col items-end gap-3">
+              <div class="text-center">
+                <div class="flex items-baseline gap-0.5 justify-end">
+                  <span class="num text-4xl font-bold text-ok leading-none">90</span>
+                  <span class="text-xs text-mute-500">/100</span>
+                </div>
+                <div class="text-[10px] text-ok mt-0 font-medium">高优</div>
+              </div>
+              <div class="flex flex-col gap-1.5 w-32">
+                <button class="btn-teal text-xs font-medium h-8 rounded-md">入职准备</button>
+                <button class="border border-mute-200 hover:border-teal-500 hover:text-teal-700 text-mute-700 text-xs h-7 rounded-md">下载材料</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="mt-4 text-center">
+        <button class="text-sm text-teal-600 hover:text-teal-700 font-medium">加载更多 52 位候选人 ↓</button>
+      </div>
+    </section>
+
+    <!-- ============ 底部极简状态条 ============ -->
+    <section class="grid grid-cols-4 gap-4">
+      <div class="card p-3 flex items-center gap-3">
+        <span class="pulse-dot shrink-0"></span>
+        <div class="flex-1 min-w-0">
+          <div class="text-xs font-medium">邮箱收取</div>
+          <div class="text-[10px] text-mute-500">2 个配置 · 自动</div>
+        </div>
+        <span class="num text-[11px] text-mute-500">10 分钟前</span>
+      </div>
+      <div class="card p-3">
+        <div class="flex items-center justify-between mb-1">
+          <div class="text-xs font-medium">解析队列</div>
+          <span class="text-[10px] text-teal-700">活跃</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <span class="num text-base font-bold">3 / 1</span>
+        </div>
+        <div class="mt-1 h-1 bg-mute-100 rounded-full overflow-hidden">
+          <div class="h-full bg-teal-500 rounded-full" style="width: 33%"></div>
+        </div>
+      </div>
+      <div class="card p-3">
+        <div class="flex items-center justify-between mb-1">
+          <div class="text-xs font-medium">AI 筛选</div>
+          <span class="text-[10px] text-accent">高负载</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <span class="num text-base font-bold">12 / 2</span>
+        </div>
+        <div class="mt-1 h-1 bg-mute-100 rounded-full overflow-hidden">
+          <div class="h-full bg-accent rounded-full" style="width: 67%"></div>
+        </div>
+      </div>
+      <div class="card p-3">
+        <div class="flex items-center justify-between mb-1">
+          <div class="text-xs font-medium">企微同步</div>
+          <span class="text-[10px] text-ok">就绪</span>
+        </div>
+        <div class="flex items-baseline justify-between">
+          <span class="num text-base font-bold text-ok">空闲</span>
+        </div>
+        <div class="mt-1 h-1 bg-mute-100 rounded-full overflow-hidden">
+          <div class="h-full bg-ok rounded-full" style="width: 5%"></div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+</main>
+</div>
+
+</body>
+</html>

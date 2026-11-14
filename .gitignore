@@ -1,0 +1,54 @@
+# Dependencies
+node_modules/
+/.pnp
+.pnp.js
+.vscode
+# Testing
+/coverage
+
+# Next.js
+/.next/
+/out/
+
+# Production
+/build
+/.build
+
+# Misc
+.DS_Store
+*.pem
+
+# Debug
+npm-debug.log*
+
+# Local env files（实际密钥不入库，使用 .env.example 作为模板）
+.env*.local
+.env
+.env.prod
+
+# Vercel
+.vercel
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Uploads
+data/uploads/
+data/logs/
+data/.crash-state-*.json
+public/photos/
+prisma/data/resume.db
+*-backup.db
+# Claude Code 本地配置（不入库）
+.claude/settings.local.json
+.playwright-mcp/
+.workbuddy/
+
+# 构建生成资源（postinstall 从 node_modules 拷贝，不入库）
+public/pdf.worker.min.mjs
+public/standard-fonts/
+
+# 本机启动/停止脚本（含本机 Node 绝对路径，不入库）
+/start-dev.cmd
+/stop-dev.cmd

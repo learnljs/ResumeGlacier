@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Variant B · 现代 SaaS 极简 · ResumeGlacier</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  theme: {
+    extend: {
+      colors: {
+        ink: '#0a0a0a',
+        brand: '#5b5fc7',
+        brandLight: '#eef0ff',
+      },
+      fontFamily: {
+        sans: ['Inter', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', 'system-ui', 'sans-serif'],
+      },
+    },
+  },
+};
+</script>
+<style>
+  body {
+    background: #fafafa;
+    color: #171717;
+    font-family: 'Inter', 'PingFang SC', 'Noto Sans SC', 'Microsoft YaHei', system-ui, sans-serif;
+    letter-spacing: -0.011em;
+    font-feature-settings: "cv11", "ss01";
+  }
+  .card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    transition: box-shadow 0.15s, border-color 0.15s;
+  }
+  .card:hover {
+    border-color: #d4d4d4;
+  }
+  .num {
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.04em;
+  }
+  .nav-active {
+    color: #0a0a0a;
+    background: #f5f5f5;
+  }
+  .pulse {
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .ring-brand {
+    box-shadow: 0 0 0 1px #5b5fc7;
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- ============ 顶部导航 ============ -->
+<header class="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-neutral-200">
+  <div class="mx-auto max-w-[1400px] px-6 h-14 flex items-center gap-8">
+    <!-- 品牌 -->
+    <div class="flex items-center gap-2 shrink-0">
+      <div class="w-7 h-7 rounded-md bg-neutral-900 flex items-center justify-center">
+        <svg viewBox="0 0 28 28" class="w-4 h-4" fill="none">
+          <path d="M6 22 L11 13 L14 17 L17 11 L22 22 Z" fill="white"/>
+          <line x1="6" y1="22" x2="22" y2="22" stroke="#5b5fc7" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="text-[15px] font-semibold tracking-tight">ResumeGlacier</span>
+    </div>
+    <!-- 水平导航 -->
+    <nav class="flex items-center gap-0.5 text-sm">
+      <a class="px-3 py-1.5 rounded-md nav-active font-medium">概览</a>
+      <a class="px-3 py-1.5 rounded-md text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100">配置</a>
+      <a class="px-3 py-1.5 rounded-md text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100">招聘</a>
+      <a class="px-3 py-1.5 rounded-md text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100">任务</a>
+      <a class="px-3 py-1.5 rounded-md text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100">邮件</a>
+    </nav>
+    <div class="ml-auto flex items-center gap-2">
+      <div class="relative">
+        <input type="text" placeholder="搜索候选人..." class="w-64 h-9 pl-9 pr-3 text-sm rounded-md border border-neutral-200 bg-neutral-50 focus:bg-white focus:border-neutral-300 focus:outline-none placeholder:text-neutral-400"/>
+        <svg class="absolute left-2.5 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </div>
+      <button class="h-9 px-3.5 rounded-md text-sm font-medium bg-neutral-900 text-white hover:bg-neutral-800 flex items-center gap-1.5">
+        <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="12 5 12 19"/><polyline points="5 12 12 19 19 12"/></svg>
+        收取邮件
+      </button>
+      <div class="h-7 w-7 rounded-full bg-gradient-to-br from-purple-400 to-blue-400 ml-1"></div>
+    </div>
+  </div>
+</header>
+
+<main class="mx-auto max-w-[1400px] px-6 py-8 space-y-6">
+
+  <!-- ============ 页头 ============ -->
+  <section class="flex items-end justify-between">
+    <div>
+      <h1 class="text-[22px] font-semibold tracking-tight">Overview</h1>
+      <p class="text-sm text-neutral-500 mt-1 flex items-center gap-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-green-500 pulse"></span>
+        All systems operational · 2 mailboxes configured
+      </p>
+    </div>
+    <div class="flex items-center gap-1 text-xs">
+      <button class="px-2.5 py-1 rounded-md text-neutral-500 hover:bg-neutral-100">Day</button>
+      <button class="px-2.5 py-1 rounded-md text-neutral-500 hover:bg-neutral-100">Week</button>
+      <button class="px-2.5 py-1 rounded-md bg-neutral-900 text-white font-medium">Month</button>
+      <button class="px-2.5 py-1 rounded-md text-neutral-500 hover:bg-neutral-100">All</button>
+    </div>
+  </section>
+
+  <!-- ============ 核心指标 ============ -->
+  <section class="grid grid-cols-4 gap-3">
+    <div class="card p-5">
+      <div class="text-xs text-neutral-500 font-medium">Today</div>
+      <div class="mt-3 flex items-baseline gap-1.5">
+        <span class="num text-[36px] font-semibold leading-none">23</span>
+        <span class="text-xs text-neutral-400">resumes</span>
+      </div>
+      <div class="mt-3 flex items-center gap-1 text-[11px]">
+        <span class="text-green-600 font-medium flex items-center gap-0.5">
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+          12.5%
+        </span>
+        <span class="text-neutral-400">vs yesterday</span>
+      </div>
+    </div>
+    <div class="card p-5">
+      <div class="text-xs text-neutral-500 font-medium">This Week</div>
+      <div class="mt-3 flex items-baseline gap-1.5">
+        <span class="num text-[36px] font-semibold leading-none">148</span>
+        <span class="text-xs text-neutral-400">resumes</span>
+      </div>
+      <div class="mt-3 flex items-center gap-1 text-[11px]">
+        <span class="text-green-600 font-medium flex items-center gap-0.5">
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="18 15 12 9 6 15"/></svg>
+          8.2%
+        </span>
+        <span class="text-neutral-400">vs last week</span>
+      </div>
+    </div>
+    <div class="card p-5">
+      <div class="text-xs text-neutral-500 font-medium">This Month</div>
+      <div class="mt-3 flex items-baseline gap-1.5">
+        <span class="num text-[36px] font-semibold leading-none">612</span>
+        <span class="text-xs text-neutral-400">resumes</span>
+      </div>
+      <div class="mt-3 flex items-center gap-1 text-[11px]">
+        <span class="text-red-500 font-medium flex items-center gap-0.5">
+          <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+          2.1%
+        </span>
+        <span class="text-neutral-400">vs last month</span>
+      </div>
+    </div>
+    <div class="card p-5 relative overflow-hidden">
+      <div class="text-xs text-neutral-500 font-medium">Total</div>
+      <div class="mt-3 flex items-baseline gap-1.5">
+        <span class="num text-[36px] font-semibold leading-none text-[#5b5fc7]">6,517</span>
+        <span class="text-xs text-neutral-400">all time</span>
+      </div>
+      <div class="mt-3 text-[11px] text-neutral-400">
+        Active for <span class="num font-semibold text-neutral-700">148</span> days
+      </div>
+      <div class="absolute -right-4 -bottom-4 w-20 h-20 rounded-full bg-[#5b5fc7] opacity-[0.05]"></div>
+    </div>
+  </section>
+
+  <!-- ============ 主图表 ============ -->
+  <section class="card p-6">
+    <div class="flex items-start justify-between mb-6">
+      <div>
+        <h3 class="text-base font-semibold tracking-tight">Resume Inflow</h3>
+        <p class="text-xs text-neutral-500 mt-0.5">Last 30 days · Includes weekends</p>
+      </div>
+      <div class="flex items-center gap-3 text-xs">
+        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-[#5b5fc7]"></span><span class="text-neutral-600">Incoming</span></div>
+        <div class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-sm bg-neutral-300"></span><span class="text-neutral-600">Screened</span></div>
+        <div class="flex items-center gap-1 text-neutral-400 ml-3">
+          <button class="px-2 py-0.5 rounded bg-neutral-100 text-neutral-900 font-medium">1D</button>
+          <button class="px-2 py-0.5 rounded hover:bg-neutral-100">7W</button>
+          <button class="px-2 py-0.5 rounded hover:bg-neutral-100">1M</button>
+          <button class="px-2 py-0.5 rounded hover:bg-neutral-100">3M</button>
+        </div>
+      </div>
+    </div>
+    <div class="h-[260px]">
+      <svg viewBox="0 0 800 200" class="w-full h-full">
+        <!-- 网格 -->
+        <line x1="0" y1="50" x2="800" y2="50" stroke="#f5f5f5"/>
+        <line x1="0" y1="100" x2="800" y2="100" stroke="#f5f5f5"/>
+        <line x1="0" y1="150" x2="800" y2="150" stroke="#f5f5f5"/>
+        <!-- 筛选区（底层） -->
+        <defs>
+          <linearGradient id="grad-brand" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#5b5fc7" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="#5b5fc7" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M0,150 L25,135 L50,140 L75,110 L100,118 L125,90 L150,100 L175,75 L200,85 L225,65 L250,75 L275,55 L300,68 L325,45 L350,55 L375,40 L400,50 L425,70 L450,55 L475,75 L500,50 L525,65 L550,45 L575,55 L600,40 L625,55 L650,35 L675,45 L700,25 L725,40 L750,30 L775,40 L800,25 L800,200 L0,200 Z" fill="url(#grad-brand)"/>
+        <path d="M0,150 L25,135 L50,140 L75,110 L100,118 L125,90 L150,100 L175,75 L200,85 L225,65 L250,75 L275,55 L300,68 L325,45 L350,55 L375,40 L400,50 L425,70 L450,55 L475,75 L500,50 L525,65 L550,45 L575,55 L600,40 L625,55 L650,35 L675,45 L700,25 L725,40 L750,30 L775,40 L800,25" fill="none" stroke="#5b5fc7" stroke-width="2" stroke-linecap="round"/>
+        <!-- 已筛选（细线） -->
+        <path d="M0,165 L25,160 L50,158 L75,150 L100,148 L125,142 L150,138 L175,130 L200,132 L225,125 L250,120 L275,115 L300,118 L325,108 L350,110 L375,100 L400,105 L425,115 L450,108 L475,118 L500,105 L525,115 L550,108 L575,115 L600,108 L625,118 L650,110 L675,115 L700,105 L725,115 L750,110 L775,115 L800,108" fill="none" stroke="#a3a3a3" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="0"/>
+        <!-- 最后一个数据点 -->
+        <circle cx="800" cy="25" r="4" fill="#5b5fc7" stroke="white" stroke-width="2"/>
+      </svg>
+    </div>
+    <div class="flex justify-between text-[10px] text-neutral-400 mt-3 px-1">
+      <span>Jul 26</span><span>Aug 2</span><span>Aug 9</span><span>Aug 16</span><span>Aug 23</span><span>Aug 24</span>
+    </div>
+  </section>
+
+  <!-- ============ 状态分布 + 跟进看板 + 邮箱状态 ============ -->
+  <section class="grid grid-cols-12 gap-3">
+    <!-- Pipeline -->
+    <div class="card p-5 col-span-3">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold">Pipeline</h3>
+        <button class="text-xs text-neutral-400">⋯</button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-medium">Screened</span>
+            <span class="num text-neutral-500">2,438</span>
+          </div>
+          <div class="h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-green-500 rounded-full" style="width: 58%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-medium">Pending</span>
+            <span class="num text-neutral-500">186</span>
+          </div>
+          <div class="h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-amber-400 rounded-full" style="width: 12%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-medium">Parsing</span>
+            <span class="num text-neutral-500">32</span>
+          </div>
+          <div class="h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-neutral-700 rounded-full" style="width: 4%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-medium">Error</span>
+            <span class="num text-neutral-500">17</span>
+          </div>
+          <div class="h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-red-500 rounded-full" style="width: 2%"></div>
+          </div>
+        </div>
+        <div class="pt-2 border-t border-neutral-100">
+          <div class="flex items-center justify-between text-xs">
+            <span class="text-neutral-500">Pass rate</span>
+            <span class="num font-semibold">37.4%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 跟进看板 -->
+    <div class="card p-5 col-span-6">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold">Follow-up Board</h3>
+        <div class="flex items-center gap-1 text-xs">
+          <button class="px-2 py-1 rounded bg-neutral-100 text-neutral-900 font-medium">Board</button>
+          <button class="px-2 py-1 rounded text-neutral-500 hover:bg-neutral-100">List</button>
+        </div>
+      </div>
+      <div class="grid grid-cols-5 gap-2">
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">Contact</span>
+            <span class="num text-[10px] text-neutral-500">28</span>
+          </div>
+          <div class="p-2.5 rounded-md border border-neutral-200 hover:border-neutral-300 cursor-pointer">
+            <div class="text-xs font-medium">张明远</div>
+            <div class="text-[10px] text-neutral-500 mt-0.5">前端 · 985</div>
+            <div class="mt-1.5"><span class="text-[9px] px-1.5 py-0.5 rounded bg-[#5b5fc7]/10 text-[#5b5fc7]">大厂</span></div>
+          </div>
+          <div class="p-2.5 rounded-md border border-neutral-200 hover:border-neutral-300 cursor-pointer">
+            <div class="text-xs font-medium">李思琪</div>
+            <div class="text-[10px] text-neutral-500 mt-0.5">数据 · 211</div>
+          </div>
+          <div class="p-2.5 rounded-md border border-neutral-200 hover:border-neutral-300 cursor-pointer">
+            <div class="text-xs font-medium">陈思远</div>
+            <div class="text-[10px] text-neutral-500 mt-0.5">HRBP · 985</div>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">Interview</span>
+            <span class="num text-[10px] text-amber-600 font-medium">12</span>
+          </div>
+          <div class="p-2.5 rounded-md border border-neutral-200 hover:border-neutral-300 cursor-pointer">
+            <div class="text-xs font-medium">王晓琳</div>
+            <div class="text-[10px] text-neutral-500 mt-0.5">前端</div>
+            <div class="text-[10px] text-amber-600 mt-0.5">8/26 14:00</div>
+          </div>
+          <div class="p-2.5 rounded-md border border-neutral-200 hover:border-neutral-300 cursor-pointer">
+            <div class="text-xs font-medium">赵雨欣</div>
+            <div class="text-[10px] text-neutral-500 mt-0.5">产品</div>
+            <div class="text-[10px] text-amber-600 mt-0.5">8/27 10:30</div>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">Done</span>
+            <span class="num text-[10px] text-neutral-500">8</span>
+          </div>
+          <div class="p-2.5 rounded-md border border-neutral-200 hover:border-neutral-300 cursor-pointer">
+            <div class="text-xs font-medium">刘子涵</div>
+            <div class="text-[10px] text-neutral-500 mt-0.5">前端</div>
+            <div class="text-[10px] text-green-600 mt-0.5">推荐 offer</div>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">Offer</span>
+            <span class="num text-[10px] text-green-600 font-medium">3</span>
+          </div>
+          <div class="p-2.5 rounded-md border border-neutral-200 hover:border-neutral-300 cursor-pointer">
+            <div class="text-xs font-medium">周怡然</div>
+            <div class="text-[10px] text-neutral-500 mt-0.5">HRBP</div>
+            <div class="text-[10px] text-neutral-500 mt-0.5">25-30K</div>
+          </div>
+        </div>
+        <div class="space-y-2">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">Hired</span>
+            <span class="num text-[10px] text-green-600 font-medium">5</span>
+          </div>
+          <div class="p-2.5 rounded-md border border-neutral-200 hover:border-neutral-300 cursor-pointer">
+            <div class="text-xs font-medium">吴嘉伟</div>
+            <div class="text-[10px] text-neutral-500 mt-0.5">数据</div>
+            <div class="text-[10px] text-green-600 mt-0.5">12 天</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 职位分布 -->
+    <div class="card p-5 col-span-3">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold">Positions</h3>
+        <button class="text-xs text-neutral-400">All</button>
+      </div>
+      <div class="space-y-3">
+        <div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">前端工程师</span>
+            <span class="num text-neutral-500">186</span>
+          </div>
+          <div class="mt-1 h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-[#5b5fc7] rounded-full" style="width: 78%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">HRBP</span>
+            <span class="num text-neutral-500">142</span>
+          </div>
+          <div class="mt-1 h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-[#5b5fc7] rounded-full" style="width: 60%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">数据分析师</span>
+            <span class="num text-neutral-500">98</span>
+          </div>
+          <div class="mt-1 h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-[#5b5fc7] rounded-full" style="width: 41%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">产品经理</span>
+            <span class="num text-neutral-500">76</span>
+          </div>
+          <div class="mt-1 h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-[#5b5fc7] rounded-full" style="width: 32%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">市场运营</span>
+            <span class="num text-neutral-500">54</span>
+          </div>
+          <div class="mt-1 h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-[#5b5fc7] rounded-full" style="width: 23%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-medium">管培生</span>
+            <span class="num text-neutral-500">28</span>
+          </div>
+          <div class="mt-1 h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-neutral-400 rounded-full" style="width: 12%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 邮箱 + 队列 ============ -->
+  <section class="grid grid-cols-2 gap-3">
+    <div class="card p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold">Mailboxes</h3>
+        <button class="text-xs text-neutral-400 hover:text-neutral-900">Configure</button>
+      </div>
+      <div class="space-y-2">
+        <div class="flex items-center gap-3 p-2.5 rounded-md hover:bg-neutral-50">
+          <div class="w-8 h-8 rounded-md bg-green-50 flex items-center justify-center">
+            <svg class="w-4 h-4 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium truncate">hr@company.com</div>
+            <div class="text-xs text-neutral-500">imap.exmail.qq.com</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Last fetch</div>
+            <div class="text-xs num font-medium">10m ago</div>
+          </div>
+        </div>
+        <div class="flex items-center gap-3 p-2.5 rounded-md hover:bg-neutral-50">
+          <div class="w-8 h-8 rounded-md bg-green-50 flex items-center justify-center">
+            <svg class="w-4 h-4 text-green-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-sm font-medium truncate">careers@company.com</div>
+            <div class="text-xs text-neutral-500">imap.exmail.qq.com</div>
+          </div>
+          <div class="text-right">
+            <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Last fetch</div>
+            <div class="text-xs num font-medium">25m ago</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card p-5">
+      <div class="flex items-center justify-between mb-4">
+        <h3 class="text-sm font-semibold">Workers</h3>
+        <button class="text-xs text-neutral-400 hover:text-neutral-900">Logs</button>
+      </div>
+      <div class="space-y-4">
+        <div>
+          <div class="flex items-center justify-between text-xs mb-2">
+            <span class="font-medium">Parser</span>
+            <span class="num text-neutral-500">3 / 1 active</span>
+          </div>
+          <div class="h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-neutral-700 rounded-full" style="width: 33%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs mb-2">
+            <span class="font-medium">AI Screener</span>
+            <span class="num text-neutral-500">12 / 2 active</span>
+          </div>
+          <div class="h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-[#5b5fc7] rounded-full" style="width: 67%"></div>
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center justify-between text-xs mb-2">
+            <span class="font-medium">WeCom Sync</span>
+            <span class="num text-green-600">idle</span>
+          </div>
+          <div class="h-1 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full bg-green-500 rounded-full" style="width: 0%"></div>
+          </div>
+        </div>
+        <div class="pt-2 border-t border-neutral-100 grid grid-cols-3 gap-2 text-center">
+          <div>
+            <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Parsed</div>
+            <div class="num text-base font-semibold mt-0.5">52</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Screened</div>
+            <div class="num text-base font-semibold mt-0.5">38</div>
+          </div>
+          <div>
+            <div class="text-[10px] text-neutral-400 uppercase tracking-wider">Failed</div>
+            <div class="num text-base font-semibold text-red-500 mt-0.5">2</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="pt-6 pb-4 text-center text-xs text-neutral-400">
+    ResumeGlacier · Self-hosted AI Resume Screener · v0.1.0
+  </footer>
+</main>
+
+</body>
+</html>

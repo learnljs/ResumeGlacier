@@ -1,0 +1,335 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model ResumeSource {
+  id             String        @id @default(cuid())
+  name           String        @unique
+  description    String?
+  promptTemplate String?
+  subjectPattern String?
+  isActive       Boolean       @default(true)
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  emailConfigs   EmailConfig[]
+  resumes        Resume[]
+}
+
+model EmailConfig {
+  id              String        @id @default(cuid())
+  alias           String        @default("")
+  host            String        @default("")
+  port            Int           @default(993)
+  secure          Boolean       @default(true)
+  user            String
+  password        String
+  mailbox         String        @default("INBOX")
+  resumeSourceId  String?
+  lastFetchedUid  String?
+  lastFetchedAt   DateTime?
+  isActive        Boolean       @default(true)
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  resumeSource    ResumeSource? @relation(fields: [resumeSourceId], references: [id])
+  emails          Email[]
+  resumes         Resume[]
+  taskBatches     TaskBatch[]
+}
+
+model AIConfig {
+  id         String              @id @default(cuid())
+  alias      String              @default("")
+  provider   String              @default("openai")
+  apiKey     String
+  baseUrl    String?
+  model      String              @default("gpt-4o")
+  purposes   String              @default("screening")  // 逗号分隔: "screening,extraction,ocr"
+  isDefault  Boolean             @default(false)
+  isActive   Boolean             @default(true)
+  createdAt  DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+  evaluations PositionEvaluation[]
+}
+
+model Position {
+  id                     String                @id @default(cuid())
+  title                  String
+  department             String?
+  description            String
+  requirements           String
+  keywords               String?
+  status                 String                @default("active")  // "active" | "disabled"
+  defaultInitialModelId  String?                                     // 默认初筛模型
+  defaultIcebergModelId  String?                                     // 默认冰山模型
+  webhookTargetRecordId  String?                                     // Webhook 岗位管理表的 record_id（职位映射，供「应聘岗位」关联字段同步）
+  createdAt              DateTime              @default(now())
+  updatedAt              DateTime              @updatedAt
+  resumes                Resume[]
+  weightModels           WeightModel[]                               // 职位下的所有权重模型
+  evaluationDimensions   EvaluationDimension[]
+  evaluations            PositionEvaluation[]
+  promptRecords          PromptRecord[]                              // 职位下的提示词配置版本
+}
+
+model Email {
+  id            String       @id @default(cuid())
+  messageId     String       @unique
+  uid           String
+  fromAddress   String
+  fromName      String?
+  subject       String
+  receivedAt    DateTime
+  rawHeaders    String?
+  emailConfigId String?
+  createdAt     DateTime     @default(now())
+  emailConfig   EmailConfig? @relation(fields: [emailConfigId], references: [id])
+  resumes       Resume[]
+}
+
+model TaskBatch {
+  id            String       @id @default(cuid())
+  batchNo       String       @unique  // 批次编号，如 "20240604-001"
+  source        String       // 来源类型: "scheduled" | "manual" | "rescreen" | "reevaluate"
+  sourceDetail  String?      // 来源详情，如定时任务的时间
+  emailConfigId String?
+  emailConfig   EmailConfig? @relation(fields: [emailConfigId], references: [id])
+
+  totalResumes     Int          @default(0)  // 总简历数
+  parsedCount      Int          @default(0)  // 已解析数
+  screenedCount    Int          @default(0)  // 已筛选数
+  errorCount       Int          @default(0)  // 失败数
+  screenErrorCount Int          @default(0)  // 筛选异常数
+
+  status        String       @default("processing")  // processing | completed | error
+  startedAt     DateTime     @default(now())
+  completedAt   DateTime?
+
+  resumes              Resume[]              @relation("BatchResumes")
+  screeningResumes     Resume[]              @relation("ScreeningBatchResumes")
+  screeningEvaluations PositionEvaluation[]  @relation("ScreeningBatchEvaluations")
+
+  createdAt     DateTime     @default(now())
+
+  @@index([status])
+  @@index([startedAt])
+}
+
+model Resume {
+  id                   String                @id @default(cuid())
+  emailId              String?
+  positionId           String?
+  resumeSourceId       String?
+  emailConfigId        String?
+  sourceEmailFrom      String?          // 来源邮件发件人快照
+  sourceEmailSubject   String?          // 来源邮件主题快照
+  sourceEmailReceivedAt DateTime?       // 来源邮件收件时间快照
+  batchId              String?          // 关联的获取批次
+  screeningBatchId     String?          // 关联的筛选批次
+  candidateName        String?
+  nickname             String?          // 邮件主题提取的昵称（AI 覆盖后保留原值）
+  candidatePhone       String?
+  candidateEmail       String?
+  fileName             String
+  fileType             String
+  filePath             String
+  fileSize             Int
+  extractedText        String?
+  candidatePhoto       String?          // 提取的候选人头像文件路径
+  structuredData       String?          // JSON 格式的结构化简历数据
+  parseMethod          String?          // 解析方式: "text" | "ocr" | "vision"
+  status               String           @default("PENDING")
+  errorMessage         String?
+  createdAt            DateTime         @default(now())
+  screenedDate         String?          // 评估日期 YYYY-MM-DD，从 createdAt 日期部分
+  updatedAt            DateTime         @default(now()) @updatedAt
+  initialScore         Float?           // 初筛得分（百分制，0-100）
+  compositeScore       Float?           // 综合得分（百分制，0-100）
+  email                Email?           @relation(fields: [emailId], references: [id])
+  position             Position?        @relation(fields: [positionId], references: [id])
+  resumeSource         ResumeSource?    @relation(fields: [resumeSourceId], references: [id])
+  emailConfig          EmailConfig?     @relation(fields: [emailConfigId], references: [id])
+  batch                TaskBatch?       @relation("BatchResumes", fields: [batchId], references: [id])
+  screeningBatch       TaskBatch?       @relation("ScreeningBatchResumes", fields: [screeningBatchId], references: [id])
+  evaluations          PositionEvaluation[]
+  followUpRecords      FollowUpRecord[]
+  evaluationDimensions EvaluationDimension[]
+}
+
+model PositionEvaluation {
+  id               String   @id @default(cuid())
+  resumeId         String
+  positionId       String
+  aiConfigId       String?
+  summary          String                       // AI 评估摘要
+  strengths        String                       // AI 评估优势（JSON 数组）
+  weaknesses       String                       // AI 评估劣势（JSON 数组）
+  aiTags           String?                      // JSON: AI 标签数组
+  aiModel          String                       // AI 模型名称
+  tokenUsage       Int?                         // Token 消耗
+  promptTokens     Int?                         // 输入 token
+  completionTokens Int?                         // 输出 token
+  cachedTokens     Int?                         // 输入中缓存命中
+  reasoningTokens  Int?                         // 输出中思考链
+  processingTime   Int?                         // 处理耗时(ms)
+  initialScore     Float?                       // 初筛得分（0-100）
+  compositeScore   Float?                       // 综合得分（0-100）
+  conditions       String?                      // JSON: 评估条件快照
+  screenedAt       DateTime?                    // 评估时间
+  screeningBatchId String?                      // 筛选批次
+  createdAt        DateTime  @default(now())
+
+  resume          Resume          @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  position        Position        @relation(fields: [positionId], references: [id])
+  aiConfig        AIConfig?       @relation(fields: [aiConfigId], references: [id])
+  screeningBatch  TaskBatch?      @relation("ScreeningBatchEvaluations", fields: [screeningBatchId], references: [id])
+  followUpRecord  FollowUpRecord?
+
+  @@unique([resumeId, positionId])
+}
+
+model WeightModel {
+  id         String   @id @default(cuid())
+  name       String                  // 模型名称
+  category   String                  // "initial"（初筛模型）或 "iceberg"（冰山模型）
+  weights    String                  // JSON: {"knowledge": 50, "skill": 50, ...}
+  positionId String                                          // 归属职位
+  position   Position @relation(fields: [positionId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([positionId, category])  // 一个职位每个分类只允许一份模型（初筛 / 冰山各一）
+  @@index([category])
+  @@index([positionId])
+}
+
+model EvaluationDimension {
+  id          String    @id @default(cuid())
+  resumeId    String
+  positionId  String?
+  dimension   String                  // "knowledge" | "skill" | "selfAwareness" | "personality" | "values" | "motivation"
+  rating      Int?                    // 星级评分 1-5，null 表示未评分
+  comment     String?                 // 文本评价（最大500字符）
+  aiDetail    String?                 // AI 结构化评分依据（JSON），仅 AI 评分时写入，永不自动清空
+  source      String                  // "ai" | "manual"
+
+  resume      Resume    @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  position    Position? @relation(fields: [positionId], references: [id])
+
+  @@unique([resumeId, positionId, dimension])
+  @@index([resumeId])
+  @@index([positionId])
+}
+
+model FollowUpTag {
+  id        String             @id @default(cuid())
+  name      String             @unique
+  color     String             @default("#3b82f6")
+  source    String             @default("manual")  // "ai" | "manual"
+  category  String             @default("custom")  // "hard" | "intent" | "custom"
+  createdAt DateTime           @default(now())
+  records   FollowUpRecordTag[]
+}
+
+model FollowUpRecord {
+  id            String              @id @default(cuid())
+  evaluationId  String?
+  resumeId      String              // 保留：便于直接查询简历维度数据
+  note          String?
+  status        String              @default("CONTACTING")
+  interviewTime String?             // 面试时间
+  salaryRange   String?             // 薪资范围（录取时填写）
+  startDate     String?             // 入职时间（录取时填写）
+  jobLevel      String?             // 岗位级别（录取时填写）
+  rejectReason  String?             // 拒绝原因（不合适时填写）
+  unsuitableAt  DateTime?           // 不合适时间（状态变为 UNSUITABLE 时写入，回退时清空）
+  resignedAt    DateTime?           // 离职日期（状态变为 RESIGNED 时写入）
+  resignReason  String?             // 离职原因
+  contacted     String              @default("NOT_CONTACTED")  // "NOT_CONTACTED" | "CONTACTED" | "CONTACT_FAILED"
+  statusChangedAt DateTime?         // 进入当前状态的时间（每次状态变更刷新，列表排序依据）
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @default(now()) @updatedAt
+
+  // 通用 Webhook 推送状态（替代原企微专属同步字段）
+  webhookTargetRecordId String?     // 下游系统记录 ID（更新凭据；Webhook/飞书/Slack 等）
+  webhookSyncStatus     String      @default("NOT_SYNCED")  // "NOT_SYNCED" | "SYNCED" | "SYNC_FAILED"
+  webhookLastSyncedAt   DateTime?   // 最近推送成功时间
+  webhookSyncError      String?     // 最近推送失败原因（展示用）
+  webhookConfigKey      String?     // 推送目标配置分组（用于多下游并行）
+
+  evaluation PositionEvaluation? @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  resume     Resume             @relation(fields: [resumeId], references: [id], onDelete: Cascade)
+  tags       FollowUpRecordTag[]
+  logs       FollowUpLog[]
+
+  @@unique([evaluationId])
+}
+
+model FollowUpLog {
+  id               String         @id @default(cuid())
+  followUpRecordId String
+  action           String
+  detail           String?
+  fromStatus       String?        // 流转前状态；"SCREENED" 表示从已筛选进入跟进；null = 未知（降级）
+  toStatus         String?        // 流转后状态
+  transitionType   String?        // "enter" | "forward" | "rollback" | "reset"；null = 非状态变更类日志
+  createdAt        DateTime       @default(now())
+  followUpRecord   FollowUpRecord @relation(fields: [followUpRecordId], references: [id], onDelete: Cascade)
+}
+
+model FollowUpRecordTag {
+  id             String         @id @default(cuid())
+  followUpRecordId String
+  followUpTagId    String
+  followUpRecord FollowUpRecord @relation(fields: [followUpRecordId], references: [id], onDelete: Cascade)
+  followUpTag    FollowUpTag    @relation(fields: [followUpTagId], references: [id], onDelete: Cascade)
+
+  @@unique([followUpRecordId, followUpTagId])
+}
+
+// 通用 Webhook 字段映射配置
+// 替代原 WeComFieldMapping：将「Webhook 推送目标」抽象为任意支持 Webhook 的系统。
+//
+// 同一张表既存字段映射行（hrField = HR 字段路径），也存 Webhook URL 行
+// （hrField = "__webhook_url__" 时，transformConfig 存 URL 字符串）。
+// 通过 configKey 分组，同一组映射共用一个 Webhook URL（支持多下游并行：Webhook + 自建表格 等）。
+model WebhookIntegration {
+  id              String   @id @default(cuid())
+  configKey       String   @default("default")  // 配置分组 key
+  hrField         String   // HR 字段路径（如 "resume.name"）；特殊值 "__webhook_url__" 表示 Webhook URL 配置行
+  targetFieldId   String?  // 下游系统字段 ID（如企微 "fld_xxx"）；Webhook URL 行留空
+  targetFieldName String?  // 下游系统字段标题（展示用）
+  targetFieldType String?  // 下游系统字段类型：TEXT / NUMBER / SINGLE_SELECT / DATE_TIME 等
+  transformType   String   @default("DIRECT")  // DIRECT / ENUM_MAP / TIMESTAMP / CONCAT / FIXED
+  transformConfig String?  // JSON，随 transformType 不同存不同内容；Webhook URL 行存 URL 字符串
+  isEnabled       Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+
+  @@index([configKey])
+}
+
+/// 评估提示词配置（按职位独立维护，支持版本管理）
+/// 当前生效配置与历史版本同表，用 isCurrent 区分
+model PromptRecord {
+  id               String   @id @default(cuid())
+  positionId       String                                         // 职位 ID
+  version          Int                                            // 版本号，每个职位内从 1 递增
+  bodyText         String                                         // 编辑区 A：提示词主体 Markdown（≤64KB，应用层校验）
+  knowledgeContent String                                         // 编辑区 B：知识维度 Markdown（≤64KB）
+  skillContent     String                                         // 编辑区 C：技能维度 Markdown（≤64KB）
+  overallRules     String                                         // 编辑区 D：通用评分规则 Markdown（≤32KB）
+  isCurrent        Boolean  @default(true)                        // 是否当前生效版本
+  changeNote       String?                                        // 修改说明
+  savedBy          String?                                        // 保存人（前端手动填写，无认证层）
+  createdAt        DateTime @default(now())
+
+  position Position @relation(fields: [positionId], references: [id], onDelete: Cascade)
+
+  @@unique([positionId, version])
+  @@index([positionId, isCurrent])
+}

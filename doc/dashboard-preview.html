@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>看板 · ResumeGlacier</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          background: 'hsl(30 20% 98%)',
+          foreground: 'hsl(240 10% 10%)',
+          card: 'hsl(0 0% 100%)',
+          border: 'hsl(30 15% 88%)',
+          primary: { DEFAULT: 'hsl(243 75% 59%)', foreground: 'hsl(0 0% 100%)' },
+          accent: { DEFAULT: 'hsl(16 90% 60%)', foreground: 'hsl(0 0% 100%)' },
+          success: 'hsl(160 84% 39%)',
+          destructive: { DEFAULT: 'hsl(0 84% 60%)', foreground: 'hsl(0 0% 100%)' },
+          muted: { DEFAULT: 'hsl(30 10% 92%)', foreground: 'hsl(240 5% 45%)' },
+        },
+        fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] },
+      },
+    },
+  };
+</script>
+<style>
+  body { background: hsl(30 20% 98%); color: hsl(240 10% 10%); }
+  .tabular-nums { font-variant-numeric: tabular-nums; }
+</style>
+</head>
+<body class="font-sans antialiased">
+<div class="p-6 lg:p-8 space-y-8 max-w-7xl mx-auto">
+
+  <!-- Page Header -->
+  <div>
+    <h2 class="text-2xl font-bold tracking-tight">看板</h2>
+    <p class="text-sm text-muted-foreground mt-1.5" style="color:hsl(240 5% 45%)">
+      已配置 2 个邮箱 · hr-recruit@company.com / talent@company.com
+    </p>
+  </div>
+
+  <!-- ====== 核心指标 ====== -->
+  <section>
+    <div class="flex items-baseline gap-3 mb-4">
+      <div class="h-5 w-1 rounded-full bg-primary" style="background-color:hsl(243 75% 59%)"></div>
+      <div>
+        <h3 class="text-base font-semibold">核心指标</h3>
+        <p class="text-xs mt-0.5" style="color:hsl(240 5% 45%)">反映今日工作量和处理进度的关键数字</p>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <!-- 今日新增 -->
+      <div class="relative overflow-hidden rounded-xl bg-white shadow-sm" style="border:1px solid hsl(30 15% 88%)">
+        <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color:hsl(243 75% 59%)"></div>
+        <div class="p-5">
+          <div class="flex items-center justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-xs font-medium tracking-wide uppercase" style="color:hsl(240 5% 45%)">今日新增</p>
+              <p class="text-3xl font-bold mt-2 tabular-nums">23</p>
+              <p class="text-xs mt-1.5 truncate" style="color:hsl(240 5% 45%)">本周累计 87 份</p>
+            </div>
+            <div class="h-11 w-11 shrink-0 rounded-lg flex items-center justify-center" style="background-color:hsl(243 75% 59% / 0.1)">
+              <svg class="h-5 w-5" style="color:hsl(243 75% 59%)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 待处理 -->
+      <div class="relative overflow-hidden rounded-xl bg-white shadow-sm" style="border:1px solid hsl(30 15% 88%)">
+        <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color:hsl(16 90% 60%)"></div>
+        <div class="p-5">
+          <div class="flex items-center justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-xs font-medium tracking-wide uppercase" style="color:hsl(240 5% 45%)">待处理</p>
+              <p class="text-3xl font-bold mt-2 tabular-nums">14</p>
+              <p class="text-xs mt-1.5 truncate" style="color:hsl(240 5% 45%)">待解析 8 · 解析中 2 · 待筛选 4</p>
+            </div>
+            <div class="h-11 w-11 shrink-0 rounded-lg flex items-center justify-center" style="background-color:hsl(16 90% 60% / 0.1)">
+              <svg class="h-5 w-5" style="color:hsl(16 90% 60%)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 已筛选 -->
+      <div class="relative overflow-hidden rounded-xl bg-white shadow-sm" style="border:1px solid hsl(30 15% 88%)">
+        <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color:hsl(160 84% 39%)"></div>
+        <div class="p-5">
+          <div class="flex items-center justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-xs font-medium tracking-wide uppercase" style="color:hsl(240 5% 45%)">已筛选</p>
+              <p class="text-3xl font-bold mt-2 tabular-nums">342</p>
+              <p class="text-xs mt-1.5 truncate" style="color:hsl(240 5% 45%)">通过率 38%</p>
+            </div>
+            <div class="h-11 w-11 shrink-0 rounded-lg flex items-center justify-center" style="background-color:hsl(160 84% 39% / 0.1)">
+              <svg class="h-5 w-5" style="color:hsl(160 84% 39%)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 错误数 -->
+      <div class="relative overflow-hidden rounded-xl bg-white shadow-sm" style="border:1px solid hsl(30 15% 88%)">
+        <div class="absolute left-0 top-0 bottom-0 w-1" style="background-color:hsl(240 5% 45% / 0.4)"></div>
+        <div class="p-5">
+          <div class="flex items-center justify-between gap-4">
+            <div class="min-w-0">
+              <p class="text-xs font-medium tracking-wide uppercase" style="color:hsl(240 5% 45%)">错误数</p>
+              <p class="text-3xl font-bold mt-2 tabular-nums" style="color:hsl(240 5% 45%)">0</p>
+              <p class="text-xs mt-1.5 truncate" style="color:hsl(240 5% 45%)">运行健康</p>
+            </div>
+            <div class="h-11 w-11 shrink-0 rounded-lg flex items-center justify-center" style="background-color:hsl(30 10% 92%)">
+              <svg class="h-5 w-5" style="color:hsl(240 5% 45%)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 趋势分析 ====== -->
+  <section>
+    <div class="flex items-baseline gap-3 mb-4">
+      <div class="h-5 w-1 rounded-full" style="background-color:hsl(243 75% 59%)"></div>
+      <div>
+        <h3 class="text-base font-semibold">趋势分析</h3>
+        <p class="text-xs mt-0.5" style="color:hsl(240 5% 45%)">近期简历收取走势</p>
+      </div>
+    </div>
+
+    <div class="rounded-xl bg-white shadow-sm p-6" style="border:1px solid hsl(30 15% 88%)">
+      <!-- 模拟趋势图 -->
+      <div class="flex items-center justify-between mb-4">
+        <div class="flex items-center gap-2 text-sm">
+          <span class="font-medium">近 30 天</span>
+          <span style="color:hsl(240 5% 45%)">· 共 87 份</span>
+        </div>
+        <div class="flex gap-2 text-xs">
+          <span class="px-2 py-1 rounded" style="background-color:hsl(243 75% 59%); color:white">日</span>
+          <span class="px-2 py-1 rounded" style="border:1px solid hsl(30 15% 88%)">周</span>
+          <span class="px-2 py-1 rounded" style="border:1px solid hsl(30 15% 88%)">月</span>
+        </div>
+      </div>
+
+      <svg viewBox="0 0 800 220" class="w-full" preserveAspectRatio="none">
+        <!-- 网格 -->
+        <g stroke="hsl(30 15% 88%)" stroke-width="0.5" opacity="0.7">
+          <line x1="0" y1="40" x2="800" y2="40"/>
+          <line x1="0" y1="100" x2="800" y2="100"/>
+          <line x1="0" y1="160" x2="800" y2="160"/>
+        </g>
+        <!-- 面积 -->
+        <defs>
+          <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="hsl(243 75% 59%)" stop-opacity="0.25"/>
+            <stop offset="100%" stop-color="hsl(243 75% 59%)" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <path d="M 0,160 L 50,140 L 100,150 L 150,90 L 200,110 L 250,80 L 300,100 L 350,60 L 400,75 L 450,40 L 500,55 L 550,30 L 600,50 L 650,45 L 700,25 L 750,40 L 800,20 L 800,220 L 0,220 Z" fill="url(#grad)"/>
+        <!-- 折线 -->
+        <path d="M 0,160 L 50,140 L 100,150 L 150,90 L 200,110 L 250,80 L 300,100 L 350,60 L 400,75 L 450,40 L 500,55 L 550,30 L 600,50 L 650,45 L 700,25 L 750,40 L 800,20" fill="none" stroke="hsl(243 75% 59%)" stroke-width="2"/>
+        <!-- 数据点 -->
+        <circle cx="450" cy="40" r="3" fill="hsl(243 75% 59%)"/>
+        <circle cx="700" cy="25" r="3" fill="hsl(243 75% 59%)"/>
+        <circle cx="800" cy="20" r="3" fill="hsl(243 75% 59%)"/>
+      </svg>
+
+      <div class="flex justify-between text-xs mt-2" style="color:hsl(240 5% 45%)">
+        <span>7/27</span><span>8/3</span><span>8/10</span><span>8/17</span><span>8/25</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ====== 跟进看板 ====== -->
+  <section>
+    <div class="flex items-baseline gap-3 mb-4">
+      <div class="h-5 w-1 rounded-full" style="background-color:hsl(243 75% 59%)"></div>
+      <div>
+        <h3 class="text-base font-semibold">跟进看板</h3>
+        <p class="text-xs mt-0.5" style="color:hsl(240 5% 45%)">候选人当前所处状态流转，岗位/时间段可筛选</p>
+      </div>
+    </div>
+
+    <div class="rounded-xl bg-white shadow-sm p-6" style="border:1px solid hsl(30 15% 88%)">
+      <!-- 筛选条 -->
+      <div class="flex flex-wrap items-center gap-3 mb-5">
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm" style="border:1px solid hsl(30 15% 88%)">
+          <svg class="h-4 w-4" style="color:hsl(240 5% 45%)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          <span>全部岗位</span>
+          <svg class="h-3 w-3" style="color:hsl(240 5% 45%)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="flex items-center gap-2 px-3 py-1.5 rounded-md text-sm" style="border:1px solid hsl(30 15% 88%)">
+          <svg class="h-4 w-4" style="color:hsl(240 5% 45%)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/></svg>
+          <span>本周</span>
+          <svg class="h-3 w-3" style="color:hsl(240 5% 45%)" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+        <div class="text-sm" style="color:hsl(240 5% 45%)">共 <span class="font-semibold" style="color:hsl(240 10% 10%)">42</span> 名候选人</div>
+      </div>
+
+      <!-- 10 个状态卡 -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+        <div class="rounded-lg p-3" style="background-color:hsl(30 10% 92%); border:1px solid hsl(30 15% 88%)">
+          <p class="text-xs font-medium" style="color:hsl(240 5% 45%)">沟通中</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums">8</p>
+        </div>
+        <div class="rounded-lg p-3" style="background-color:white; border:1px solid hsl(30 15% 88%)">
+          <p class="text-xs font-medium" style="color:hsl(240 5% 45%)">待一面</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums">5</p>
+        </div>
+        <div class="rounded-lg p-3" style="background-color:white; border:1px solid hsl(30 15% 88%)">
+          <p class="text-xs font-medium" style="color:hsl(240 5% 45%)">一面通过</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums">3</p>
+        </div>
+        <div class="rounded-lg p-3" style="background-color:white; border:1px solid hsl(30 15% 88%)">
+          <p class="text-xs font-medium" style="color:hsl(240 5% 45%)">待二面</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums">2</p>
+        </div>
+        <div class="rounded-lg p-3" style="background-color:white; border:1px solid hsl(30 15% 88%)">
+          <p class="text-xs font-medium" style="color:hsl(240 5% 45%)">二面通过</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums">4</p>
+        </div>
+        <div class="rounded-lg p-3" style="background-color:white; border:1px solid hsl(30 15% 88%)">
+          <p class="text-xs font-medium" style="color:hsl(240 5% 45%)">已发offer</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums">1</p>
+        </div>
+        <div class="rounded-lg p-3" style="background-color:white; border:1px solid hsl(30 15% 88%)">
+          <p class="text-xs font-medium" style="color:hsl(240 5% 45%)">已入职</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums">2</p>
+        </div>
+        <div class="rounded-lg p-3" style="background-color:white; border:1px solid hsl(30 15% 88%)">
+          <p class="text-xs font-medium" style="color:hsl(240 5% 45%)">已离职</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums">0</p>
+        </div>
+        <div class="rounded-lg p-3" style="background-color:hsl(0 84% 60% / 0.08); border:1px solid hsl(0 84% 60% / 0.2)">
+          <p class="text-xs font-medium" style="color:hsl(0 84% 60%)">不合适</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums" style="color:hsl(0 84% 60%)">12</p>
+        </div>
+        <div class="rounded-lg p-3" style="background-color:white; border:1px solid hsl(30 15% 88%)">
+          <p class="text-xs font-medium" style="color:hsl(240 5% 45%)">未尝试联系</p>
+          <p class="text-2xl font-bold mt-1.5 tabular-nums">5</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

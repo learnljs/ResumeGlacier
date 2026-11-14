@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据概览 · 跟进看板原型</title>
+<style>
+:root{
+  --bg:#f5f6f8; --card:#ffffff; --line:#e8ebef;
+  --ink:#34495e; --ink-2:#7d8b99; --ink-3:#b3bdc7;
+  --main:#34495e; --main-soft:#eef2f6;
+  --gold:#c19a55; --coral:#cf6353; --green:#6fa08c; --orange:#d9a05b;
+  --sidebar-w:220px; --sidebar-cw:64px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);font-size:14px;line-height:1.6}
+.app{display:flex;min-height:100vh}
+
+/* ===== 左侧导航 ===== */
+.sidebar{width:var(--sidebar-w);background:var(--card);border-right:1px solid var(--line);flex-shrink:0;display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;transition:width .2s ease}
+.sidebar.collapsed{width:var(--sidebar-cw)}
+.brand{display:flex;align-items:center;gap:10px;padding:18px 16px 14px;border-bottom:1px solid var(--line);white-space:nowrap;overflow:hidden}
+.brand .logo{width:28px;height:28px;border-radius:8px;background:var(--main);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;flex-shrink:0}
+.brand .name{font-weight:600;font-size:15px}
+.sidebar.collapsed .brand .name{display:none}
+.nav{padding:12px 10px;display:flex;flex-direction:column;gap:4px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;color:var(--ink-2);cursor:pointer;white-space:nowrap;font-size:13.5px;transition:background .15s,color .15s}
+.nav-item:hover{background:var(--main-soft);color:var(--ink)}
+.nav-item.active{background:var(--main);color:#fff;font-weight:500}
+.nav-item .ic{width:16px;height:16px;flex-shrink:0;text-align:center;font-size:14px;line-height:16px}
+.sidebar.collapsed .nav-item{justify-content:center;padding:9px 0}
+.sidebar.collapsed .nav-item .txt{display:none}
+.sidebar .spacer{flex:1}
+
+/* ===== 主内容 ===== */
+.main{flex:1;min-width:0}
+.container{max-width:1600px;margin:0 auto;padding:24px 28px 48px}
+.page-head{margin-bottom:20px}
+.breadcrumb{font-size:12.5px;color:var(--ink-3);margin-bottom:6px}
+.page-title{font-size:22px;font-weight:600;margin-bottom:4px}
+.page-sub{font-size:13px;color:var(--ink-2)}
+
+/* 指标卡行 */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;margin-bottom:18px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.kpi .k-label{font-size:12.5px;color:var(--ink-2);margin-bottom:6px}
+.kpi .k-num{font-size:26px;font-weight:600;letter-spacing:.5px}
+.kpi .k-delta{font-size:12px;color:var(--green);margin-top:4px}
+
+/* 卡片通用 */
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+.card-t{font-size:15px;font-weight:600}
+.card-s{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+
+/* 控件 */
+.seg{display:inline-flex;background:var(--main-soft);border-radius:8px;padding:3px;gap:2px}
+.seg span{padding:4px 12px;border-radius:6px;font-size:12.5px;color:var(--ink-2);cursor:pointer}
+.seg span.on{background:var(--card);color:var(--ink);font-weight:500;box-shadow:0 1px 3px rgba(52,73,94,.12)}
+.select{appearance:none;-webkit-appearance:none;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:5px 26px 5px 10px;font-size:12.5px;color:var(--ink);cursor:pointer;background-image:linear-gradient(45deg,transparent 50%,var(--ink-3) 50%),linear-gradient(135deg,var(--ink-3) 50%,transparent 50%);background-position:calc(100% - 14px) 50%,calc(100% - 10px) 50%;background-size:4px 4px;background-repeat:no-repeat}
+/* 时间段选择器 */
+.tm-select{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.tm-input{border:1px solid var(--line);background:var(--card);border-radius:8px;padding:4px 8px;font-size:12.5px;color:var(--ink);accent-color:var(--main)}
+.tm-range{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink-2)}
+.tm-range input{font-size:12px}
+
+/* ===== 趋势图（占位） ===== */
+.trend-wrap{margin-bottom:18px}
+.trend-chart{position:relative;height:150px;margin-top:6px}
+.trend-chart svg{width:100%;height:100%;display:block}
+.grid-line{stroke:var(--line);stroke-width:1;stroke-dasharray:3 4}
+
+/* ===== 跟进看板 ===== */
+.board-section{margin-top:26px}
+.board-head{display:flex;align-items:baseline;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.board-head .t{font-size:16px;font-weight:600}
+.board-head .s{font-size:12.5px;color:var(--ink-2)}
+
+/* 状态卡 */
+.stat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:12px;margin-bottom:18px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px 12px 12px;position:relative;overflow:hidden}
+.stat::before{content:"";position:absolute;top:0;left:0;right:0;height:3px;background:var(--main)}
+.stat .num{font-size:26px;font-weight:600;letter-spacing:.5px;line-height:1.2}
+.stat .lb{font-size:12px;color:var(--ink-2);margin-top:2px;white-space:nowrap}
+.stat .num.neg{color:var(--coral)}
+
+/* 中部双图 */
+.mid-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:14px}
+/* 联系结果 */
+.contact-body{display:flex;align-items:center;gap:28px;flex-wrap:wrap}
+.donut-wrap{position:relative;width:150px;height:150px;flex-shrink:0;margin:0 auto}
+.donut-wrap .center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-wrap .center b{font-size:22px;font-weight:600}
+.donut-wrap .center span{font-size:11.5px;color:var(--ink-2)}
+.legend{flex:1;min-width:200px;display:flex;flex-direction:column;gap:10px}
+.legend-row{display:flex;align-items:center;gap:10px;font-size:13px}
+.legend-row .dot{width:10px;height:10px;border-radius:3px;flex-shrink:0}
+.legend-row .nm{color:var(--ink)}
+.legend-row .pct{margin-left:auto;font-weight:600}
+.legend-row .cnt{width:44px;text-align:right;color:var(--ink-2);font-size:12.5px}
+
+/* 流转流程图 - 卡片节点图 */
+.flow-wrap{overflow-x:auto;padding:8px 0}
+.flow-diagram{font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif}
+/* 统一 7 列 grid（正向 7 节点，下方分支卡同列对齐），每列固定对齐 */
+.flow-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:0;min-width:700px}
+.flow-grid > *{justify-self:center}
+/* 节点卡片 */
+.fnode{display:flex;flex-direction:column;align-items:center;border:1.5px solid #34495e;background:#fff;width:100%;max-width:80px}
+.fnode .fn-name{font-size:12.5px;font-weight:500;color:var(--ink);padding:6px 8px 3px;border-bottom:1px solid #e8ebef;width:100%;text-align:center;white-space:nowrap}
+.fnode .fn-num{font-size:20px;font-weight:600;color:var(--ink);padding:5px 8px 2px;text-align:center;line-height:1.1}
+.fnode .fn-stay{display:flex;align-items:baseline;justify-content:center;gap:3px;font-size:11px;color:var(--ink-3);padding:2px 8px 6px;letter-spacing:1px}
+.fnode .fn-stay b{font-size:14px;font-weight:600;color:var(--ink-2);letter-spacing:0}
+.fnode.fn-branch{border-color:var(--coral)}
+.fnode.fn-branch .fn-name{color:var(--coral);border-bottom-color:#fdecea}
+.fnode.fn-branch .fn-num{color:var(--coral)}
+.fnode.fn-offer{border-color:var(--gold)}
+.fnode.fn-offer .fn-name{color:var(--gold);border-bottom-color:#faf1e2}
+.fnode.fn-offer .fn-num{color:var(--gold)}
+/* 正向推进箭头 */
+.farrow{display:flex;align-items:center;justify-content:center;color:var(--ink-2);font-size:16px;font-weight:300;height:52px;margin-top:18px;padding:0 2px}
+/* 下方状态行（同 7 列 grid） */
+.flow-branch-row{display:grid;grid-template-columns:repeat(7,1fr);gap:0;margin-top:4px}
+.flow-branch-row > *{justify-self:center}
+/* 竖向连接器 */
+.fconn-col{display:flex;flex-direction:column;align-items:center;width:100%;max-width:80px}
+.fconn-line{width:1px;background:var(--ink-3);height:16px}
+.fconn-num{font-size:11.5px;font-weight:600;color:var(--coral);margin:2px 0;background:#fff;padding:1px 5px;border-radius:3px;border:1px solid #f0d0cc}
+.fconn-num.fn-gold{color:var(--gold);border-color:#f0e0c8}
+.fconn-arrow{font-size:12px;color:var(--ink-3);line-height:1}
+/* 图例 */
+.flow-legend{display:flex;gap:20px;margin-top:14px;padding-top:10px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink-2)}
+.flow-legend span{display:flex;align-items:center;gap:5px}
+
+/* 岗位看板 */
+.pos-board{margin-top:34px}
+.pos-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+.pos-head .t{font-size:16px;font-weight:600}
+.pos-head .s{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.pos-divider{height:1px;background:var(--line);margin:6px 0 16px}
+/* 岗位多选下拉 */
+.pos-select{position:relative;min-width:220px}
+.ps-trigger{display:flex;align-items:center;justify-content:space-between;gap:8px;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:7px 12px;font-size:13px;color:var(--ink);cursor:pointer;user-select:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ps-trigger::after{content:"▾";color:var(--ink-3);font-size:11px;flex-shrink:0}
+.ps-panel{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--card);border:1px solid var(--line);border-radius:8px;box-shadow:0 6px 20px rgba(52,73,94,.12);padding:6px;z-index:20;max-height:260px;overflow:auto}
+.ps-item{display:flex;align-items:center;gap:8px;padding:7px 8px;border-radius:6px;font-size:13px;color:var(--ink);cursor:pointer}
+.ps-item:hover{background:var(--main-soft)}
+.ps-item input{accent-color:var(--main)}
+
+/* 折叠按钮 */
+.collapse-btn{margin:6px 10px;padding:8px 0;border:none;background:var(--main-soft);color:var(--ink-2);border-radius:8px;cursor:pointer;font-size:13px;flex-shrink:0}
+.sidebar.collapsed .collapse-btn{width:calc(100% - 20px);margin:6px 10px}
+
+/* ===== 响应式（窄屏堆叠提示） ===== */
+@media (max-width:1180px){
+  .mid-grid{grid-template-columns:1fr}
+  .container{padding:20px 16px 40px}
+}
+@media (max-width:760px){
+  .stat-grid{grid-template-columns:repeat(auto-fit,minmax(100px,1fr))}
+  .kpis{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- 左侧导航（可折叠） -->
+  <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">HR</div>
+      <div class="name">简历管理平台</div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active"><span class="ic">📊</span><span class="txt">数据概览</span></div>
+      <div class="nav-item"><span class="ic">📋</span><span class="txt">跟进管理</span></div>
+      <div class="nav-item"><span class="ic">🧑‍💼</span><span class="txt">职位管理</span></div>
+      <div class="nav-item"><span class="ic">📁</span><span class="txt">简历库</span></div>
+      <div class="nav-item"><span class="ic">🔗</span><span class="txt">企微同步</span></div>
+      <div class="nav-item"><span class="ic">⚙️</span><span class="txt">系统设置</span></div>
+    </nav>
+    <div class="spacer"></div>
+    <button class="collapse-btn" id="collapseBtn">«</button>
+  </aside>
+
+  <!-- 主内容 -->
+  <div class="main">
+    <div class="container">
+
+      <div class="page-head">
+        <div class="breadcrumb">首页 / 数据概览</div>
+        <div class="page-title">数据概览</div>
+        <div class="page-sub">收件趋势与招聘跟进的整体情况</div>
+      </div>
+
+      <!-- 数据概览既有模块：指标卡 -->
+      <div class="kpis">
+        <div class="kpi"><div class="k-label">本周收件</div><div class="k-num">32</div><div class="k-delta">↑ 较上周 +5</div></div>
+        <div class="kpi"><div class="k-label">沟通中</div><div class="k-num">142</div><div class="k-delta">↑ 本周新进 23</div></div>
+        <div class="kpi"><div class="k-label">本周安排面试</div><div class="k-num">8</div><div class="k-delta">正常</div></div>
+        <div class="kpi"><div class="k-label">本周入职</div><div class="k-num">2</div><div class="k-delta">正常</div></div>
+      </div>
+
+      <!-- 数据概览既有模块：收取趋势 -->
+      <div class="card trend-wrap">
+        <div class="card-h">
+          <div>
+            <div class="card-t">收取趋势</div>
+            <div class="card-s">按简历收取时间统计</div>
+          </div>
+          <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+            <div class="seg"><span class="on">每日</span><span>每周</span><span>每月</span></div>
+            <select class="select"><option selected>本周</option><option>上周</option><option>本月</option><option>上月</option><option>全部</option></select>
+          </div>
+        </div>
+        <div class="trend-chart">
+          <svg viewBox="0 0 800 150" preserveAspectRatio="none">
+            <line class="grid-line" x1="0" y1="30" x2="800" y2="30"/>
+            <line class="grid-line" x1="0" y1="75" x2="800" y2="75"/>
+            <line class="grid-line" x1="0" y1="120" x2="800" y2="120"/>
+            <path d="M0,120 L114,96 L228,105 L342,60 L456,72 L570,40 L684,52 L800,22 L800,150 L0,150 Z" fill="rgba(52,73,94,.08)"/>
+            <polyline points="0,120 114,96 228,105 342,60 456,72 570,40 684,52 800,22" fill="none" stroke="#34495e" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+            <circle cx="800" cy="22" r="4" fill="#c19a55"/>
+          </svg>
+        </div>
+      </div>
+
+      <!-- ===== 跟进看板（按岗位统计，可多选） ===== -->
+      <div class="pos-board">
+        <div class="pos-head">
+          <div>
+            <div class="t">跟进看板</div>
+            <div class="s" id="selHint">按岗位统计：可多选岗位，默认「全部岗位」（同一候选人投多个岗位各计一次）；时间段默认本周，可手动输入起止日期或按周快捷选取</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+            <div class="tm-select">
+              <span style="font-size:12.5px;color:var(--ink-2)">时间:</span>
+              <div class="tm-range">
+                <input type="date" class="tm-input" id="tmStart" value="2026-08-17">
+                <span>~</span>
+                <input type="date" class="tm-input" id="tmEnd" value="2026-08-23">
+              </div>
+              <div style="display:inline-flex;align-items:center;gap:2px">
+                <button type="button" id="weekPrev" class="tm-input" style="cursor:pointer" title="上一周">‹</button>
+                <input type="week" class="tm-input" id="tmWeek" value="2026-W34">
+                <button type="button" id="weekNext" class="tm-input" style="cursor:pointer" title="下一周">›</button>
+              </div>
+            </div>
+            <div class="pos-select" id="posSelectWrap">
+              <div class="ps-trigger" id="psTrigger">全部岗位</div>
+              <div class="ps-panel" id="psPanel" hidden>
+                <label class="ps-item"><input type="checkbox" value="all" checked> 全部岗位</label>
+                <label class="ps-item"><input type="checkbox" value="fe" checked> 前端开发工程师</label>
+                <label class="ps-item"><input type="checkbox" value="be" checked> 后端开发工程师</label>
+                <label class="ps-item"><input type="checkbox" value="pm" checked> 产品经理</label>
+                <label class="ps-item"><input type="checkbox" value="ui" checked> UI 设计师</label>
+                <label class="ps-item"><input type="checkbox" value="qa" checked> 测试工程师</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="pos-divider"></div>
+
+        <!-- 10 状态卡 -->
+        <div class="stat-grid">
+          <div class="stat"><div class="num" data-i="0">230</div><div class="lb">沟通中</div></div>
+          <div class="stat"><div class="num" data-i="1">58</div><div class="lb">待面试</div></div>
+          <div class="stat"><div class="num" data-i="2">35</div><div class="lb">已面试</div></div>
+          <div class="stat"><div class="num" data-i="3">22</div><div class="lb">已发offer</div></div>
+          <div class="stat"><div class="num" data-i="4">9</div><div class="lb">待入职</div></div>
+          <div class="stat"><div class="num" data-i="5">14</div><div class="lb">已入职</div></div>
+          <div class="stat"><div class="num" data-i="6">5</div><div class="lb">已离职</div></div>
+          <div class="stat"><div class="num" data-i="7">9</div><div class="lb">拒offer</div></div>
+          <div class="stat"><div class="num" data-i="8">4</div><div class="lb">取消面试</div></div>
+          <div class="stat"><div class="num neg" data-i="9">310</div><div class="lb">不合适</div></div>
+        </div>
+
+        <!-- 是否联系上 + 流转图 -->
+        <div class="mid-grid">
+
+          <!-- 联系结果 -->
+          <div class="card" id="posRing">
+            <div class="card-h">
+              <div>
+                <div class="card-t">是否联系上</div>
+                <div class="card-s">仅统计所选时间段内进入「已筛选」、当前处于「沟通中」状态的投递</div>
+              </div>
+            </div>
+            <div class="contact-body">
+              <div class="donut-wrap">
+                <svg width="150" height="150" viewBox="0 0 150 150">
+                  <circle cx="75" cy="75" r="54" fill="none" stroke="#eef2f6" stroke-width="18"/>
+                  <circle id="dc0" cx="75" cy="75" r="54" fill="none" stroke="#6fa08c" stroke-width="18" stroke-dasharray="220.0 339.3" stroke-dashoffset="0" transform="rotate(-90 75 75)" stroke-linecap="butt"/>
+                  <circle id="dc1" cx="75" cy="75" r="54" fill="none" stroke="#d9a05b" stroke-width="18" stroke-dasharray="90.0 339.3" stroke-dashoffset="-220.0" transform="rotate(-90 75 75)" stroke-linecap="butt"/>
+                  <circle id="dc2" cx="75" cy="75" r="54" fill="none" stroke="#c8cfd8" stroke-width="18" stroke-dasharray="29.3 339.3" stroke-dashoffset="-310.0" transform="rotate(-90 75 75)" stroke-linecap="butt"/>
+                </svg>
+                <div class="center"><b id="dTotal">230</b><span>沟通中</span></div>
+              </div>
+              <div class="legend">
+                <div class="legend-row"><span class="dot" style="background:#6fa08c"></span><span class="nm">已联系上</span><span class="pct lp">65%</span><span class="cnt lc">150 条</span></div>
+                <div class="legend-row"><span class="dot" style="background:#d9a05b"></span><span class="nm">未联系上</span><span class="pct lp">26%</span><span class="cnt lc">60 条</span></div>
+                <div class="legend-row"><span class="dot" style="background:#c8cfd8"></span><span class="nm">未尝试</span><span class="pct lp">9%</span><span class="cnt lc">20 条</span></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 流转图 -->
+          <div class="card">
+            <div class="card-h">
+              <div>
+                <div class="card-t">周报流转图</div>
+                <div class="card-s">所选时间段内进入「已筛选」的投递视为一批，到达数为历史累计（含已流转走的）；状态卡与环形图为当前停留数量 · 当前范围：<span id="tmRange">8/17–8/23</span></div>
+              </div>
+            </div>
+            <div class="flow-wrap">
+              <!-- 岗位流转图：卡片节点图 -->
+              <div class="flow-diagram">
+                <div class="flow-grid" style="margin-bottom:2px">
+                  <div style="display:flex;align-items:flex-start;justify-content:center">
+                    <div class="fnode"><div class="fn-name">已筛选</div><div class="fn-num flow-num" data-f="0">30</div><div class="fn-stay"><span>停留</span><b class="stay-num" data-s="0">0</b></div></div>
+                    <div class="farrow">→</div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;justify-content:center">
+                    <div class="fnode"><div class="fn-name">沟通中</div><div class="fn-num flow-num" data-f="1">28</div><div class="fn-stay"><span>停留</span><b class="stay-num" data-s="1">13</b></div></div>
+                    <div class="farrow">→</div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;justify-content:center">
+                    <div class="fnode"><div class="fn-name">待面试</div><div class="fn-num flow-num" data-f="2">12</div><div class="fn-stay"><span>停留</span><b class="stay-num" data-s="2">4</b></div></div>
+                    <div class="farrow">→</div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;justify-content:center">
+                    <div class="fnode"><div class="fn-name">已面试</div><div class="fn-num flow-num" data-f="3">7</div><div class="fn-stay"><span>停留</span><b class="stay-num" data-s="3">4</b></div></div>
+                    <div class="farrow">→</div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;justify-content:center">
+                    <div class="fnode"><div class="fn-name">已发offer</div><div class="fn-num flow-num" data-f="4">3</div><div class="fn-stay"><span>停留</span><b class="stay-num" data-s="4">0</b></div></div>
+                    <div class="farrow">→</div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;justify-content:center">
+                    <div class="fnode"><div class="fn-name">待入职</div><div class="fn-num flow-num" data-f="5">1</div><div class="fn-stay"><span>停留</span><b class="stay-num" data-s="5">1</b></div></div>
+                    <div class="farrow">→</div>
+                  </div>
+                  <div style="display:flex;align-items:flex-start;justify-content:center">
+                    <div class="fnode"><div class="fn-name">已入职</div><div class="fn-num flow-num" data-f="6">0</div><div class="fn-stay"><span>停留</span><b class="stay-num" data-s="6">0</b></div></div>
+                  </div>
+                </div>
+                <div class="flow-branch-row">
+                  <!-- 列1: 已筛选 → 不合适（流转 1） -->
+                  <div class="fconn-col">
+                    <div class="fconn-line"></div><div class="fconn-arrow">▼</div>
+                    <div class="fnode fn-branch" style="margin-top:2px"><div class="fn-name">不合适</div><div class="fn-num flow-num" data-f="7">2</div></div>
+                  </div>
+                  <!-- 列2: 沟通中 → 不合适（流转 1） -->
+                  <div class="fconn-col">
+                    <div class="fconn-line"></div><div class="fconn-arrow">▼</div>
+                    <div class="fnode fn-branch" style="margin-top:2px"><div class="fn-name">不合适</div><div class="fn-num flow-num" data-f="8">3</div></div>
+                  </div>
+                  <!-- 列3: 待面试 → 取消面试（流转 1） -->
+                  <div class="fconn-col">
+                    <div class="fconn-line"></div><div class="fconn-arrow">▼</div>
+                    <div class="fnode fn-offer" style="margin-top:2px"><div class="fn-name">取消面试</div><div class="fn-num flow-num" data-f="9">1</div></div>
+                  </div>
+                  <!-- 列4: 已面试 → 不合适（流转 0） -->
+                  <div class="fconn-col">
+                    <div class="fconn-line"></div><div class="fconn-arrow">▼</div>
+                    <div class="fnode fn-branch" style="margin-top:2px"><div class="fn-name">不合适</div><div class="fn-num flow-num" data-f="10">0</div></div>
+                  </div>
+                  <!-- 列5: 已发offer → 拒offer（流转 0） -->
+                  <div class="fconn-col">
+                    <div class="fconn-line"></div><div class="fconn-arrow">▼</div>
+                    <div class="fnode fn-offer" style="margin-top:2px"><div class="fn-name">拒offer</div><div class="fn-num flow-num" data-f="11">2</div></div>
+                  </div>
+                  <!-- 列6: 待入职 → 拒offer（流转 0） -->
+                  <div class="fconn-col">
+                    <div class="fconn-line"></div><div class="fconn-arrow">▼</div>
+                    <div class="fnode fn-offer" style="margin-top:2px"><div class="fn-name">拒offer</div><div class="fn-num flow-num" data-f="12">0</div></div>
+                  </div>
+                  <!-- 列7: 已入职 → 已离职（流转 0） -->
+                  <div class="fconn-col">
+                    <div class="fconn-line"></div><div class="fconn-arrow">▼</div>
+                    <div class="fnode" style="margin-top:2px"><div class="fn-name">已离职</div><div class="fn-num flow-num" data-f="13">0</div></div>
+                  </div>
+                </div>
+                <div class="flow-legend">
+                  <span>→&nbsp;&nbsp;正向推进</span>
+                  <span>▼&nbsp;&nbsp;流失 / 终止</span>
+                  <span>下方数字为流出数量</span>
+                </div>
+              </div>
+            </div>
+            <div class="flow-note" id="flowNote" style="margin-top:12px;padding-top:10px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink-2);line-height:1.6">每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。本周（8/17–8/23）：已筛选 30 条投递中，28 进入沟通中、2 直接不合适；沟通中 28 条中：12 进入待面试、3 不合适、13 仍在沟通中。</div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  const sb = document.getElementById('sidebar');
+  document.getElementById('collapseBtn').addEventListener('click', () => sb.classList.toggle('collapsed'));
+
+  /* ===== 岗位多选切换（原型演示：全部岗位 vs 部分岗位 两套示例数据） ===== */
+  const DATA = {
+    all: {
+      today: {
+        stats: [142,36,21,14,6,9,3,5,2,184],
+        donut: { total:142, seg:[['210.4 339.3',0,'#6fa08c'],['71.2 339.3','-210.4','#d9a05b'],['57.7 339.3','-281.6','#c8cfd8']], legend:[['88 条','62%'],['30 条','21%'],['24 条','17%']] }
+      },
+        yesterday: {
+          stats: [128,30,18,12,5,7,2,4,1,156],
+          donut: { total:128, seg:[['190.0 339.3',0,'#6fa08c'],['64.0 339.3','-190.0','#d9a05b'],['85.3 339.3','-254.0','#c8cfd8']], legend:[['72 条','56%'],['24 条','19%'],['32 条','25%']] }
+        },
+        week: {
+          stats: [230,58,35,22,9,14,5,9,4,310],
+          donut: { total:230, seg:[['220.0 339.3',0,'#6fa08c'],['90.0 339.3','-220.0','#d9a05b'],['29.3 339.3','-310.0','#c8cfd8']], legend:[['150 条','65%'],['60 条','26%'],['20 条','9%']] }
+        },
+        lastweek: {
+          stats: [195,48,28,18,7,11,4,7,3,260],
+          donut: { total:195, seg:[['180.0 339.3',0,'#6fa08c'],['80.0 339.3','-180.0','#d9a05b'],['79.3 339.3','-260.0','#c8cfd8']], legend:[['117 条','60%'],['52 条','27%'],['26 条','13%']] }
+        },
+        month: {
+          stats: [310,82,52,32,14,22,8,13,6,420],
+          donut: { total:310, seg:[['230.0 339.3',0,'#6fa08c'],['105.0 339.3','-230.0','#d9a05b'],['4.3 339.3','-335.0','#c8cfd8']], legend:[['210 条','68%'],['95 条','31%'],['5 条','1%']] }
+        },
+        lastmonth: {
+          stats: [265,68,42,25,11,17,6,10,5,360],
+          donut: { total:265, seg:[['200.0 339.3',0,'#6fa08c'],['90.0 339.3','-200.0','#d9a05b'],['49.3 339.3','-290.0','#c8cfd8']], legend:[['156 条','59%'],['72 条','27%'],['37 条','14%']] }
+        },
+        quarter: {
+          stats: [580,162,98,60,26,40,15,24,11,790],
+          donut: { total:580, seg:[['240.0 339.3',0,'#6fa08c'],['90.0 339.3','-240.0','#d9a05b'],['9.3 339.3','-330.0','#c8cfd8']], legend:[['410 条','71%'],['152 条','26%'],['18 条','3%']] }
+        },
+        lastquarter: {
+          stats: [720,210,135,82,35,55,20,32,16,980],
+          donut: { total:720, seg:[['250.0 339.3',0,'#6fa08c'],['75.0 339.3','-250.0','#d9a05b'],['14.3 339.3','-325.0','#c8cfd8']], legend:[['530 条','74%'],['160 条','22%'],['30 条','4%']] }
+        }
+    },
+    pos: {
+      today: {
+        stats: [48,12,7,5,2,3,1,2,0,58],
+        donut: { total:48, seg:[['180.6 339.3',0,'#6fa08c'],['83.9 339.3','-180.6','#d9a05b'],['74.8 339.3','-264.5','#c8cfd8']], legend:[['26 条','53%'],['12 条','25%'],['10 条','22%']] }
+      },
+        yesterday: {
+          stats: [42,10,6,4,1,2,0,1,0,52],
+          donut: { total:42, seg:[['160.0 339.3',0,'#6fa08c'],['70.0 339.3','-160.0','#d9a05b'],['109.3 339.3','-230.0','#c8cfd8']], legend:[['20 条','48%'],['10 条','24%'],['12 条','28%']] }
+        },
+        week: {
+          stats: [78,18,12,8,4,5,2,3,1,102],
+          donut: { total:78, seg:[['190.0 339.3',0,'#6fa08c'],['60.0 339.3','-190.0','#d9a05b'],['89.3 339.3','-250.0','#c8cfd8']], legend:[['44 条','56%'],['14 条','18%'],['20 条','26%']] }
+        },
+        lastweek: {
+          stats: [62,15,10,7,3,4,1,3,1,86],
+          donut: { total:62, seg:[['170.0 339.3',0,'#6fa08c'],['65.0 339.3','-170.0','#d9a05b'],['104.3 339.3','-235.0','#c8cfd8']], legend:[['30 条','48%'],['12 条','19%'],['20 条','33%']] }
+        },
+        month: {
+          stats: [105,26,18,11,6,8,3,5,2,140],
+          donut: { total:105, seg:[['200.0 339.3',0,'#6fa08c'],['65.0 339.3','-200.0','#d9a05b'],['74.3 339.3','-265.0','#c8cfd8']], legend:[['62 条','59%'],['20 条','19%'],['23 条','22%']] }
+        },
+        lastmonth: {
+          stats: [90,22,14,9,4,6,2,4,2,120],
+          donut: { total:90, seg:[['180.0 339.3',0,'#6fa08c'],['70.0 339.3','-180.0','#d9a05b'],['89.3 339.3','-250.0','#c8cfd8']], legend:[['48 条','53%'],['18 条','20%'],['24 条','27%']] }
+        },
+        quarter: {
+          stats: [195,48,32,20,9,14,5,9,4,260],
+          donut: { total:195, seg:[['220.0 339.3',0,'#6fa08c'],['75.0 339.3','-220.0','#d9a05b'],['44.3 339.3','-295.0','#c8cfd8']], legend:[['126 条','65%'],['44 条','22%'],['25 条','13%']] }
+        },
+        lastquarter: {
+          stats: [240,62,42,26,12,18,7,11,5,320],
+          donut: { total:240, seg:[['230.0 339.3',0,'#6fa08c'],['85.0 339.3','-230.0','#d9a05b'],['24.3 339.3','-315.0','#c8cfd8']], legend:[['162 条','68%'],['58 条','24%'],['20 条','8%']] }
+        }
+    },
+    none: {
+      stats: [0,0,0,0,0,0,0,0,0,0],
+      donut: { total:0, seg:[['0 339.3',0,'#6fa08c'],['0 339.3','0','#d9a05b'],['0 339.3','0','#c8cfd8']], legend:[['0 条','0%'],['0 条','0%'],['0 条','0%']] }
+    }
+  };
+
+  /* 自定义时段回退（无自定义数据时复用近似预设） */
+  function pickStatsByDays(days){
+    if(days <= 0) return 'today';
+    if(days <= 1) return 'today';
+    if(days <= 7) return 'week';
+    if(days <= 31) return 'month';
+    if(days <= 92) return 'quarter';
+    return 'lastquarter';
+  }
+
+  /* ===== 时间段选择（手动起止日期 + 周快捷，默认本周；起止相同 = 单日） ===== */
+  const TM = {
+    yesterday: { start:'2026-08-20', end:'2026-08-20',
+      all:  { flow:{ nodes:[6,5,2,1,0,0,0], branch:[1,1,1,0,0,0,0], stay:[0,2,0,1,0,0,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。昨天（8/20）：已筛选 6 条投递中，5 进入沟通中、1 直接不合适；沟通中 5 条中：2 进入待面试、1 不合适、2 仍在沟通中。' },
+      pos:  { flow:{ nodes:[3,3,1,0,0,0,0], branch:[0,1,0,0,0,0,0], stay:[0,1,1,0,0,0,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。昨天（8/20）：已筛选 3 条投递均进入沟通中；沟通中 3 条中：1 进入待面试、1 不合适、1 仍在沟通中。' } },
+    today:     { start:'2026-08-21', end:'2026-08-21',
+      all:  { flow:{ nodes:[4,3,1,0,0,0,0], branch:[1,1,1,0,0,0,0], stay:[0,1,0,0,0,0,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。8/21 当天：已筛选 4 条投递中，3 进入沟通中、1 直接不合适；沟通中 3 条中：1 进入待面试、1 不合适、1 仍在沟通中。' },
+      pos:  { flow:{ nodes:[2,2,1,0,0,0,0], branch:[0,1,0,0,0,0,0], stay:[0,0,1,0,0,0,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。8/21 当天：已筛选 2 条投递均进入沟通中；沟通中 2 条中：1 进入待面试、1 不合适；待面试 1 条仍在待面试。' } },
+    week:      { start:'2026-08-17', end:'2026-08-23',
+      all:  { flow:{ nodes:[30,28,12,7,3,1,0], branch:[2,3,1,0,2,0,0], stay:[0,13,4,4,0,1,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。本周（8/17–8/23）：已筛选 30 条投递中，28 进入沟通中、2 直接不合适；沟通中 28 条中：12 进入待面试、3 不合适、13 仍在沟通中。' },
+      pos:  { flow:{ nodes:[10,8,4,2,1,0,0], branch:[1,1,1,0,0,0,0], stay:[1,3,1,1,1,0,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。本周（8/17–8/23）：已筛选 10 条投递中，8 进入沟通中、1 直接不合适、1 仍在已筛选。' } },
+    lastweek:  { start:'2026-08-10', end:'2026-08-16',
+      all:  { flow:{ nodes:[22,19,9,5,2,1,0], branch:[1,2,2,1,1,0,0], stay:[2,8,2,2,0,1,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。上周（8/10–8/16）：已筛选 22 条投递中，19 进入沟通中、1 直接不合适；沟通中 19 条中：9 进入待面试、2 不合适、8 仍在沟通中。' },
+      pos:  { flow:{ nodes:[8,7,3,2,1,0,0], branch:[0,1,1,0,0,0,0], stay:[1,3,0,1,1,0,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。上周（8/10–8/16）：已筛选 8 条投递中，7 进入沟通中；沟通中 7 条中：3 进入待面试、1 不合适、3 仍在沟通中。' } },
+    month:     { start:'2026-08-01', end:'2026-08-21',
+      all:  { flow:{ nodes:[45,40,18,10,4,2,1], branch:[3,4,2,1,2,0,0], stay:[2,18,6,5,0,1,1] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。本月（8/1–8/21）：已筛选 45 条投递中，40 进入沟通中、3 直接不合适；沟通中 40 条中：18 进入待面试、4 不合适、18 仍在沟通中。' },
+      pos:  { flow:{ nodes:[15,13,6,3,2,1,0], branch:[1,2,1,0,1,0,0], stay:[1,5,2,1,0,1,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。本月（8/1–8/21）：已筛选 15 条投递中，13 进入沟通中、1 直接不合适、1 仍在已筛选。' } },
+    lastmonth: { start:'2026-07-01', end:'2026-07-31',
+      all:  { flow:{ nodes:[38,33,15,8,3,1,0], branch:[2,3,1,1,2,0,0], stay:[3,15,6,4,0,1,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。上月（7/1–7/31）：已筛选 38 条投递中，33 进入沟通中、2 直接不合适；沟通中 33 条中：15 进入待面试、3 不合适、15 仍在沟通中。' },
+      pos:  { flow:{ nodes:[12,10,4,2,1,1,0], branch:[1,2,1,0,0,0,0], stay:[1,4,1,1,0,1,0] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。上月（7/1–7/31）：已筛选 12 条投递中，10 进入沟通中、1 直接不合适、1 仍在已筛选。' } },
+
+    quarter:    { start:'2026-07-01', end:'2026-08-21',
+      all:  { flow:{ nodes:[120,100,45,25,10,5,3], branch:[8,12,5,3,5,1,1], stay:[12,43,15,12,0,1,2] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。本季度（7/1–8/21）：已筛选 120 条投递中，100 进入沟通中、8 直接不合适；沟通中 100 条中：45 进入待面试、12 不合适、43 仍在沟通中。' },
+      pos:  { flow:{ nodes:[40,34,15,8,3,2,1], branch:[3,4,2,1,1,0,0], stay:[3,15,5,4,0,1,1] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。本季度（7/1–8/21）：已筛选 40 条投递中，34 进入沟通中、3 直接不合适、3 仍在已筛选。' } },
+    lastquarter:{ start:'2026-04-01', end:'2026-06-30',
+      all:  { flow:{ nodes:[150,130,60,30,12,6,4], branch:[10,15,7,4,6,1,2], stay:[10,55,23,14,0,1,2] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。上季度（4/1–6/30）：已筛选 150 条投递中，130 进入沟通中、10 直接不合适；沟通中 130 条中：60 进入待面试、15 不合适、55 仍在沟通中。' },
+      pos:  { flow:{ nodes:[50,42,20,10,4,2,1], branch:[4,5,2,1,2,0,0], stay:[4,17,8,5,0,1,1] },
+              note:'每个框 = 这批投递中曾经到达该状态的数量；每条箭头 = 从上一状态流转到下一状态的数量（被回退撤销的流转不算）。上季度（4/1–6/30）：已筛选 50 条投递中，42 进入沟通中、4 直接不合适、4 仍在已筛选。' } }
+  };
+
+  const wrap = document.getElementById('posSelectWrap');
+  const trigger = document.getElementById('psTrigger');
+  const panel = document.getElementById('psPanel');
+  const boxes = panel.querySelectorAll('input[type="checkbox"]');
+  const names = {fe:'前端开发工程师',be:'后端开发工程师',pm:'产品经理',ui:'UI 设计师',qa:'测试工程师'};
+  let curPos = 'all';
+  let curTm = 'week';
+  let tmCustom = false;
+
+  /* ---- 时间段选择：手动起止日期 + 周快捷（原生周输入 + 上一/下一周），默认本周 ---- */
+  const tmStart = document.getElementById('tmStart');
+  const tmEnd = document.getElementById('tmEnd');
+  const tmWeek = document.getElementById('tmWeek');
+  const tmRange = document.getElementById('tmRange');
+  function fmtD(v){ const p = v.split('-'); return (+p[1]) + '/' + (+p[2]); }
+  function updRange(){
+    const s = fmtD(tmStart.value), e = fmtD(tmEnd.value);
+    tmRange.textContent = (s === e) ? s : (s + '–' + e);
+  }
+  /* YYYY-Www → 该周周一~周日（ISO 周口径，与实现 BoardPeriodPicker 一致） */
+  function weekStrToRange(weekStr){
+    const m = /^(\d{4})-W(\d{2})$/.exec(weekStr);
+    if(!m) return null;
+    const year = +m[1], week = +m[2];
+    if(week < 1 || week > 53) return null;
+    const jan4 = new Date(year, 0, 4);
+    const jan4Day = jan4.getDay() === 0 ? 7 : jan4.getDay();
+    const monday = new Date(year, 0, 4 - (jan4Day - 1) + (week - 1) * 7);
+    const sunday = new Date(monday); sunday.setDate(monday.getDate() + 6);
+    const f = d => d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+    return { start: f(monday), end: f(sunday) };
+  }
+  /* 日期 → ISO 周字符串（yyyy-Www） */
+  function isoWeekOf(d){
+    const t = new Date(d.getFullYear(), d.getMonth(), d.getDate());
+    const day = t.getDay() === 0 ? 7 : t.getDay();
+    t.setDate(t.getDate() - day + 4);
+    const y = t.getFullYear();
+    const ys = new Date(y, 0, 1);
+    const w = Math.ceil(((t - ys) / 864e5 + 1) / 7);
+    return y + '-W' + String(w).padStart(2,'0');
+  }
+  function flowObj(){
+    if(curPos === 'none') return null;
+    if(tmCustom){
+      const days = (Date.parse(tmEnd.value) - Date.parse(tmStart.value)) / 864e5;
+      const base = days <= 0 ? (tmStart.value === '2026-08-20' ? TM.yesterday : TM.today) : days <= 7 ? TM.week : days <= 31 ? TM.month : days <= 92 ? TM.quarter : TM.lastquarter;
+      return base[curPos];
+    }
+    return TM[curTm][curPos];
+  }
+  function applyFlow(){
+    const f = flowObj();
+    const nums = document.querySelectorAll('.flow-num');
+    const stays = document.querySelectorAll('.stay-num');
+    if(!f){
+      nums.forEach(el => el.textContent = 0);
+      stays.forEach(el => el.textContent = 0);
+      document.getElementById('flowNote').textContent = '未选择岗位，暂不展示流转数据。';
+      return;
+    }
+    const arr = f.flow.nodes.concat(f.flow.branch);
+    nums.forEach(el => el.textContent = arr[+el.dataset.f]);
+    stays.forEach(el => el.textContent = f.flow.stay[+el.dataset.s]);
+    document.getElementById('flowNote').textContent = f.flow.note;
+  }
+  /* 周快捷：回填起止日期并刷新（本周/上周命中预设数据，其余按天数近似） */
+  function applyWeekQuick(weekStr){
+    const r = weekStrToRange(weekStr);
+    if(!r) return;
+    tmWeek.value = weekStr;
+    tmStart.value = r.start; tmEnd.value = r.end;
+    if(r.start === '2026-08-17'){ curTm = 'week'; tmCustom = false; }
+    else if(r.start === '2026-08-10'){ curTm = 'lastweek'; tmCustom = false; }
+    else { tmCustom = true; }
+    updRange(); applyAll();
+  }
+  function shiftWeek(delta){
+    const r = weekStrToRange(tmWeek.value) || weekStrToRange('2026-W34');
+    const base = new Date(r.start); base.setDate(base.getDate() + delta * 7);
+    applyWeekQuick(isoWeekOf(base));
+  }
+  tmWeek.addEventListener('change', e => applyWeekQuick(e.target.value));
+  document.getElementById('weekPrev').addEventListener('click', () => shiftWeek(-1));
+  document.getElementById('weekNext').addEventListener('click', () => shiftWeek(1));
+  /* 手动改起止日期 = 自定义范围（按天数近似取数） */
+  function onCustom(){
+    if(tmStart.value > tmEnd.value) tmEnd.value = tmStart.value;   // 结束不早于开始
+    tmCustom = true;
+    updRange(); applyAll();
+  }
+  tmStart.addEventListener('change', onCustom);
+  tmEnd.addEventListener('change', onCustom);
+
+  /* ---- 当前 tm 对应的快照 DATA 子表（all / pos 用统一 key,none 不分时段）---- */
+  function curStatsData(){
+    if(curPos === 'none') return DATA.none;
+    const key = tmCustom ? pickStatsByDays((Date.parse(tmEnd.value) - Date.parse(tmStart.value)) / 864e5) : curTm;
+    return DATA[curPos][key];
+  }
+  function updateRangeHint(){
+    const sel = [...boxes].filter(b => b.checked).map(b => b.value);
+    const posTxt = curPos === 'all' ? '全部岗位' : curPos === 'none' ? '未选择岗位' : sel.filter(v => v !== 'all').map(v => names[v]).join('、');
+    const r = (fmtD(tmStart.value) === fmtD(tmEnd.value)) ? fmtD(tmStart.value) : (fmtD(tmStart.value) + '–' + fmtD(tmEnd.value));
+    document.getElementById('selHint').textContent = '当前范围：' + posTxt + ' · ' + r + '（同一候选人投多个岗位各计一次）';
+  }
+
+  function applyStatsAndDonut(){
+    const d = curStatsData();
+    document.querySelectorAll('.stat .num').forEach(el => el.textContent = d.stats[+el.dataset.i]);
+    document.getElementById('dTotal').textContent = d.donut.total;
+    d.donut.seg.forEach((s,i) => {
+      const c = document.getElementById('dc'+i);
+      c.setAttribute('stroke-dasharray', s[0]);
+      c.setAttribute('stroke-dashoffset', s[1]);
+      c.setAttribute('stroke', s[2]);
+    });
+    document.querySelectorAll('#posRing .lp').forEach((el,i) => el.textContent = d.donut.legend[i][1]);
+    document.querySelectorAll('#posRing .lc').forEach((el,i) => el.textContent = d.donut.legend[i][0]);
+  }
+
+  /* 统一刷新入口：先更新快照再更新流转 */
+  function applyAll(){
+    updateRangeHint();
+    applyStatsAndDonut();
+    applyFlow();
+  }
+
+  /* ---- 岗位 ---- */
+  function applyPos(key){
+    curPos = key;
+    applyAll();
+  }
+
+  function selName(){
+    const on = [...boxes].filter(b => b.checked);
+    if(on.length === 0) return '未选择岗位';
+    if(boxes[0].checked) return '全部岗位';
+    return on.map(b => names[b.value]).join('、');
+  }
+  function syncTrigger(){ trigger.textContent = selName(); }
+
+  trigger.addEventListener('click', () => panel.hidden = !panel.hidden);
+  document.addEventListener('click', e => { if(!wrap.contains(e.target)) panel.hidden = true; });
+
+  boxes.forEach(box => box.addEventListener('change', () => {
+    const specifics = [...boxes].filter(b => b.value !== 'all');
+    if(box.value === 'all'){
+      if(box.checked){ boxes.forEach(b => b.checked = true); }
+      else{ specifics.forEach(b => b.checked = false); }
+    }
+    boxes[0].checked = specifics.every(b => b.checked);
+    const anyChecked = specifics.some(b => b.checked);
+    syncTrigger();
+    applyPos(boxes[0].checked ? 'all' : (anyChecked ? 'pos' : 'none'));
+  }));
+
+  /* 初始：默认本周 + 全部岗位 */
+  applyWeekQuick('2026-W34');
+  applyPos('all');
+</script>
+</body>
+</html>
