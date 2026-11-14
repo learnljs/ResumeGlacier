@@ -53,7 +53,7 @@ const LOG_CATEGORY_MAP: Record<string, {
   INTERVIEW_TIME_CHANGE: { icon: Clock,       dotClass: 'bg-accent/10',  badgeClass: 'bg-accent/10 text-accent',     badgeLabel: '时间' },
   START_DATE_CHANGE:   { icon: Clock,          dotClass: 'bg-accent/10',  badgeClass: 'bg-accent/10 text-accent',     badgeLabel: '时间' },
   CONTACT_RESULT_CHANGE: { icon: Phone,        dotClass: 'bg-info/10',    badgeClass: 'bg-info/10 text-info',          badgeLabel: '联系' },
-  REFOLLOW:            { icon: RefreshCw,      dotClass: 'bg-sky-500',     badgeClass: 'bg-sky-100 text-sky-700',           badgeLabel: '跟进' },
+  REFOLLOW:            { icon: RefreshCw,      dotClass: 'bg-info',     badgeClass: 'bg-info/15 text-info',           badgeLabel: '跟进' },
   UNSUITABLE:          { icon: ThumbsDown,      dotClass: 'bg-destructive/10',     badgeClass: 'bg-destructive/10 text-destructive',           badgeLabel: '不合适' },
   REJECT_REASON_CHANGE: { icon: MessageSquare,  dotClass: 'bg-muted',  badgeClass: 'bg-muted text-muted-foreground',       badgeLabel: '原因' },
   CANCEL_REASON_CHANGE: { icon: MessageSquare,  dotClass: 'bg-muted',  badgeClass: 'bg-muted text-muted-foreground',       badgeLabel: '原因' },
@@ -92,7 +92,7 @@ export function FollowUpLogDrawer({ open, candidateName, logs, onClose }: Follow
     <>
       {/* 遮罩层 */}
       <div
-        className="fixed inset-0 z-50 bg-black/50 animate-fade-in"
+        className="fixed inset-0 z-50 bg-overlay/50 animate-fade-in"
         onClick={onClose}
       />
       {/* 抽屉面板 */}
@@ -154,7 +154,7 @@ export function FollowUpLogDrawer({ open, candidateName, logs, onClose }: Follow
                         className={`relative z-10 flex items-center justify-center w-8 h-8 rounded-full border-2 border-background ${category.dotClass} animate-timeline-dot-appear`}
                         style={{ animationDelay: `${index * 50 + 50}ms` }}
                       >
-                        <IconComp className="h-3.5 w-3.5 text-white" />
+                        <IconComp className="h-3.5 w-3.5 text-on-solid" />
                       </div>
                       {/* 下方连接线（末项隐藏） */}
                       {!isLast && (

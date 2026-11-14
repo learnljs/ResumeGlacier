@@ -48,7 +48,7 @@
 - **提交**：遵循 Conventional Commits（`feat:`、`fix:`、`refactor:`、`docs:`、`style:`、`perf:`）
 - **样式**：使用 `cn()`（clsx + tailwind-merge）合并 className
 - **Prisma**：无迁移，直接用 `prisma db push`；schema 变更后需 `prisma generate`
-- **验证**：无自动化单元测试，端到端验证通过 Playwright MCP 进行
+- **验证**：`npm test` 跑 Vitest 纯函数单测；`npm run test:e2e` 跑 Playwright 冒烟；页面级验证可用 Playwright MCP
 
 ### 3.4 架构要点
 

@@ -122,7 +122,7 @@ export function StarRating({
                   starSizes[size],
                   'transition-colors',
                   isFilled
-                    ? 'fill-yellow-400 text-yellow-400'
+                    ? 'fill-warning text-warning'
                     : editable
                       ? 'text-muted-foreground/30'
                       : 'text-muted-foreground/20'
@@ -152,10 +152,10 @@ export function StarRating({
               starSizes[size],
               'transition-colors',
               star <= displayRating
-                ? 'fill-yellow-400 text-yellow-400'
+                ? 'fill-warning text-warning'
                 : rating !== null
-                  ? 'fill-gray-200 text-gray-300'
-                  : 'fill-gray-100 text-gray-200'
+                  ? 'fill-muted text-muted-foreground/40'
+                  : 'fill-muted/60 text-muted-foreground/40'
             )}
           />
         ))}
@@ -185,8 +185,8 @@ export function StarRating({
                   className={cn(
                     'h-5 w-5',
                     star <= (hoverRating ?? rating ?? 0)
-                      ? 'fill-yellow-400 text-yellow-400'
-                      : 'fill-gray-200 text-gray-300'
+                      ? 'fill-warning text-warning'
+                      : 'fill-muted text-muted-foreground/40'
                   )}
                 />
               </button>

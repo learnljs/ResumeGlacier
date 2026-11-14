@@ -34,11 +34,11 @@ export function TagChip({ tag, selected, onToggle }: TagChipProps) {
       style={selected ? { backgroundColor: tag.color, color: '#fff' } : { color: tag.color }}
     >
       <span
-        className={cn('w-2 h-2 rounded-full transition-all', selected ? 'bg-white/90' : '')}
+        className={cn('w-2 h-2 rounded-full transition-all', selected ? 'bg-on-solid/90' : '')}
         style={!selected ? { backgroundColor: tag.color } : undefined}
       />
       {tag.name}
-      {isAi && <Sparkles className="h-3 w-3 text-white/70" aria-label="AI 自动标签" />}
+      {isAi && <Sparkles className="h-3 w-3 text-on-solid/70" aria-label="AI 自动标签" />}
       {selected && <Check className="h-3 w-3 ml-0.5" />}
     </button>
   )

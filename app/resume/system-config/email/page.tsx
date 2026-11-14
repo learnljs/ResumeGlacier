@@ -425,12 +425,12 @@ export default function EmailConfigPage() {
                           onClick={() => handleToggleActive(config.id, config.isActive)}
                           title={config.isActive ? '禁用' : '启用'}
                           disabled={!!editingId && editingId !== config.id}
-                          className="hover:bg-gray-100/60 hover:text-foreground"
+                          className="hover:bg-muted hover:text-foreground"
                         >
                           {config.isActive ? (
                             <XCircle className="h-4 w-4 text-muted-foreground" />
                           ) : (
-                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                            <CheckCircle2 className="h-4 w-4 text-success" />
                           )}
                         </Button>
                         <Button
@@ -438,7 +438,7 @@ export default function EmailConfigPage() {
                           size="sm"
                           onClick={() => startEdit(config)}
                           disabled={!!editingId && editingId !== config.id}
-                          className="hover:bg-gray-100/60 hover:text-foreground"
+                          className="hover:bg-muted hover:text-foreground"
                         >
                           <Pencil className="h-4 w-4" />
                         </Button>
@@ -447,7 +447,7 @@ export default function EmailConfigPage() {
                           size="sm"
                           onClick={() => handleDelete(config.id)}
                           disabled={!!editingId && editingId !== config.id}
-                          className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                          className="text-destructive hover:text-destructive hover:bg-destructive/10"
                         >
                           <Trash2 className="h-4 w-4" />
                         </Button>

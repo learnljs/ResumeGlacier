@@ -242,7 +242,7 @@ export function FollowUpDialog({ open, onClose, resumeId, evaluationId: propEval
             <h4 className="text-sm font-medium mb-2 flex items-center gap-1.5">
               <TagIcon className="h-3.5 w-3.5 text-muted-foreground" />
               选择标签
-              <span className="text-red-500 ml-0.5">*</span>
+              <span className="text-destructive ml-0.5">*</span>
             </h4>
 
             {/* 新建标签表单（插在标题下方、分组上方） */}

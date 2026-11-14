@@ -25,34 +25,14 @@ import { FollowUpLogDrawer } from '@/components/resume/FollowUpLogDrawer'
 import { isIcebergRated } from '@/lib/constants/evaluation'
 import { contactResultLabel } from '@/lib/constants/contact-result'
 import { saveResumeNavSnapshot } from '@/lib/resume-nav'
-
-// ==================== 工具函数 ====================
-
-/** 格式化面试时间：2026-06-03T09:45 → 2026-06-03 09:45 */
-function formatInterviewTime(time: string | null): string {
-  if (!time) return '-'
-  // datetime-local 格式：YYYY-MM-DDTHH:MM，直接替换 T 为空格
-  return time.replace('T', ' ')
-}
+import { FOLLOW_UP_TABS } from '@/lib/constants/follow-up'
+import { formatInterviewTime } from '@/lib/utils/date'
 
 // ==================== 类型定义 ====================
 // EvaluationDimension / FollowUpRecordItem / PaginationState 已移至 types/follow-up.ts
 
 // ==================== 常量 ====================
-
-const TABS = [
-  { key: 'CONTACTING', label: '沟通中', from: 'CONTACTING' },
-  { key: 'INTERVIEW_SCHEDULED', label: '待面试', from: 'INTERVIEW_SCHEDULED' },
-  { key: 'INTERVIEWED', label: '已面试', from: 'INTERVIEWED' },
-  { key: 'OFFER_SENT', label: '已发offer', from: 'OFFER_SENT' },
-  { key: 'PENDING_ONBOARD', label: '待入职', from: 'PENDING_ONBOARD' },
-  { key: 'HIRED', label: '已入职', from: 'HIRED' },
-  { key: 'RESIGNED', label: '已离职', from: 'RESIGNED' },
-  { key: 'OFFER_REJECTED', label: '拒offer', from: 'OFFER_REJECTED' },
-  { key: 'INTERVIEW_CANCELLED', label: '取消面试', from: 'INTERVIEW_CANCELLED' },
-  { key: 'UNSUITABLE', label: '不合适', from: 'UNSUITABLE' },
-] as const
-
+// 页面内的类型 / 常量 / 子组件已分批迁移（B8 / B9 / B13），此处只保留编排逻辑：
 // 操作列配置（FOLLOW_UP_ACTIONS / UI_ICON_MAP / UI_COLOR_CLASS_MAP）已移至 components/resume/FollowUpTable.tsx
 
 // 维度中文名来自 EVALUATION_DIMENSIONS、联系结果标签来自 contact-result 单点（B8）
@@ -639,7 +619,7 @@ function FollowUpPageInner() {
 
   // ==================== 渲染 ====================
 
-  const currentTab = TABS.find((t) => t.key === activeTab) || TABS[0]
+  const currentTab = FOLLOW_UP_TABS.find((t) => t.key === activeTab) || FOLLOW_UP_TABS[0]
 
   return (
     <ResumePageShell>
@@ -672,7 +652,7 @@ function FollowUpPageInner() {
       {/* Tabs */}
       <div className="relative">
         <div className="flex gap-1 border-b overflow-x-auto scrollbar-hide">
-          {TABS.map((tab) => (
+          {FOLLOW_UP_TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => updateParams({ tab: tab.key, page: '' })}

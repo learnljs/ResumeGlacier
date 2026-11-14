@@ -148,7 +148,7 @@ export default function DisabledPositionsPage() {
                         size="sm"
                         onClick={() => handleDelete(pos)}
                         disabled={deletingId === pos.id}
-                        className="gap-2 text-destructive hover:text-destructive border-red-200 hover:bg-red-50"
+                        className="gap-2 text-destructive hover:text-destructive border-destructive/20 hover:bg-destructive/10"
                       >
                         {deletingId === pos.id ? (
                           <Loader2 className="h-4 w-4 animate-spin" />

@@ -62,7 +62,7 @@ npm run dev         # 启动开发服务
 ```
 
 修改代码后通过浏览器（[http://localhost:3000](http://localhost:3000)）验证。
-本项目无自动化单元测试，端到端验证通过 Playwright MCP 进行。
+纯函数使用 Vitest 单测（`npm test`），页面级端到端验证通过 Playwright（`npm run test:e2e`）或 Playwright MCP 进行。
 
 #### 4. 提交规范
 
@@ -99,7 +99,7 @@ git push origin feat/your-feature
 - 这个 PR 解决了什么问题
 - 主要改动点（文件级别）
 - 是否影响向后兼容
-- 验证方式（Playwright MCP 截图 / 录屏）
+- 验证方式（`npm test` / `npm run test:e2e` / Playwright MCP 截图）
 
 ---
 
@@ -196,13 +196,22 @@ hr/
 
 ## 测试
 
-本项目**无自动化单元测试**，端到端验证通过 Playwright MCP 进行：
+### 单元测试（Vitest）
 
-1. 启动开发服务：`npm run dev`
-2. 调用 Playwright MCP 浏览器工具访问页面、截图、交互验证
-3. 验证完成保存截图到 `.playwright-mcp/` 目录
+不依赖数据库 / 外部服务的纯函数（坐标轴计算、权重校验、得分公式、日期工具等）必须有单测，放在 `tests/unit/`：
 
-如需添加自动化测试，请优先考虑 E2E 测试（Playwright），避免单元测试覆盖业务逻辑（业务逻辑大多依赖数据库和外部服务，单测价值低）。
+```bash
+npm test           # 单次运行
+npm run test:watch # 监听模式
+```
+
+新增纯函数时同步补用例。依赖数据库和外部服务的业务逻辑不做单测，交由 E2E 覆盖。
+
+### 端到端测试（Playwright）
+
+1. 首次准备浏览器：`npx playwright install chromium`
+2. 运行：`npm run test:e2e`（会自动拉起 `npm run dev` 作为 webServer）
+3. 也可用 Playwright MCP 浏览器工具访问页面、截图、交互验证，截图保存到 `.playwright-mcp/` 目录
 
 ---
 

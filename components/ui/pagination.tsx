@@ -92,7 +92,7 @@ export function Pagination({
           disabled={page <= 1}
           onClick={() => onPageChange(1)}
           title="首页"
-          className="hover:bg-gray-200/70 hover:text-foreground transition-all duration-200"
+          className="hover:bg-muted hover:text-foreground transition-all duration-200"
         >
           <ChevronsLeft className="h-4 w-4" />
         </Button>
@@ -101,7 +101,7 @@ export function Pagination({
           size="sm"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className="hover:bg-gray-200/70 hover:text-foreground transition-all duration-200"
+          className="hover:bg-muted hover:text-foreground transition-all duration-200"
         >
           <ChevronLeft className="h-4 w-4" />
           上一页
@@ -111,7 +111,7 @@ export function Pagination({
           size="sm"
           disabled={page >= totalPages}
           onClick={() => onPageChange(page + 1)}
-          className="hover:bg-gray-200/70 hover:text-foreground transition-all duration-200"
+          className="hover:bg-muted hover:text-foreground transition-all duration-200"
         >
           下一页
           <ChevronRight className="h-4 w-4" />
@@ -122,7 +122,7 @@ export function Pagination({
           disabled={page >= totalPages}
           onClick={() => onPageChange(totalPages)}
           title="末页"
-          className="hover:bg-gray-200/70 hover:text-foreground transition-all duration-200"
+          className="hover:bg-muted hover:text-foreground transition-all duration-200"
         >
           <ChevronsRight className="h-4 w-4" />
         </Button>
@@ -141,7 +141,7 @@ export function Pagination({
             variant="outline"
             size="sm"
             onClick={handleJump}
-            className="h-8 px-2 text-xs hover:bg-gray-200/70 hover:text-foreground transition-all duration-200"
+            className="h-8 px-2 text-xs hover:bg-muted hover:text-foreground transition-all duration-200"
           >
             跳转
           </Button>

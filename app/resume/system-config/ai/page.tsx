@@ -305,7 +305,7 @@ export default function AIConfigPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  模型名称 <span className="text-red-500">*</span>
+                  模型名称 <span className="text-destructive">*</span>
                 </label>
                 {presetModels.length > 0 ? (
                   <Select
@@ -327,7 +327,7 @@ export default function AIConfigPage() {
               </div>
               <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  API Key <span className="text-red-500">*</span>
+                  API Key <span className="text-destructive">*</span>
                   {!isCreating && (
                     <span className="text-muted-foreground font-normal ml-1">(留空不修改)</span>
                   )}
@@ -381,11 +381,11 @@ export default function AIConfigPage() {
 
             {/* Test result */}
             {testResult && (
-              <div className={`flex items-center gap-3 p-3 rounded-lg border ${testResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+              <div className={`flex items-center gap-3 p-3 rounded-lg border ${testResult.success ? 'border-success/20 bg-success/10' : 'border-destructive/20 bg-destructive/10'}`}>
                 {testResult.success ? (
-                  <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
+                  <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0" />
                 ) : (
-                  <XCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
+                  <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
                 )}
                 <p className="text-sm">{testResult.message}</p>
               </div>
@@ -473,7 +473,7 @@ export default function AIConfigPage() {
                         onClick={() => handleSetDefault(config.id)}
                         title="设为默认"
                         disabled={!!editingId && editingId !== config.id}
-                        className="bg-transparent text-yellow-500 border-transparent hover:bg-yellow-100/80 hover:text-yellow-600 hover:border-yellow-200/50 transition-all duration-200"
+                        className="bg-transparent text-warning border-transparent hover:bg-warning/10 hover:text-warning hover:border-warning/20 transition-all duration-200"
                       >
                         <Star className="h-4 w-4" />
                       </Button>
@@ -483,7 +483,7 @@ export default function AIConfigPage() {
                       size="sm"
                       onClick={() => startEdit(config)}
                       disabled={!!editingId && editingId !== config.id}
-                      className="hover:bg-gray-100/60 hover:text-foreground"
+                      className="hover:bg-muted hover:text-foreground"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
@@ -492,7 +492,7 @@ export default function AIConfigPage() {
                       size="sm"
                       onClick={() => handleDelete(config.id)}
                       disabled={!!editingId && editingId !== config.id}
-                      className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -544,7 +544,7 @@ export default function AIConfigPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">
-                      模型名称 <span className="text-red-500">*</span>
+                      模型名称 <span className="text-destructive">*</span>
                     </label>
                     {presetModels.length > 0 ? (
                       <Select
@@ -566,7 +566,7 @@ export default function AIConfigPage() {
                   </div>
                   <div className="space-y-2">
                     <label className="text-sm font-medium">
-                      API Key <span className="text-red-500">*</span>
+                      API Key <span className="text-destructive">*</span>
                       <span className="text-muted-foreground font-normal ml-1">(留空不修改)</span>
                     </label>
                     <Input
@@ -618,11 +618,11 @@ export default function AIConfigPage() {
 
                 {/* Test result */}
                 {testResult && (
-                  <div className={`flex items-center gap-3 p-3 rounded-lg border ${testResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+                  <div className={`flex items-center gap-3 p-3 rounded-lg border ${testResult.success ? 'border-success/20 bg-success/10' : 'border-destructive/20 bg-destructive/10'}`}>
                     {testResult.success ? (
-                      <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
+                      <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0" />
                     ) : (
-                      <XCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
+                      <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
                     )}
                     <p className="text-sm">{testResult.message}</p>
                   </div>

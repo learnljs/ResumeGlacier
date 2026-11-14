@@ -18,19 +18,19 @@ function computeStatusColors(value: string) {
     case 'CONTACTED':
       return {
         dot: 'bg-success',
-        bg: 'bg-green-50/40',
-        border: 'border-green-200/50',
-        text: 'text-green-700',
-        hoverBg: 'hover:bg-green-50/60',
+        bg: 'bg-success/5',
+        border: 'border-success/20',
+        text: 'text-success',
+        hoverBg: 'hover:bg-success/10',
         optionDot: 'bg-success',
       }
     case 'CONTACT_FAILED':
       return {
         dot: 'bg-accent',
-        bg: 'bg-orange-50/40',
-        border: 'border-orange-200/50',
-        text: 'text-orange-700',
-        hoverBg: 'hover:bg-orange-50/60',
+        bg: 'bg-warning/5',
+        border: 'border-warning/20',
+        text: 'text-warning',
+        hoverBg: 'hover:bg-warning/10',
         optionDot: 'bg-accent',
       }
     default:

@@ -46,7 +46,7 @@ export default function DocxPreview({ url }: DocxPreviewProps) {
 
   return (
     <div className="space-y-2">
-      <div className="border rounded-lg overflow-auto bg-white">
+      <div className="border rounded-lg overflow-auto bg-card">
         <iframe
           srcDoc={html || ''}
           className="w-full min-h-[500px] border-0"

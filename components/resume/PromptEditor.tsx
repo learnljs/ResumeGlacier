@@ -242,14 +242,14 @@ export function PromptEditor({
         <div className="flex items-center gap-2 text-sm text-muted-foreground">
           <Badge variant="outline">当前版本 v{form.version || '?'}</Badge>
           {!initialPrompt && (
-            <span className="text-amber-600 flex items-center gap-1">
+            <span className="text-warning flex items-center gap-1">
               <AlertCircle className="h-3.5 w-3.5" />
               尚未配置提示词
             </span>
           )}
           {isDirty && (
-            <span className="text-amber-600 flex items-center gap-1">
-              <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+            <span className="text-warning flex items-center gap-1">
+              <span className="h-1.5 w-1.5 rounded-full bg-warning" />
               有未保存的修改
             </span>
           )}
@@ -262,7 +262,7 @@ export function PromptEditor({
 
       {/* 编辑区 A：提示词主体 */}
       <EditorCard
-        icon={<FileText className="h-4 w-4 text-blue-600" />}
+        icon={<FileText className="h-4 w-4 text-info" />}
         title="提示词主体"
         description="AI 角色定义、核心任务、JD 解读规则。{{resumeText}} 作为简历文本分界点（实际简历文本追加在 prompt 末尾以启用缓存），必须包含且仅含一个"
         value={form.bodyText}
@@ -271,7 +271,7 @@ export function PromptEditor({
 
       {/* 编辑区 B：知识维度 */}
       <EditorCard
-        icon={<Brain className="h-4 w-4 text-violet-600" />}
+        icon={<Brain className="h-4 w-4 text-accent" />}
         title="知识维度"
         description={SYNTAX_HINT}
         value={form.knowledgeContent}
@@ -281,7 +281,7 @@ export function PromptEditor({
 
       {/* 编辑区 C：技能维度 */}
       <EditorCard
-        icon={<Wrench className="h-4 w-4 text-emerald-600" />}
+        icon={<Wrench className="h-4 w-4 text-success" />}
         title="技能维度"
         description={SYNTAX_HINT}
         value={form.skillContent}
@@ -291,7 +291,7 @@ export function PromptEditor({
 
       {/* 编辑区 D：通用评分规则 */}
       <EditorCard
-        icon={<Scale className="h-4 w-4 text-amber-600" />}
+        icon={<Scale className="h-4 w-4 text-warning" />}
         title="通用评分规则"
         description="如何综合两个维度得分得出最终星级的规则文本，AI 严格按此打分"
         value={form.overallRules}
@@ -389,7 +389,7 @@ export function PromptEditor({
             </Button>
 
             {previewError && (
-              <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-700">
+              <div className="rounded-lg border border-destructive/20 bg-destructive/10 p-3 text-sm text-destructive">
                 {previewError}
               </div>
             )}

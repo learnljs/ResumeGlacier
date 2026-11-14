@@ -192,14 +192,14 @@ export function InlineTimeEdit({
           <>
             <button
               onClick={saveEdit}
-              className="p-0.5 rounded hover:bg-green-100 text-green-600 shrink-0"
+              className="p-0.5 rounded hover:bg-success/15 text-success shrink-0"
               title="确认"
             >
               <Check className="h-3.5 w-3.5" />
             </button>
             <button
               onClick={cancelEdit}
-              className="p-0.5 rounded hover:bg-red-100 text-red-500 shrink-0"
+              className="p-0.5 rounded hover:bg-destructive/15 text-destructive shrink-0"
               title="取消"
             >
               <X className="h-3.5 w-3.5" />

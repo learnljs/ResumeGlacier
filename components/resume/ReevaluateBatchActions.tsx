@@ -97,7 +97,7 @@ export function ReevaluateBatchActions({
       {evaluating && (
         <div className="mt-3 w-full bg-muted rounded-full h-2 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-primary via-blue-500 to-blue-400 rounded-full transition-all duration-500 ease-out shadow-[0_0_8px_rgba(59,130,246,0.3)]"
+            className="h-full bg-gradient-to-r from-primary via-info to-info/80 rounded-full transition-all duration-500 ease-out shadow-[0_0_8px_hsl(var(--info)/0.3)]"
             style={{ width: `${progress}%` }}
           />
         </div>

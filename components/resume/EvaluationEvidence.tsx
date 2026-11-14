@@ -273,16 +273,16 @@ function LegacyScoredEvidence({
             方向星级 [{voting.directionStars?.join(', ')}] -&gt; {voting.majorityStar} 星
           </p>
           {(voting.adjustments || []).filter(Boolean).map((adj, i) => (
-            <p key={i} className="text-xs text-amber-600 mt-1">⚠ {adj}</p>
+            <p key={i} className="text-xs text-warning mt-1">⚠ {adj}</p>
           ))}
         </div>
       )}
 
       {(insurance?.overrides || []).length > 0 && (
-        <div className="bg-amber-50 border border-amber-200 rounded-md p-3">
-          <span className="text-xs font-medium text-amber-700">保险规则触发</span>
+        <div className="bg-warning/10 border border-warning/20 rounded-md p-3">
+          <span className="text-xs font-medium text-warning">保险规则触发</span>
           {(insurance.overrides || []).map((o, i) => (
-            <p key={i} className="text-sm mt-1 text-amber-800">{o}</p>
+            <p key={i} className="text-sm mt-1 text-warning">{o}</p>
           ))}
         </div>
       )}
@@ -335,7 +335,7 @@ function LegacyDirectionGroup({
                 className="flex items-start gap-2 text-xs py-1.5 border-b border-muted/30 last:border-b-0"
               >
                 <span className="text-muted-foreground w-7 flex-shrink-0">{qId}</span>
-                <span className={q.answer ? 'text-green-600' : 'text-red-400'}>
+                <span className={q.answer ? 'text-success' : 'text-destructive/70'}>
                   {q.answer ? '✓' : '✗'}
                 </span>
                 {q.evidence && (

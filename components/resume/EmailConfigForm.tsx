@@ -125,7 +125,7 @@ export function EmailConfigForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            邮箱地址 <span className="text-red-500">*</span>
+            邮箱地址 <span className="text-destructive">*</span>
           </label>
           <Input
             type="email"
@@ -136,7 +136,7 @@ export function EmailConfigForm({
         </div>
         <div className="space-y-2">
           <label className="text-sm font-medium">
-            密码 <span className="text-red-500">*</span>
+            密码 <span className="text-destructive">*</span>
             {isEdit && (
               <span className="text-muted-foreground font-normal ml-1">(留空不修改)</span>
             )}
@@ -197,11 +197,11 @@ export function EmailConfigForm({
 
       {/* Test result */}
       {testResult && (
-        <div className={`flex items-center gap-3 p-3 rounded-lg border ${testResult.success ? 'border-green-200 bg-green-50' : 'border-red-200 bg-red-50'}`}>
+        <div className={`flex items-center gap-3 p-3 rounded-lg border ${testResult.success ? 'border-success/20 bg-success/10' : 'border-destructive/20 bg-destructive/10'}`}>
           {testResult.success ? (
-            <CheckCircle2 className="h-5 w-5 text-green-500 flex-shrink-0" />
+            <CheckCircle2 className="h-5 w-5 text-success flex-shrink-0" />
           ) : (
-            <XCircle className="h-5 w-5 text-red-500 flex-shrink-0" />
+            <XCircle className="h-5 w-5 text-destructive flex-shrink-0" />
           )}
           <p className="text-sm">{testResult.message}</p>
         </div>

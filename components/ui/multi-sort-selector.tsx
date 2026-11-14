@@ -133,7 +133,7 @@ export function MultiSortSelector({ value, onChange, disabled }: MultiSortSelect
             variant="ghost"
             size="sm"
             onClick={() => setIsExpanded(true)}
-            className="h-10 px-2 text-muted-foreground hover:bg-gray-200 hover:text-gray-700"
+            className="h-10 px-2 text-muted-foreground hover:bg-muted hover:text-foreground"
           >
             <ArrowUpDown className="h-4 w-4" />
           </Button>
@@ -151,7 +151,7 @@ export function MultiSortSelector({ value, onChange, disabled }: MultiSortSelect
                 variant="ghost"
                 size="sm"
                 onClick={handleClearAll}
-                className="h-7 text-xs text-muted-foreground hover:bg-red-100 hover:text-red-600"
+                className="h-7 text-xs text-muted-foreground hover:bg-destructive/15 hover:text-destructive"
               >
                 清除全部
               </Button>
@@ -219,7 +219,7 @@ export function MultiSortSelector({ value, onChange, disabled }: MultiSortSelect
                       {/* 删除 */}
                       <button
                         onClick={() => handleRemoveCondition(index)}
-                        className="p-1.5 hover:bg-red-100 hover:text-red-600 rounded-md transition-colors"
+                        className="p-1.5 hover:bg-destructive/15 hover:text-destructive rounded-md transition-colors"
                         title="删除"
                       >
                         <X className="h-4 w-4" />
@@ -243,7 +243,7 @@ export function MultiSortSelector({ value, onChange, disabled }: MultiSortSelect
                     size="sm"
                     onClick={() => handleAddCondition(opt.value)}
                     disabled={value.length >= MAX_CONDITIONS}
-                    className="h-9 text-sm justify-start hover:bg-gray-200 hover:text-gray-900"
+                    className="h-9 text-sm justify-start hover:bg-muted hover:text-foreground"
                   >
                     <Plus className="h-3 w-3 mr-2" />
                     {opt.label}

@@ -237,12 +237,12 @@ export function PositionEditor({ position }: PositionEditorProps) {
                   <span className={cn(
                     'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-medium',
                     position.status === 'active'
-                      ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                      ? 'bg-success/10 text-success border border-success/20'
                       : 'bg-muted text-muted-foreground border border-border',
                   )}>
                     <span className={cn(
                       'h-1.5 w-1.5 rounded-full',
-                      position.status === 'active' ? 'bg-emerald-500' : 'bg-muted-foreground/40',
+                      position.status === 'active' ? 'bg-success' : 'bg-muted-foreground/40',
                     )} />
                     {position.status === 'active' ? '启用中' : '已停用'}
                   </span>
@@ -255,8 +255,8 @@ export function PositionEditor({ position }: PositionEditorProps) {
 
                   {/* Unsaved Changes */}
                   {hasUnsavedChanges && (
-                    <span className="inline-flex items-center gap-1 text-xs text-amber-600 font-medium">
-                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+                    <span className="inline-flex items-center gap-1 text-xs text-warning font-medium">
+                      <span className="h-1.5 w-1.5 rounded-full bg-warning" />
                       有未保存的修改
                     </span>
                   )}
@@ -275,8 +275,8 @@ export function PositionEditor({ position }: PositionEditorProps) {
                 className={cn(
                   'h-9 px-4 gap-2 rounded-lg transition-all duration-200',
                   isDisabled
-                    ? 'border-emerald-200 text-emerald-700 hover:bg-emerald-50'
-                    : 'border-amber-200 text-amber-700 hover:bg-amber-50',
+                    ? 'border-success/20 text-success hover:bg-success/10'
+                    : 'border-warning/20 text-warning hover:bg-warning/10',
                 )}
                 aria-label={isDisabled ? '启用职位' : '停用职位'}
               >
@@ -298,7 +298,7 @@ export function PositionEditor({ position }: PositionEditorProps) {
                   disabled={!canDelete || deleting}
                   className={cn(
                     'h-9 px-4 gap-2 rounded-lg transition-all duration-200',
-                    canDelete && 'border-red-200 text-red-600 hover:bg-red-50',
+                    canDelete && 'border-destructive/20 text-destructive hover:bg-destructive/10',
                     !canDelete && 'opacity-50 cursor-not-allowed',
                   )}
                   aria-label="删除职位"
@@ -328,16 +328,16 @@ export function PositionEditor({ position }: PositionEditorProps) {
         {/* ===== Disabled Warning Banner ===== */}
         {isDisabled && (
           <div className="flex items-start gap-3 p-4 rounded-xl
-                          bg-amber-50/80 border border-amber-200
+                          bg-warning/10 border border-warning/20
                           animate-in fade-in slide-in-from-top-2 duration-300">
-            <div className="p-1.5 rounded-lg bg-amber-100 shrink-0">
-              <AlertTriangle className="h-5 w-5 text-amber-600" />
+            <div className="p-1.5 rounded-lg bg-warning/15 shrink-0">
+              <AlertTriangle className="h-5 w-5 text-warning" />
             </div>
             <div className="flex-1">
-              <p className="text-sm font-semibold text-amber-800">
+              <p className="text-sm font-semibold text-warning">
                 职位已停用
               </p>
-              <p className="text-xs text-amber-700/80 mt-0.5">
+              <p className="text-xs text-warning/80 mt-0.5">
                 职位基本信息和权重模型均不可修改。如需编辑，请点击右上角「启用职位」按钮。
               </p>
             </div>
@@ -348,8 +348,8 @@ export function PositionEditor({ position }: PositionEditorProps) {
         <Card className="border-border/60 shadow-sm">
           <CardHeader className="pb-4">
             <div className="flex items-center gap-2.5">
-              <div className="p-1.5 rounded-lg bg-blue-50">
-                <Briefcase className="h-4 w-4 text-blue-600" />
+              <div className="p-1.5 rounded-lg bg-info/10">
+                <Briefcase className="h-4 w-4 text-info" />
               </div>
               <div>
                 <CardTitle className="text-base">基本信息</CardTitle>
@@ -365,7 +365,7 @@ export function PositionEditor({ position }: PositionEditorProps) {
               <div className="space-y-2">
                 <label className="text-sm font-semibold flex items-center gap-1">
                   职位名称
-                  <span className="text-red-500">*</span>
+                  <span className="text-destructive">*</span>
                 </label>
                 <Input
                   value={form.title}
@@ -411,7 +411,7 @@ export function PositionEditor({ position }: PositionEditorProps) {
             <div className="space-y-2">
               <label className="text-sm font-semibold flex items-center gap-1">
                 筛选要求
-                <span className="text-red-500">*</span>
+                <span className="text-destructive">*</span>
               </label>
               <Textarea
                 value={form.requirements}
@@ -474,8 +474,8 @@ export function PositionEditor({ position }: PositionEditorProps) {
           <Card className="border-border/60 shadow-sm">
             <CardHeader className="pb-4">
               <div className="flex items-center gap-2.5">
-                <div className="p-1.5 rounded-lg bg-violet-50">
-                  <Hash className="h-4 w-4 text-violet-600" />
+                <div className="p-1.5 rounded-lg bg-accent/10">
+                  <Hash className="h-4 w-4 text-accent" />
                 </div>
                 <div>
                   <CardTitle className="text-base">权重模型</CardTitle>

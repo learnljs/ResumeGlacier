@@ -44,12 +44,12 @@ const META = {
 } as const
 
 const BAR_COLORS = [
-  'from-blue-500 to-blue-400',
-  'from-emerald-500 to-emerald-400',
-  'from-violet-500 to-violet-400',
-  'from-amber-500 to-amber-400',
-  'from-rose-500 to-rose-400',
-  'from-cyan-500 to-cyan-400',
+  'from-chart-4 to-chart-4/80',
+  'from-chart-3 to-chart-3/80',
+  'from-chart-8 to-chart-8/80',
+  'from-chart-5 to-chart-5/80',
+  'from-chart-9 to-chart-9/80',
+  'from-chart-10 to-chart-10/80',
 ]
 
 /**

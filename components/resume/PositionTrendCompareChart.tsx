@@ -22,6 +22,7 @@ import { DEFAULT_TIME_RANGE } from '@/types/trend'
 import { apiGet } from '@/lib/api/client'
 import { useMediaQuery } from '@/lib/hooks/use-media-query'
 import { CHART_SEMANTIC, chartColor } from '@/lib/constants/chart'
+import { getEvenlySpacedTicks, niceCeil, integerTicks } from '@/lib/utils/chart-axis'
 
 // -------------------------------------------------------
 // 自定义 Tooltip：白卡 + 圆角，日期加粗、数值右对齐
@@ -65,59 +66,6 @@ function TrendTooltip({ active, payload, label }: TrendTooltipProps) {
       )}
     </div>
   )
-}
-
-// -------------------------------------------------------
-// X 轴标签均匀分布
-// -------------------------------------------------------
-
-function getEvenlySpacedTicks(labels: string[], maxCount = 8): string[] {
-  const n = labels.length
-  if (n <= maxCount) return labels
-  const step = (n - 1) / (maxCount - 1)
-  const ticks: string[] = []
-  for (let i = 0; i < maxCount; i++) {
-    ticks.push(labels[Math.round(i * step)])
-  }
-  return ticks
-}
-
-// -------------------------------------------------------
-// Y 轴上限
-// -------------------------------------------------------
-
-/**
- * 取「好看」的整数上限：1/2/5 × 10^n 再留 10% 顶部余量。
- *
- * Recharts 默认 domain 是 [0, auto]，能跟着数据变，但峰值会贴到图顶、
- * 刻度出现 13 / 27 这类无法一眼睛读数的值。这里显式算上限，
- * 保证收到 80 份简历时纵轴到 100 而不是被截断或压扁。
- */
-function niceCeil(value: number): number {
-  if (!Number.isFinite(value) || value <= 0) return 1
-  const target = value * 1.1
-  const magnitude = 10 ** Math.floor(Math.log10(target))
-  const normalized = target / magnitude
-  const step = normalized <= 1 ? 1 : normalized <= 2 ? 2 : normalized <= 5 ? 5 : 10
-  return Math.round(step * magnitude)
-}
-
-/**
- * 纵轴整数刻度：步长取 1/2/5 × 10^n，控制在 6 格以内。
- *
- * 交给 Recharts 的 tickCount 去分，会出现「5、4、2、0」这种整数过滤后
- * 数量跳着走的刻度，读图要先算差值；这里自己把刻度列出来。
- */
-function integerTicks(max: number): number[] {
-  const step = (() => {
-    const raw = Math.max(1, Math.ceil(max / 5))
-    const magnitude = 10 ** Math.floor(Math.log10(raw))
-    const n = raw / magnitude
-    return (n <= 1 ? 1 : n <= 2 ? 2 : n <= 5 ? 5 : 10) * magnitude
-  })()
-  const ticks: number[] = []
-  for (let v = 0; v <= max; v += step) ticks.push(v)
-  return ticks
 }
 
 // -------------------------------------------------------

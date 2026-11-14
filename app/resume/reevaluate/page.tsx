@@ -22,29 +22,7 @@ import type {
   SavedReevaluateBatch,
   SavedReevaluateFilters,
 } from '@/types/reevaluate'
-
-// ─────────────────────────────────────────────────────────
-// 本地持久化键（localStorage，跨页面刷新生效）
-// ─────────────────────────────────────────────────────────
-/** 筛选条件键名 */
-const FILTERS_KEY = 'reevaluate-filters-v3'
-/** 滚动位置键名 */
-const SCROLL_KEY = 'reevaluate-scroll-v2'
-/** 评估批次键名（跨页面导航恢复轮询） */
-const BATCH_KEY = 'reevaluate-batch-v2'
-/** 岗位列表缓存键名（避免返回页面时等待 API） */
-const POSITIONS_KEY = 'reevaluate-positions-v1'
-
-/** 筛选值初始态 */
-const EMPTY_FILTERS: ReevaluateFilterValues = {
-  minEducation: '',
-  schoolTier: '',
-  majors: '',
-  minWorkYears: '',
-  minGraduationYears: '',
-  maxGraduationYears: '',
-  englishLevel: '',
-}
+import { BATCH_KEY, EMPTY_FILTERS, FILTERS_KEY, POSITIONS_KEY, SCROLL_KEY } from '@/lib/constants/reevaluate'
 
 // ─────────────────────────────────────────────────────────
 // 主页面

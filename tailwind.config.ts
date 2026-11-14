@@ -58,6 +58,10 @@ const config: Config = {
         success: "hsl(var(--success))",
         warning: "hsl(var(--warning))",
         info: "hsl(var(--info))",
+        /* 遮罩层：深浅模式都压暗内容，替代裸黑色遮罩类 */
+        overlay: "hsl(var(--overlay))",
+        /* 实心语义色上的恒定高亮文字，替代裸白色文字类 */
+        "on-solid": "hsl(var(--on-solid))",
         /* 图表配色（多序列循环取色，见 lib/constants/chart.ts） */
         chart: {
           1: "hsl(var(--chart-1))",

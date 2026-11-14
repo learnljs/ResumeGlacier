@@ -40,7 +40,7 @@ export function ReevaluateStatsCards({
       <Card className="bg-gradient-to-br from-secondary/30 to-secondary/50">
         <CardContent className="p-4 flex items-center gap-3">
           <div className="w-9 h-9 rounded-lg bg-secondary/50 flex items-center justify-center">
-            <Star className="h-4.5 w-4.5 text-warning fill-amber-500" />
+            <Star className="h-4.5 w-4.5 text-warning fill-warning" />
           </div>
           <div>
             <p className="text-xs text-muted-foreground">平均得分</p>

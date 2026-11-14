@@ -163,7 +163,7 @@ export default function SourcesPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">
-                  来源名称 <span className="text-red-500">*</span>
+                  来源名称 <span className="text-destructive">*</span>
                 </label>
                 <Input
                   value={form.name}
@@ -276,7 +276,7 @@ export default function SourcesPage() {
                       size="sm"
                       onClick={() => startEdit(source)}
                       disabled={!!editingId && editingId !== source.id}
-                      className="hover:bg-gray-100/60 hover:text-foreground"
+                      className="hover:bg-muted hover:text-foreground"
                     >
                       <Pencil className="h-4 w-4" />
                     </Button>
@@ -285,7 +285,7 @@ export default function SourcesPage() {
                       size="sm"
                       onClick={() => handleDelete(source.id)}
                       disabled={!!editingId && editingId !== source.id}
-                      className="text-red-500 hover:text-red-600 hover:bg-red-50"
+                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>
@@ -300,7 +300,7 @@ export default function SourcesPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
                     <label className="text-sm font-medium">
-                      来源名称 <span className="text-red-500">*</span>
+                      来源名称 <span className="text-destructive">*</span>
                     </label>
                     <Input
                       value={form.name}

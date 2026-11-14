@@ -27,69 +27,8 @@ import { toast } from 'sonner'
 import { confirmDialog } from '@/components/ui/confirm-dialog'
 import { SegmentedProgress } from '@/components/ui/segmented-progress'
 import { formatMonthDayTime, formatDateTimeFull } from '@/lib/utils/date'
-
-interface BatchEmailConfig {
-  id: string
-  alias: string
-  user: string
-}
-
-interface TaskBatch {
-  id: string
-  batchNo: string
-  source: string
-  sourceDetail: string | null
-  emailConfigId: string | null
-  emailConfig: BatchEmailConfig | null
-  totalResumes: number
-  parsedCount: number
-  screenedCount: number
-  errorCount: number
-  screenErrorCount: number
-  screeningCount: number
-  status: string
-  startedAt: string
-  completedAt: string | null
-  createdAt: string
-  progress: {
-    parsing: number
-    screening: number
-  }
-}
-
-interface BatchResumeItem {
-  id: string
-  fileName: string
-  candidateName: string | null
-  status: string
-  errorMessage: string | null
-  createdAt: string
-}
-
-interface BatchDetail extends TaskBatch {
-  resumes: BatchResumeItem[]
-  resumesPagination?: {
-    page: number
-    pageSize: number
-    total: number
-    totalPages: number
-  }
-}
-
-const statusConfig: Record<string, { label: string; color: string; icon: React.ReactNode; bgColor: string }> = {
-  processing: {
-    label: '进行中',
-    color: 'text-info',
-    bgColor: 'bg-info/10 border-info/30',
-    icon: <Loader2 className="h-3.5 w-3.5 animate-spin" />,
-  },
-  completed: {
-    label: '已完成',
-    color: 'text-success',
-    bgColor: 'bg-success/10 border-success/30',
-    icon: <CheckCircle2 className="h-3.5 w-3.5" />,
-  },
-}
+import type { BatchDetail, BatchResumeItem, TaskBatch } from '@/types/task-batch'
+import { statusConfig } from '@/components/resume/TaskBatchStatus'
 
 export default function TaskBatchesPage() {
   const [batches, setBatches] = useState<TaskBatch[]>([])
@@ -365,7 +304,7 @@ export default function TaskBatchesPage() {
                   </p>
                 </div>
                 <div className="p-2 bg-success/10 rounded-lg">
-                  <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                  <CheckCircle2 className="h-5 w-5 text-success" />
                 </div>
               </div>
             </CardContent>
@@ -382,7 +321,7 @@ export default function TaskBatchesPage() {
                   </p>
                 </div>
                 <div className="p-2 bg-warning/10 rounded-lg">
-                  <Loader2 className="h-5 w-5 text-amber-500 animate-spin" />
+                  <Loader2 className="h-5 w-5 text-warning animate-spin" />
                 </div>
               </div>
             </CardContent>
@@ -415,8 +354,8 @@ export default function TaskBatchesPage() {
                     {batches.reduce((sum, b) => sum + b.totalResumes, 0)}
                   </p>
                 </div>
-                <div className="p-2 bg-violet-50 rounded-lg">
-                  <FileText className="h-5 w-5 text-violet-500" />
+                <div className="p-2 bg-accent/10 rounded-lg">
+                  <FileText className="h-5 w-5 text-accent" />
                 </div>
               </div>
             </CardContent>
@@ -682,7 +621,7 @@ export default function TaskBatchesPage() {
                               <div className="bg-background rounded-lg p-3 border">
                                 <div className="flex items-center gap-2">
                                   <div className="p-1.5 bg-info/10 rounded">
-                                    <FileText className="h-4 w-4 text-blue-500" />
+                                    <FileText className="h-4 w-4 text-info" />
                                   </div>
                                   <div>
                                     <p className="text-xs text-muted-foreground">解析总数</p>
@@ -693,7 +632,7 @@ export default function TaskBatchesPage() {
                               <div className="bg-background rounded-lg p-3 border">
                                 <div className="flex items-center gap-2">
                                   <div className="p-1.5 bg-success/10 rounded">
-                                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                                    <CheckCircle2 className="h-4 w-4 text-success" />
                                   </div>
                                   <div>
                                     <p className="text-xs text-muted-foreground">解析成功</p>
@@ -721,7 +660,7 @@ export default function TaskBatchesPage() {
                               <div className="bg-background rounded-lg p-3 border">
                                 <div className="flex items-center gap-2">
                                   <div className="p-1.5 bg-success/10 rounded">
-                                    <CheckCircle2 className="h-4 w-4 text-emerald-500" />
+                                    <CheckCircle2 className="h-4 w-4 text-success" />
                                   </div>
                                   <div>
                                     <p className="text-xs text-muted-foreground">解析成功</p>
@@ -771,7 +710,7 @@ export default function TaskBatchesPage() {
                               <div className="bg-background rounded-lg p-3 border">
                                 <div className="flex items-center gap-2">
                                   <div className="p-1.5 bg-info/10 rounded">
-                                    <FileText className="h-4 w-4 text-blue-500" />
+                                    <FileText className="h-4 w-4 text-info" />
                                   </div>
                                   <div>
                                     <p className="text-xs text-muted-foreground">筛选总数</p>

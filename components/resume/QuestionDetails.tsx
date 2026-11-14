@@ -112,7 +112,7 @@ function NewQuestionRow({ question, lookup }: { question: AiDetailQuestion; look
         <span className="flex-1 text-foreground/80">{text}</span>
       </div>
       <div className="flex items-start gap-2 flex-shrink-0 ml-0 md:ml-auto">
-        <span className={question.answer ? 'text-green-600' : 'text-red-400'}>
+        <span className={question.answer ? 'text-success' : 'text-destructive/70'}>
           {question.answer ? '✓' : '✗'}
         </span>
         {question.evidence && (

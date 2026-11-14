@@ -329,7 +329,7 @@ export default function WebhookConfigPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         {/* HR 系统字段 */}
         <div className="space-y-2">
-          <label className="text-sm font-medium">HR 系统字段<span className="text-red-500">*</span></label>
+          <label className="text-sm font-medium">HR 系统字段<span className="text-destructive">*</span></label>
           <select
             className="w-full h-10 rounded-md border border-input bg-background px-3 text-sm"
             value={form.hrField}
@@ -569,7 +569,7 @@ export default function WebhookConfigPage() {
                         {row.targetFieldName || row.targetFieldId || '未指定'}
                       </span>
                       {row.targetFieldType && (
-                        <Badge className="text-xs bg-blue-100 text-blue-700 border-blue-200">
+                        <Badge className="text-xs bg-info/15 text-info border-info/20">
                           {row.targetFieldType}
                         </Badge>
                       )}
@@ -582,7 +582,7 @@ export default function WebhookConfigPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 px-2 text-xs hover:text-foreground hover:bg-gray-200/60"
+                          className="h-7 px-2 text-xs hover:text-foreground hover:bg-muted"
                           onClick={() => startEdit(row)}
                         >
                           <Pencil className="h-3 w-3 mr-1" />编辑
@@ -590,7 +590,7 @@ export default function WebhookConfigPage() {
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 px-2 text-xs text-red-600 hover:text-red-600 hover:bg-red-100/60"
+                          className="h-7 px-2 text-xs text-destructive hover:text-destructive hover:bg-destructive/15"
                           onClick={() => handleDelete(row.id)}
                         >
                           <Trash2 className="h-3 w-3 mr-1" />删除

@@ -5,7 +5,7 @@
 ## 项目概述
 
 **ResumeGlacier** — Self-hosted AI resume screening for small HR teams。
-基于 Next.js 16 + TypeScript + SQLite + Prisma 的全栈 Web 应用，通过 IMAP 收取邮件简历，AI 按冰山模型 6 维度筛选候选人。界面全中文。包管理器：**npm**。无认证层（假设内网部署）。无自动化单元测试，端到端验证通过 Playwright MCP 进行。
+基于 Next.js 16 + TypeScript + SQLite + Prisma 的全栈 Web 应用，通过 IMAP 收取邮件简历，AI 按冰山模型 6 维度筛选候选人。界面全中文。包管理器：**npm**。无认证层（假设内网部署）。纯函数有 Vitest 单测（`npm test`），端到端验证通过 Playwright MCP 或 `npm run test:e2e` 进行。
 
 ## 开发环境
 
@@ -72,7 +72,7 @@ npx tsx scripts/full-mailbox-sync.ts <id>             # 全量同步（清空前
 
 ## 验证方式
 
-改动验证通过 Playwright MCP 进行端到端测试，测试文件统一放在 `.playwright-mcp/` 目录下。需要测试时直接调用浏览器工具操作页面验证。
+改动验证先跑 `npm test`（Vitest 纯函数单测，测试放在 `tests/unit/`），再通过 Playwright MCP 或 `npm run test:e2e` 做端到端测试；Playwright MCP 的截图统一放在 `.playwright-mcp/` 目录下。
 
 ## 关键环境变量
 

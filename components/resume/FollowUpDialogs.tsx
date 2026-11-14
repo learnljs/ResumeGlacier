@@ -638,7 +638,7 @@ export function InterviewEndDialog({
                                 className="h-4 w-4 rounded border-input accent-primary cursor-pointer shrink-0"
                               />
                               <span
-                                className="inline-block w-2.5 h-2.5 rounded-full shrink-0 ring-1 ring-black/5"
+                                className="inline-block w-2.5 h-2.5 rounded-full shrink-0 ring-1 ring-foreground/10"
                                 style={{ backgroundColor: tag.color }}
                               />
                               <span className="text-[13px] truncate">{tag.name}</span>
@@ -690,7 +690,7 @@ export function InterviewEndDialog({
               onClick={onConfirm}
               disabled={submitting}
               size="sm"
-              className="h-9 px-5 text-sm font-medium bg-success/10 hover:bg-success/10 active:bg-success/10 text-white shadow-sm shadow-emerald-600/20 hover:shadow-emerald-600/30 active:scale-[0.97] transition-all duration-150"
+              className="h-9 px-5 text-sm font-medium bg-success hover:bg-success/90 active:bg-success/90 text-on-solid shadow-sm shadow-success/20 hover:shadow-success/30 active:scale-[0.97] transition-all duration-150"
             >
               {submitting ? (
                 <>

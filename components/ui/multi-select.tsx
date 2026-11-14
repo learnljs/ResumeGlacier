@@ -90,7 +90,7 @@ export function MultiSelect({
         onClick={() => setOpen(!open)}
         className={cn(
           'flex items-center justify-between h-10 rounded-xl border border-input bg-background px-3 py-2 text-sm transition-all duration-200',
-          'hover:bg-gray-100/90 hover:text-gray-700',
+          'hover:bg-muted hover:text-foreground',
           'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
           'disabled:cursor-not-allowed disabled:opacity-50',
           'w-full min-w-[140px]'

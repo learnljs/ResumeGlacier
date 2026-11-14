@@ -63,7 +63,7 @@ export function CandidatePhoto({ resumeId, photoUrl, name, className = '' }: Can
             onClick={handleExtractPhoto}
             disabled={loading}
             title="重新提取"
-            className="absolute bottom-0 right-0 flex items-center justify-center w-5 h-5 rounded-tl-full bg-black/60 text-white opacity-0 group-hover:opacity-100 transition-opacity hover:bg-black/80"
+            className="absolute bottom-0 right-0 flex items-center justify-center w-5 h-5 rounded-tl-full bg-overlay/60 text-on-solid opacity-0 group-hover:opacity-100 transition-opacity hover:bg-overlay/80"
           >
             {loading ? (
               <Loader2 className="h-3 w-3 animate-spin" />

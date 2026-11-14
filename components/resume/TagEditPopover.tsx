@@ -259,7 +259,7 @@ export function TagEditPopover({ recordId, candidateName, currentTags, allTags, 
 
   const panelClasses = cn(
     'bg-popover border rounded-xl flex flex-col',
-    'ring-1 ring-border/60 shadow-xl shadow-black/5',
+    'ring-1 ring-border/60 shadow-xl shadow-foreground/5',
     exiting
       ? 'animate-out fade-out-0 zoom-out-95 duration-100'
       : 'animate-in fade-in-0 zoom-in-95 duration-200',
@@ -289,7 +289,7 @@ export function TagEditPopover({ recordId, candidateName, currentTags, allTags, 
         <>
           {/* 遮罩 */}
           <div
-            className="fixed inset-0 bg-black/5 transition-opacity duration-150"
+            className="fixed inset-0 bg-overlay/5 transition-opacity duration-150"
             style={{ zIndex: 9998 }}
             onClick={handleClose}
           />
@@ -393,7 +393,7 @@ export function TagEditPopover({ recordId, candidateName, currentTags, allTags, 
 
                             {/* 标签色点 */}
                             <span
-                              className="w-2.5 h-2.5 rounded-full shrink-0 ring-1 ring-black/5"
+                              className="w-2.5 h-2.5 rounded-full shrink-0 ring-1 ring-foreground/10"
                               style={{ backgroundColor: tag.color }}
                             />
 
@@ -405,7 +405,7 @@ export function TagEditPopover({ recordId, candidateName, currentTags, allTags, 
                             {/* AI 标记 */}
                             {tag.source === 'ai' && (
                               <span
-                                className="inline-flex items-center gap-0.5 text-[10px] font-medium text-blue-600/80 ml-auto shrink-0 bg-blue-50 px-1.5 py-0.5 rounded-full"
+                                className="inline-flex items-center gap-0.5 text-[10px] font-medium text-info/80 ml-auto shrink-0 bg-info/10 px-1.5 py-0.5 rounded-full"
                                 title="AI 自动识别标签"
                               >
                                 <Bot className="h-2.5 w-2.5" />
@@ -422,7 +422,7 @@ export function TagEditPopover({ recordId, candidateName, currentTags, allTags, 
                                   e.stopPropagation()
                                   handleDeleteTag(tag)
                                 }}
-                                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 -mr-1 rounded-md text-muted-foreground/50 hover:text-red-500 hover:bg-red-50 shrink-0"
+                                className="opacity-0 group-hover:opacity-100 transition-opacity p-1 -mr-1 rounded-md text-muted-foreground/50 hover:text-destructive hover:bg-destructive/10 shrink-0"
                                 title={`删除标签「${tag.name}」`}
                                 aria-label={`删除标签 ${tag.name}`}
                               >
@@ -477,7 +477,7 @@ export function TagEditPopover({ recordId, candidateName, currentTags, allTags, 
             <div className="flex items-center justify-between px-4 py-3 border-t bg-muted/30 rounded-b-xl shrink-0">
               <div className="flex items-center gap-2">
                 {isDirty && (
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" title="有未保存的修改" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-warning" title="有未保存的修改" />
                 )}
                 <span className="text-xs text-muted-foreground">
                   已选 <span className="font-medium text-foreground">{selectedIds.size}</span> 个标签

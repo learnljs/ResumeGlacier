@@ -140,7 +140,7 @@ export function Slider({
           className={cn(
             'absolute top-1/2 -translate-y-1/2 -translate-x-1/2',
             'h-5 w-5 rounded-full',
-            'bg-white',
+            'bg-card',
             'border-2 shadow-md',
             // 边框颜色跟随 colorClass
             'border-primary',

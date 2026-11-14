@@ -174,7 +174,7 @@ export default function PromptManagementPage() {
                           v{p.currentVersion}
                         </Badge>
                       ) : (
-                        <span className="text-xs text-amber-600 flex items-center gap-1">
+                        <span className="text-xs text-warning flex items-center gap-1">
                           <AlertCircle className="h-3 w-3" />
                           未配置
                         </span>

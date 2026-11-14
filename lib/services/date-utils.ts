@@ -40,6 +40,31 @@ export function receivedAtWhere(start: Date, end: Date) {
  *   conditions.push(...buildDateWhere(dateFrom, dateTo))
  *   // 最终 where: { AND: conditions }
  */
+/**
+ * YYYY-MM-DD → 本地 00:00 的 Date，格式非法 / 日期溢出返回 null。
+ *
+ * 不能用 `new Date('2024-06-01')`：ISO 日期字符串按 UTC 解析，在 GMT+8
+ * 会落成本地当天 08:00，与下面的 setDate（本地运算）混用会让筛选窗口
+ * 整体偏移 8 小时，漏掉每天 00:00–08:00 收取的简历。
+ */
+function parseLocalDate(value: string): Date | null {
+  const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value)
+  if (!m) return null
+  const year = Number(m[1])
+  const month = Number(m[2])
+  const day = Number(m[3])
+  const date = new Date(year, month - 1, day)
+  if (
+    Number.isNaN(date.getTime()) ||
+    date.getFullYear() !== year ||
+    date.getMonth() !== month - 1 ||
+    date.getDate() !== day
+  ) {
+    return null
+  }
+  return date
+}
+
 export function buildDateWhere(
   dateFrom?: string | null,
   dateTo?: string | null
@@ -48,29 +73,31 @@ export function buildDateWhere(
 
   if (!dateFrom && !dateTo) return conditions
 
-  if (dateFrom && dateTo) {
+  // 按解析结果分支：某一端非法时忽略该端，避免把 Invalid Date 塞给 Prisma
+  const start = dateFrom ? parseLocalDate(dateFrom) : null
+  const end = dateTo ? parseLocalDate(dateTo) : null
+
+  if (start && end) {
     // 两端都有：使用 gte/lt 范围
-    const start = new Date(dateFrom) // 当天 00:00:00（本地时区）
-    const end = new Date(dateTo)
-    end.setDate(end.getDate() + 1) // 结束日期的次日 00:00，实现「含尾日」
-    conditions.push(receivedAtWhere(start, end))
-  } else if (dateFrom) {
+    const endExclusive = new Date(end)
+    endExclusive.setDate(endExclusive.getDate() + 1) // 结束日期的次日 00:00，实现「含尾日」
+    conditions.push(receivedAtWhere(start, endExclusive))
+  } else if (start) {
     // 只有起始日期：筛选 >= dateFrom
-    const start = new Date(dateFrom)
     conditions.push({
       OR: [
         { sourceEmailReceivedAt: { gte: start } },
         { sourceEmailReceivedAt: null, createdAt: { gte: start } },
       ],
     })
-  } else if (dateTo) {
+  } else if (end) {
     // 只有结束日期：筛选 < 次日（即 <= dateTo 当天末尾）
-    const end = new Date(dateTo)
-    end.setDate(end.getDate() + 1)
+    const endExclusive = new Date(end)
+    endExclusive.setDate(endExclusive.getDate() + 1)
     conditions.push({
       OR: [
-        { sourceEmailReceivedAt: { lt: end } },
-        { sourceEmailReceivedAt: null, createdAt: { lt: end } },
+        { sourceEmailReceivedAt: { lt: endExclusive } },
+        { sourceEmailReceivedAt: null, createdAt: { lt: endExclusive } },
       ],
     })
   }

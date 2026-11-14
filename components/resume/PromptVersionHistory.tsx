@@ -240,7 +240,7 @@ export function PromptVersionHistory({
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-7 text-xs gap-1 hover:text-foreground hover:bg-gray-200/60"
+                      className="h-7 text-xs gap-1 hover:text-foreground hover:bg-muted"
                       onClick={() => viewOne(v.version)}
                     >
                       <FileText className="h-3.5 w-3.5" />
@@ -251,7 +251,7 @@ export function PromptVersionHistory({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 text-xs gap-1 text-amber-600 hover:text-amber-600 hover:bg-amber-100/60"
+                          className="h-7 text-xs gap-1 text-warning hover:text-warning hover:bg-warning/15"
                           disabled={rollingBack === v.version}
                           onClick={() => doRollback(v.version)}
                         >
@@ -265,7 +265,7 @@ export function PromptVersionHistory({
                         <Button
                           variant="ghost"
                           size="sm"
-                          className="h-7 text-xs gap-1 text-red-500 hover:text-red-600 hover:bg-red-50"
+                          className="h-7 text-xs gap-1 text-destructive hover:text-destructive hover:bg-destructive/10"
                           disabled={deleting === v.version}
                           onClick={() => doDelete(v.version)}
                         >
@@ -359,8 +359,8 @@ export function PromptVersionHistory({
                               key={i}
                               className={cn(
                                 'min-w-max px-1 whitespace-pre',
-                                l.type === 'add' && 'bg-green-100 text-green-800',
-                                l.type === 'del' && 'bg-red-100 text-red-800',
+                                l.type === 'add' && 'bg-success/15 text-success',
+                                l.type === 'del' && 'bg-destructive/15 text-destructive',
                               )}
                             >
                               {l.type === 'add' ? '+ ' : l.type === 'del' ? '- ' : '  '}

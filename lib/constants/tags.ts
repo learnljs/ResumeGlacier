@@ -23,17 +23,17 @@ export const CATEGORY_ORDER = [
 // ---- 分组背景色（用于系统配置页卡片） ----
 
 export const CATEGORY_COLORS: Record<string, string> = {
-  hard: 'border-blue-200 bg-blue-50',
-  intent: 'border-amber-200 bg-amber-50',
-  custom: 'border-gray-200 bg-gray-50',
+  hard: 'border-info/20 bg-info/10',
+  intent: 'border-warning/20 bg-warning/10',
+  custom: 'border-border bg-muted/40',
 }
 
 // ---- 分组标识色点（用于弹窗标题） ----
 
 export const CATEGORY_DOT_COLORS: Record<string, string> = {
-  hard: '#3b82f6',
-  intent: '#f59e0b',
-  custom: '#6b7280',
+  hard: 'hsl(var(--info))',
+  intent: 'hsl(var(--warning))',
+  custom: 'hsl(var(--muted-foreground))',
 }
 
 // ---- 新建标签可选色板（单一来源，按色相排序） ----
@@ -41,6 +41,9 @@ export const CATEGORY_DOT_COLORS: Record<string, string> = {
 /**
  * 新建标签时的候选颜色。此前 FollowUpDialog / BatchFollowUpDialog（10 色）
  * 与 TagEditPopover（12 色）各自维护一份且互不一致，现统一为本表。
+ *
+ * 这些值会写入数据库，属于业务数据而非主题令牌，因此保持固定色值，
+ * 不随深浅模式切换（用户给标签选定的颜色需要稳定可预期）。
  */
 export const TAG_COLORS: string[] = [
   '#3b82f6', '#6366f1', '#8b5cf6', '#06b6d4',

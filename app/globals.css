@@ -33,6 +33,10 @@
     --success: 150 65% 35%;
     --warning: 38 85% 52%;
     --info: 210 80% 50%;
+    /* 遮罩层与实心色文字：替代裸黑色遮罩类与裸白色文字类。
+       两者不随主题取反，深色模式仅在 .dark 中微调明度。 */
+    --overlay: 220 15% 15%;
+    --on-solid: 0 0% 100%;
     --gradient-primary: linear-gradient(135deg, hsl(220 18% 22%), hsl(250 55% 48%));
     --shadow-soft: 0 4px 20px -4px hsl(220 15% 15% / 0.06);
     --shadow-card: 0 8px 30px -8px hsl(220 15% 15% / 0.08);
@@ -56,6 +60,64 @@
     --chart-8: 280 50% 55%;
     --chart-9: 10 60% 50%;
     --chart-10: 190 70% 40%;
+  }
+
+  /* ============================================================
+   * 深色模式（.dark / <html class="dark">）
+   *
+   * 只覆盖变量，不覆盖组件类名：所有语义色（bg-success/10、
+   * border-warning/20、bg-muted、text-muted-foreground 等）会自动跟随。
+   * 这是修复「浅色底片在暗色背景上发白发亮」的关键——组件里不再出现
+   * 固定亮度的浅色底片与裸白色类，深色下由变量统一调暗、语义色统一提亮。
+   * ============================================================ */
+  .dark {
+    --background: 220 15% 10%;
+    --foreground: 220 12% 92%;
+    --card: 220 14% 14%;
+    --card-foreground: 220 12% 92%;
+    --popover: 220 14% 14%;
+    --popover-foreground: 220 12% 92%;
+    --primary: 220 14% 88%;
+    --primary-foreground: 220 15% 12%;
+    --secondary: 220 12% 20%;
+    --secondary-foreground: 220 12% 92%;
+    --muted: 220 12% 20%;
+    --muted-foreground: 220 8% 62%;
+    --accent: 250 70% 68%;
+    --accent-foreground: 220 15% 12%;
+    --destructive: 0 72% 60%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 10% 24%;
+    --input: 220 10% 24%;
+    --ring: 250 70% 68%;
+
+    --success: 150 58% 48%;
+    --warning: 38 90% 60%;
+    --info: 210 85% 66%;
+    --overlay: 220 20% 4%;
+    --on-solid: 0 0% 100%;
+    --gradient-primary: linear-gradient(135deg, hsl(220 14% 32%), hsl(250 60% 56%));
+    --shadow-soft: 0 4px 20px -4px hsl(0 0% 0% / 0.3);
+    --shadow-card: 0 8px 30px -8px hsl(0 0% 0% / 0.4);
+
+    --sidebar: 220 14% 8%;
+    --sidebar-foreground: 220 15% 92%;
+    --sidebar-border: 220 10% 22%;
+    --sidebar-muted: 220 10% 18%;
+    --sidebar-muted-foreground: 220 10% 65%;
+    --sidebar-primary: 250 72% 68%;
+    --sidebar-primary-foreground: 220 15% 10%;
+
+    --chart-1: 250 70% 68%;
+    --chart-2: 220 16% 62%;
+    --chart-3: 150 58% 48%;
+    --chart-4: 200 80% 60%;
+    --chart-5: 38 88% 60%;
+    --chart-6: 330 68% 65%;
+    --chart-7: 90 58% 55%;
+    --chart-8: 280 62% 68%;
+    --chart-9: 10 68% 62%;
+    --chart-10: 190 68% 50%;
   }
 }
 

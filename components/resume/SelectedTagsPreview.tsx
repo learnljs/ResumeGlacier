@@ -32,7 +32,7 @@ export function SelectedTagsPreview({ tags, onRemove }: SelectedTagsPreviewProps
             onClick={() => onRemove(tag.id)}
           >
             {tag.name}
-            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-white/20 hover:bg-white/30 transition-colors">
+            <span className="inline-flex items-center justify-center w-4 h-4 rounded-full bg-on-solid/20 hover:bg-on-solid/30 transition-colors">
               <X className="h-2.5 w-2.5" />
             </span>
           </Badge>

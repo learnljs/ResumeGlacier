@@ -63,7 +63,7 @@ export function ResumeBatchActions({
           onClick={onBatchScreen}
           disabled={batchScreening}
           variant="outline"
-          className="gap-2 hover:bg-gray-100/90 hover:text-gray-700"
+          className="gap-2 hover:bg-muted hover:text-foreground"
         >
           {batchScreening ? <Loader2 className="h-4 w-4 animate-spin" /> : <Zap className="h-4 w-4" />}
           {batchScreening ? '筛选中...' : `批量AI筛选 (${selectedCount})`}

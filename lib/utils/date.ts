@@ -137,3 +137,12 @@ export function shiftWeekStr(weekStr: string, delta: number): string {
   base.setDate(base.getDate() + delta * 7)
   return dateToWeekStr(formatYMD(base))
 }
+
+/**
+ * datetime-local 值 → 展示文本：`2026-06-03T09:45` → `2026-06-03 09:45`。
+ * 自 follow-up/page.tsx 迁入（B13），空值显示占位符 '-'。
+ */
+export function formatInterviewTime(time: string | null): string {
+  if (!time) return '-'
+  return time.replace('T', ' ')
+}

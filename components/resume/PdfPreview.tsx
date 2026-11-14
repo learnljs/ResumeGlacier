@@ -47,7 +47,7 @@ export default function PdfPreview({ url }: PdfPreviewProps) {
   if (error) {
     return (
       <div className="text-center py-8 space-y-3">
-        <AlertTriangle className="h-8 w-8 text-yellow-500 mx-auto" />
+        <AlertTriangle className="h-8 w-8 text-warning mx-auto" />
         <p className="text-sm text-muted-foreground">{error}</p>
         <div className="flex justify-center gap-2">
           <a href={url} download className="inline-block">
@@ -125,7 +125,7 @@ export default function PdfPreview({ url }: PdfPreviewProps) {
       </div>
 
       {/* PDF Document */}
-      <div className="overflow-auto border rounded-lg bg-gray-100">
+      <div className="overflow-auto border rounded-lg bg-muted">
         <Document
           file={url}
           onLoadSuccess={({ numPages: pages }) => {
@@ -140,7 +140,7 @@ export default function PdfPreview({ url }: PdfPreviewProps) {
           }
           error={
             <div className="text-center py-8 space-y-3">
-              <AlertTriangle className="h-8 w-8 text-yellow-500 mx-auto" />
+              <AlertTriangle className="h-8 w-8 text-warning mx-auto" />
               <p className="text-sm text-muted-foreground">PDF 文档解析失败</p>
               <a href={url} download className="inline-block">
                 <Button variant="outline" size="sm">下载原始文件</Button>

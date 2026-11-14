@@ -6,15 +6,13 @@
 
 import { prisma } from '@/lib/prisma'
 import { EVALUATION_DIMENSIONS, DIMENSION_KEYS, type DimensionKey } from '@/lib/constants/evaluation'
+import { computeWeightedScore } from '@/lib/utils/score-math'
 
 /**
- * 按权重模型计算单个维度的得分（B7-6：算分公式单点）。
- * 5 星制：score = rating × (weight / 5)，保留 1 位小数。
- * preview 预览算分与本服务的维度评分共用此公式，避免双源漂移。
+ * 算分公式已抽到 lib/utils/score-math.ts（纯函数、可单测）。
+ * 这里 re-export 保持既有的 '@/lib/services/evaluation-service' 导入路径不变。
  */
-export function computeWeightedScore(rating: number, weight: number): number {
-  return Number((rating * (weight / 5)).toFixed(1))
-}
+export { computeWeightedScore } from '@/lib/utils/score-math'
 
 /**
  * 获取指定简历的评估维度列表

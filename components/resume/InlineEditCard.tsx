@@ -79,7 +79,7 @@ export function InlineEditCard({ open, onClose, title, children, className }: In
               variant="ghost"
               size="sm"
               onClick={onClose}
-              className="hover:bg-gray-200/60 hover:text-foreground"
+              className="hover:bg-muted hover:text-foreground"
             >
               <X className="h-4 w-4" />
             </Button>
