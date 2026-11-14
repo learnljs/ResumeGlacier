@@ -203,8 +203,8 @@ export function ResumeListItemCard({
         <span className={`h-1.5 w-1.5 rounded-full ${statusDotColor(resume.status)}`} title={statusLabel(resume.status)} />
       </div>
 
-      {/* 主体：限定在卡片约 6 分位内，让分数块前移、右侧留白 */}
-      <div className="min-w-0 basis-[54%]">
+      {/* 主体：限定在卡片前半区，两列分数从正中开始 */}
+      <div className="min-w-0 basis-[43%]">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-medium text-foreground">{resume.candidateName || '未知名称'}</span>
           {resume.candidateName && (
@@ -255,8 +255,8 @@ export function ResumeListItemCard({
         </div>
       </div>
 
-      {/* 两列分数：初筛 / 冰山（紧跟主体，约在卡片 6 分位处） */}
-      <div className="flex shrink-0 items-stretch border-l border-border/60 pl-3">
+      {/* 两列分数：初筛 / 冰山（从卡片正中开始，不用竖线分隔） */}
+      <div className="flex shrink-0 items-stretch gap-2">
         <ScoreCell label="初筛" score={initialScore} />
         <ScoreCell
           label="冰山"
@@ -264,7 +264,6 @@ export function ResumeListItemCard({
           score={compositeScore}
           note={pendingNote}
           noteTitle={pendingTitle}
-          className="border-l border-border/60"
         />
       </div>
 
