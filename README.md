@@ -3,6 +3,7 @@
 > **Self-hosted AI resume screening for small HR teams.**
 > 自托管的 AI 简历筛选系统 · 开源 (MIT) · Node.js 单实例即可运行
 
+[![CI](https://github.com/learnljs/ResumeGlacier/actions/workflows/ci.yml/badge.svg)](https://github.com/learnljs/ResumeGlacier/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
 [![Next.js](https://img.shields.io/badge/Next.js-16-black)](https://nextjs.org)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5-blue)](https://www.typescriptlang.org)
@@ -14,8 +15,24 @@ ResumeGlacier 通过 IMAP 自动收取邮件简历，**两级文本提取回退*
 
 ---
 
+## 界面预览
+
+![数据看板](docs/screenshots/dashboard.png)
+
+<p align="center"><sub><b>数据看板</b> — 总量与今日 / 本周增量、核心指标 7 日走势、跟进流转概览</sub></p>
+
+![跟进管理](docs/screenshots/follow-up.png)
+
+<p align="center"><sub><b>跟进管理</b> — 按沟通阶段分栏，评分、标签、联系结果与预约面试集中处理</sub></p>
+
+> 截图取自内置演示数据（15 份虚构简历、3 个职位），不含任何真实候选人信息。
+> 空库首次启动会自动写入同一套演示数据，按下面「快速开始」跑起来即可看到同样界面。
+
+---
+
 ## 目录
 
+- [界面预览](#界面预览)
 - [为什么做这个](#为什么做这个)
 - [核心特性](#核心特性)
 - [快速开始](#快速开始)

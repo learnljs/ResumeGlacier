@@ -1,0 +1,83 @@
+name: Bug 报告
+description: 报告可复现的异常行为
+title: '[Bug] '
+labels: ['bug']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。提交前请先搜索现有 Issue，避免重复。
+
+        > ⚠️ 请勿粘贴真实简历内容、候选人联系方式、邮箱密码、`ENCRYPTION_KEY`、AI API Key。
+        > 日志里出现这些内容请先脱敏，或直接用虚构数据复现。
+
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: 现象
+      description: 实际发生了什么？期望的正确结果是什么？
+      placeholder: 点「增量获取」后提示成功，但简历列表没有新增记录；期望出现新收取的简历。
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 按顺序写清操作路径，越具体越容易定位
+      placeholder: |
+        1. 系统配置 · 邮箱 新增一个 QQ 邮箱
+        2. 回到数据看板点「增量获取」
+        3. 等待 30 秒后查看简历列表
+    validations:
+      required: true
+
+  - type: dropdown
+    id: module
+    attributes:
+      label: 涉及模块
+      options:
+        - 邮件收取（IMAP）
+        - 文本提取（PDF / DOCX / OCR）
+        - AI 筛选与评分
+        - 简历列表 / 详情
+        - 跟进管理
+        - 系统配置（邮箱 / 来源 / 权重 / 提示词 / Webhook）
+        - 任务管理
+        - 部署 / 构建
+        - 其他
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: 版本 / 提交
+      description: 'git log -1 --format=%h 的输出，或部署日期'
+      placeholder: b4751d4
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: 运行环境
+      description: 操作系统、Node 版本、浏览器（界面问题才需要浏览器）
+      placeholder: Windows 11 · Node 22.12 · Chrome 131
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: 日志与截图
+      description: 服务端报错堆栈、浏览器控制台、接口返回体。截图可直接拖进来。
+      render: shell
+
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: 隐私确认
+      options:
+        - label: 我已确认以上内容不含真实候选人信息与任何密钥
+          required: true
