@@ -6,8 +6,8 @@ node_modules/
 # Testing
 /coverage
 
-# Next.js
-/.next/
+# Next.js（含用自定义 distDir 做隔离构建时产生的目录，如 .next-verify）
+/.next*/
 /out/
 
 # Production
