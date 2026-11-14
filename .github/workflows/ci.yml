@@ -28,7 +28,8 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 22
+          # 与本地开发环境保持一致，避免 npm 版本差异导致的 lockfile 校验分歧
+          node-version: 24
           cache: npm
 
       - name: Install dependencies
