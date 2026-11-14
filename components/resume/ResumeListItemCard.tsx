@@ -1,31 +1,16 @@
 'use client'
 
-import Link from 'next/link'
-import { Copy, FileText, Clock, CheckCircle2, Loader2, Zap, Eye } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { Copy, FileText, Clock, CheckCircle2, Loader2, Zap, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Select } from '@/components/ui/select'
 import { statusLabel, statusColor, statusDotColor, statusEdgeColor } from '@/lib/constants/resume-status'
 import { scoreColor } from '@/lib/constants/score'
-import { ScoreBar } from '@/components/resume/ScoreBar'
+import { getIcebergProgress, pickPositionScore } from '@/lib/utils/resume-scores'
 import { formatDate, formatMonthDayTime } from '@/lib/utils/date'
 import type { ResumeItem, PositionOption } from '@/types/resume'
-
-/**
- * 取行内展示的初筛分：优先目标岗位的评估，其次首个评估
- * 替代后端扁平化字段 resume.initialScore（与废弃列同名，来源是 PositionEvaluation）
- */
-function getPrimaryScore(
-  resume: { positionScores?: Array<{ positionId: string; initialScore: number | null }> | null },
-  positionId: string
-): number | null {
-  return (
-    resume.positionScores?.find((s) => s.positionId === positionId)?.initialScore ??
-    resume.positionScores?.[0]?.initialScore ??
-    null
-  )
-}
 
 /** 复制姓名到剪贴板（兼容不支持 clipboard API 的浏览器） */
 function copyName(name: string) {
@@ -40,6 +25,89 @@ function copyName(name: string) {
   }
 }
 
+/**
+ * 列表头像：优先展示详情页提取的候选人照片，未提取/加载失败时回退姓名首字。
+ * 走 /api/resumes/[id]/photo 而非 public 静态路径——运行时新增的文件在
+ * 生产模式下要重启才可见，API 读盘无此问题（与详情页 CandidatePhoto 一致）。
+ */
+function ResumeAvatar({
+  resumeId,
+  photoUrl,
+  name,
+}: {
+  resumeId: string
+  photoUrl?: string | null
+  name: string | null
+}) {
+  const [failed, setFailed] = useState(false)
+  useEffect(() => setFailed(false), [photoUrl, resumeId])
+
+  return (
+    <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full inline-flex items-center justify-center text-sm font-semibold bg-gradient-to-br from-accent/20 to-primary/10 text-foreground/80 ring-1 ring-inset ring-border">
+      {photoUrl && !failed ? (
+        <img
+          src={`/api/resumes/${resumeId}/photo`}
+          alt={name ? `${name}的头像` : '候选人头像'}
+          onError={() => setFailed(true)}
+          loading="lazy"
+          className="h-full w-full object-cover"
+        />
+      ) : (
+        (name || '未')[0]
+      )}
+    </div>
+  )
+}
+
+/** 单个分数列：标签 + 放大数字 + 可选的待评标注 */
+function ScoreCell({
+  label,
+  score,
+  note,
+  noteTitle,
+  className = '',
+}: {
+  label: string
+  score: number | null
+  note?: string | null
+  noteTitle?: string
+  className?: string
+}) {
+  return (
+    <div className={`flex w-[88px] shrink-0 flex-col items-center justify-center gap-1 px-2 text-center ${className}`}>
+      <span className="text-[11px] font-medium tracking-wide whitespace-nowrap text-muted-foreground">
+        {label}
+      </span>
+      <span
+        className={`text-[26px] font-bold leading-none tabular-nums ${
+          score === null ? 'text-muted-foreground/35' : scoreColor(score)
+        }`}
+        title={
+          score === null
+            ? '暂无评分'
+            : note
+              ? `${label}得分 ${score} 分（部分得分，${note}）`
+              : `${label}得分 ${score} 分`
+        }
+      >
+        {score === null ? '—' : Math.round(score)}
+      </span>
+      {/* 固定高度占位，保证两列数字基线对齐 */}
+      <div className="flex h-[15px] items-center">
+        {note && (
+          <span
+            className="inline-flex items-center gap-0.5 rounded px-1 py-0.5 text-[10px] leading-none font-medium bg-warning/10 text-warning whitespace-nowrap"
+            title={noteTitle}
+          >
+            <AlertCircle className="h-2.5 w-2.5" />
+            {note}
+          </span>
+        )}
+      </div>
+    </div>
+  )
+}
+
 interface ResumeListItemCardProps {
   resume: ResumeItem
   /** 是否被勾选 */
@@ -52,14 +120,10 @@ interface ResumeListItemCardProps {
   matchingId: string | null
   /** 正在分配岗位的简历 id */
   assigningId: string | null
-  /** 详情页返回 URL */
-  currentListUrl: string
   /** 勾选切换 */
   onToggleSelect: (id: string) => void
-  /** 打开详情页（写导航快照 + 跳转） */
+  /** 打开详情页（写导航快照 + 跳转），整张卡片点击/回车都会触发 */
   onOpen: (resume: ResumeItem) => void
-  /** 详情链接前写导航快照 */
-  writeNavSnapshot: () => void
   /** 自动匹配职位 */
   onMatchPosition: (id: string) => void
   /** 手动分配职位 */
@@ -67,7 +131,8 @@ interface ResumeListItemCardProps {
 }
 
 /**
- * 简历列表单张候选人卡片：勾选 + 头像/状态点 + 主体信息 + 评分条 + 操作区。
+ * 简历列表单张候选人卡片：勾选 + 头像/状态点 + 主体信息 + 两列分数 + 未分配时的分配控件。
+ * 整张卡片可点击进入详情页；卡片内的交互控件（勾选、复制、匹配、下拉）阻止冒泡。
  */
 export function ResumeListItemCard({
   resume,
@@ -76,26 +141,46 @@ export function ResumeListItemCard({
   positions,
   matchingId,
   assigningId,
-  currentListUrl,
   onToggleSelect,
   onOpen,
-  writeNavSnapshot,
   onMatchPosition,
   onAssignPosition,
 }: ResumeListItemCardProps) {
-  const s = getPrimaryScore(resume, positionId)
+  const score = pickPositionScore(resume.positionScores, positionId)
+  const initialScore = score?.initialScore ?? null
+  const compositeScore = score?.compositeScore ?? null
+  const iceberg = getIcebergProgress(resume.evaluationDimensions, score?.positionId)
+
+  // 已有初筛分、但冰山模型维度没打完：综合分此时只是「部分得分」，需要标注
+  const hasAnyScore = initialScore !== null || compositeScore !== null
+  const pending = iceberg.hasData && iceberg.missing > 0 && hasAnyScore
+  const pendingNote = pending ? `待评 ${iceberg.missing} 项` : null
+  const pendingTitle = pending
+    ? `冰山模型未打分维度：${iceberg.missingLabels.join('、')}。当前综合分为部分得分。`
+    : undefined
 
   return (
     <div
+      role="link"
+      tabIndex={0}
+      aria-label={`查看 ${resume.candidateName || '未知'} 的简历详情`}
       onClick={() => onOpen(resume)}
-      className={`group flex items-start gap-3 rounded-xl border border-l-[3px] bg-card p-3.5 transition-colors cursor-pointer ${statusEdgeColor(resume.status)} ${
+      onKeyDown={(e) => {
+        // 焦点在复选框/下拉等子控件上时不接管按键
+        if (e.target !== e.currentTarget) return
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onOpen(resume)
+        }
+      }}
+      className={`flex items-center gap-3 rounded-xl border border-l-[3px] bg-card p-3.5 transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 ${statusEdgeColor(resume.status)} ${
         selected
           ? 'border-primary/40 shadow-soft'
           : 'border-border hover:bg-muted/40'
       }`}
     >
       {/* 选择 */}
-      <div className="pt-0.5" onClick={(e) => e.stopPropagation()}>
+      <div className="shrink-0" onClick={(e) => e.stopPropagation()}>
         <input
           type="checkbox"
           checked={selected}
@@ -104,11 +189,13 @@ export function ResumeListItemCard({
         />
       </div>
 
-      {/* 头像 */}
+      {/* 头像 + 状态点 */}
       <div className="flex flex-col items-center gap-1 shrink-0">
-        <div className="h-10 w-10 rounded-full inline-flex items-center justify-center text-sm font-semibold bg-gradient-to-br from-accent/20 to-primary/10 text-foreground/80 ring-1 ring-inset ring-border">
-          {(resume.candidateName || '未')[0]}
-        </div>
+        <ResumeAvatar
+          resumeId={resume.id}
+          photoUrl={resume.candidatePhoto}
+          name={resume.candidateName}
+        />
         <span className={`h-1.5 w-1.5 rounded-full ${statusDotColor(resume.status)}`} title={statusLabel(resume.status)} />
       </div>
 
@@ -162,65 +249,55 @@ export function ResumeListItemCard({
             </span>
           )}
         </div>
-        {/* 评分条 */}
-        <div className="mt-2.5 flex items-center gap-2">
-          <ScoreBar score={s} className="w-28" />
-          {s !== null ? (
-            <span className={`text-xs font-medium tabular-nums ${scoreColor(s)}`}>
-              {s} 分
-            </span>
-          ) : (
-            <span className="text-xs text-muted-foreground">未评估</span>
-          )}
-        </div>
       </div>
 
-      {/* 操作区 */}
-      <div className="flex flex-col items-end gap-2 shrink-0" onClick={(e) => e.stopPropagation()}>
-        {!resume.position && positions.length > 0 && (
-          <div className="flex items-center gap-1">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 w-7 p-0"
-              disabled={matchingId === resume.id}
-              onClick={() => onMatchPosition(resume.id)}
-              title="自动匹配职位"
-            >
-              {matchingId === resume.id ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" />
-              ) : (
-                <Zap className="h-3.5 w-3.5" />
-              )}
-            </Button>
-            <Select
-              value=""
-              onChange={(e) => {
-                if (e.target.value) onAssignPosition(resume.id, e.target.value)
-              }}
-              className="h-8 text-xs min-w-[130px]"
-              disabled={assigningId === resume.id}
-            >
-              <option value="">选择职位...</option>
-              {positions.map((pos) => (
-                <option key={pos.id} value={pos.id}>
-                  {pos.title}
-                </option>
-              ))}
-            </Select>
-          </div>
-        )}
-        <Link
-          onClick={writeNavSnapshot}
-          href={`/resume/detail/${resume.id}?from=${encodeURIComponent(currentListUrl)}`}
-          className="inline-flex"
-        >
-          <Button variant="ghost" size="sm" className="gap-1 h-7 px-2 text-xs rounded-md hover:bg-muted hover:text-foreground transition-colors">
-            <Eye className="h-3 w-3" />
-            查看
-          </Button>
-        </Link>
+      {/* 两列分数：初筛 / 冰山模型 */}
+      <div className="flex shrink-0 items-stretch border-l border-border/60 pl-3">
+        <ScoreCell label="初筛" score={initialScore} />
+        <ScoreCell
+          label="冰山模型"
+          score={compositeScore}
+          note={pendingNote}
+          noteTitle={pendingTitle}
+          className="border-l border-border/60"
+        />
       </div>
+
+      {/* 未分配职位时的分配控件（仅控件本身拦截点击，其余区域仍可整框进入详情） */}
+      {!resume.position && positions.length > 0 && (
+        <div className="flex shrink-0 items-center gap-1">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="h-7 w-7 p-0"
+            disabled={matchingId === resume.id}
+            onClick={(e) => { e.stopPropagation(); onMatchPosition(resume.id) }}
+            title="自动匹配职位"
+          >
+            {matchingId === resume.id ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <Zap className="h-3.5 w-3.5" />
+            )}
+          </Button>
+          <Select
+            value=""
+            onClick={(e) => e.stopPropagation()}
+            onChange={(e) => {
+              if (e.target.value) onAssignPosition(resume.id, e.target.value)
+            }}
+            className="h-8 text-xs min-w-[130px]"
+            disabled={assigningId === resume.id}
+          >
+            <option value="">选择职位...</option>
+            {positions.map((pos) => (
+              <option key={pos.id} value={pos.id}>
+                {pos.title}
+              </option>
+            ))}
+          </Select>
+        </div>
+      )}
     </div>
   )
 }

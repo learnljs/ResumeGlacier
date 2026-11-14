@@ -137,6 +137,14 @@ export interface ResumeItem {
   status: string
   createdAt: string
   screenedAt: string | null
+  /** 详情页提取的头像路径；实际图片走 /api/resumes/[id]/photo 读取 */
+  candidatePhoto?: string | null
+  /** 目标岗位的维度评分，用于判断冰山模型是否打完 */
+  evaluationDimensions?: Array<{
+    dimension: string
+    rating: number | null
+    positionId?: string | null
+  }> | null
   positionScores: Array<{
     positionId: string
     positionTitle: string

@@ -605,10 +605,8 @@ function ResumeListPageInner() {
                 positions={positions}
                 matchingId={matchingId}
                 assigningId={assigningId}
-                currentListUrl={currentListUrl}
                 onToggleSelect={toggleSelect}
                 onOpen={(r) => { writeNavSnapshot(); router.push(`/resume/detail/${r.id}?from=${encodeURIComponent(currentListUrl)}`) }}
-                writeNavSnapshot={writeNavSnapshot}
                 onMatchPosition={handleMatchPosition}
                 onAssignPosition={handleAssignPosition}
               />
