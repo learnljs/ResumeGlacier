@@ -33,7 +33,11 @@ jobs:
           cache: npm
 
       - name: Install dependencies
-        run: npm ci
+        # 用 install 而非 ci：lockfile 在 Windows 上生成，@napi-rs/wasm-runtime 这类
+        # 可选 peer 依赖（@emnapi/*）不会写进 lock，`npm ci` 在 Linux 上会直接报
+        # "Missing: @emnapi/core@1.11.3 from lock file" 并拒绝安装。
+        # npm install 仍然以 lock 里的版本为准，只补装缺失的可选依赖。
+        run: npm install --no-audit --no-fund
 
       - name: Prisma generate
         run: npx prisma generate
