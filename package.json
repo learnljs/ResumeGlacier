@@ -37,6 +37,7 @@
     "db:push": "prisma db push",
     "db:studio": "prisma studio",
     "db:setup": "prisma generate && prisma db push",
+    "db:demo": "tsx scripts/seed-demo-data.ts",
     "postinstall": "node -e \"const fs=require('fs');const src='node_modules/react-pdf/node_modules/pdfjs-dist/build/pdf.worker.min.mjs';const dst='public/pdf.worker.min.mjs';if(fs.existsSync(src)){fs.copyFileSync(src,dst);console.log('pdf.worker.min.mjs synced to public/')}else{console.warn('pdf.worker.min.mjs not found, skipping sync')}\""
   },
   "dependencies": {

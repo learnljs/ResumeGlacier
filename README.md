@@ -129,8 +129,8 @@ Tesseract.js OCR（中文 + 英文）
 
 ```bash
 # 1. 克隆仓库
-git clone https://github.com/learnLJS/resume-glacier.git
-cd resume-glacier
+git clone https://github.com/learnljs/ResumeGlacier.git
+cd ResumeGlacier
 
 # 2. 安装依赖
 npm install
@@ -147,6 +147,21 @@ npm run dev
 ```
 
 启动后访问 [http://localhost:3000](http://localhost:3000)。
+
+### 先看效果：演示模式
+
+数据库是空的时候，第一次打开页面会自动写入一份**虚构的演示数据**（12 份简历、3 个职位、
+6 条跟进记录、完整的评估与权重模型），不需要配置邮箱和 AI Key 就能看到看板、简历列表、
+跟进看板的真实样子。
+
+页面顶部会显示一条「演示数据」提示条，点右侧「删除演示数据」可一键清空并退出演示模式，
+之后就可以接入自己的邮箱。也可以手动播种：
+
+```bash
+npm run db:demo
+```
+
+> 演示数据只写入空库；退出后不会再次自动播种。
 
 **首次配置步骤**：
 

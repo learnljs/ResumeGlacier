@@ -40,6 +40,11 @@ data/.crash-state-*.json
 public/photos/
 prisma/data/resume.db
 *-backup.db
+# 演示模式标记（跟着数据库文件走）
+prisma/**/*.demo
+prisma/**/*.demo.optout
+# 临时/测试库
+prisma/test-*.db
 # Claude Code 本地配置（不入库）
 .claude/settings.local.json
 .playwright-mcp/

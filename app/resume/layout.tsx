@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Toaster } from '@/components/ui/toaster'
 import { ConfirmDialogHost } from '@/components/ui/confirm-dialog'
+import { DemoModeBanner } from '@/components/resume/DemoModeBanner'
 import {
   BarChart3,
   ChevronDown,
@@ -232,6 +233,8 @@ export default function ResumeLayout({
 
         {/* Main content */}
         <main className="flex-1 min-w-0">
+          {/* 演示模式提示条：只在库里有演示数据时出现，给用户留一个退出入口 */}
+          <DemoModeBanner />
           {children}
         </main>
       </div>    </div>
