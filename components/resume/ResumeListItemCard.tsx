@@ -62,17 +62,21 @@ function ResumeAvatar({
 /** 单个分数列：标签 + 放大数字 + 可选的待评标注 */
 function ScoreCell({
   label,
+  titleLabel,
   score,
   note,
   noteTitle,
   className = '',
 }: {
   label: string
+  /** 悬浮提示用的完整名称（列表标注可写简称） */
+  titleLabel?: string
   score: number | null
   note?: string | null
   noteTitle?: string
   className?: string
 }) {
+  const fullLabel = titleLabel ?? label
   return (
     <div className={`flex w-[88px] shrink-0 flex-col items-center justify-center gap-1 px-2 text-center ${className}`}>
       <span className="text-[11px] font-medium tracking-wide whitespace-nowrap text-muted-foreground">
@@ -86,8 +90,8 @@ function ScoreCell({
           score === null
             ? '暂无评分'
             : note
-              ? `${label}得分 ${score} 分（部分得分，${note}）`
-              : `${label}得分 ${score} 分`
+              ? `${fullLabel}得分 ${score} 分（部分得分，${note}）`
+              : `${fullLabel}得分 ${score} 分`
         }
       >
         {score === null ? '—' : Math.round(score)}
@@ -199,8 +203,8 @@ export function ResumeListItemCard({
         <span className={`h-1.5 w-1.5 rounded-full ${statusDotColor(resume.status)}`} title={statusLabel(resume.status)} />
       </div>
 
-      {/* 主体 */}
-      <div className="flex-1 min-w-0">
+      {/* 主体：限定在卡片约 6 分位内，让分数块前移、右侧留白 */}
+      <div className="min-w-0 basis-[54%]">
         <div className="flex items-center gap-2 flex-wrap">
           <span className="font-medium text-foreground">{resume.candidateName || '未知名称'}</span>
           {resume.candidateName && (
@@ -251,11 +255,12 @@ export function ResumeListItemCard({
         </div>
       </div>
 
-      {/* 两列分数：初筛 / 冰山模型 */}
+      {/* 两列分数：初筛 / 冰山（紧跟主体，约在卡片 6 分位处） */}
       <div className="flex shrink-0 items-stretch border-l border-border/60 pl-3">
         <ScoreCell label="初筛" score={initialScore} />
         <ScoreCell
-          label="冰山模型"
+          label="冰山"
+          titleLabel="冰山模型"
           score={compositeScore}
           note={pendingNote}
           noteTitle={pendingTitle}
@@ -265,7 +270,7 @@ export function ResumeListItemCard({
 
       {/* 未分配职位时的分配控件（仅控件本身拦截点击，其余区域仍可整框进入详情） */}
       {!resume.position && positions.length > 0 && (
-        <div className="flex shrink-0 items-center gap-1">
+        <div className="ml-auto flex shrink-0 items-center gap-1">
           <Button
             variant="ghost"
             size="sm"
