@@ -9,6 +9,7 @@ import { DemoModeBanner } from '@/components/resume/DemoModeBanner'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import {
   BarChart3,
+  BookOpen,
   ChevronDown,
   Menu,
   X,
@@ -44,6 +45,7 @@ const navItems: NavItem[] = [
     ],
   },
   { kind: 'leaf', href: '/resume/task-batches', label: '任务管理', icon: ClipboardList },
+  { kind: 'leaf', href: '/resume/about', label: '系统介绍', icon: BookOpen },
 ]
 
 function isItemActive(item: NavItem, pathname: string) {
