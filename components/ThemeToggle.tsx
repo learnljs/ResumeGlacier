@@ -82,30 +82,30 @@ export function ThemeToggle({ className }: { className?: string }) {
       aria-label={isDark ? '当前深色模式，点击切换为浅色' : '当前浅色模式，点击切换为深色'}
       title={isDark ? '切换为浅色' : '切换为深色'}
       className={cn(
-        'relative inline-flex h-9 w-[84px] shrink-0 items-center rounded-full border border-border/70 bg-card p-1 shadow-soft',
+        'relative inline-flex h-10 w-[92px] shrink-0 items-center rounded-full border border-border/70 bg-card p-1 shadow-soft',
         'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background',
         className,
       )}
     >
       {/* 底层两个图标：未选中的那个留在后面、变淡，被前面的滑块压住 */}
-      <span className="pointer-events-none absolute inset-0 flex items-center justify-between px-[13px] text-muted-foreground/70">
-        <Sun className="h-[15px] w-[15px]" aria-hidden="true" />
-        <Moon className="h-[15px] w-[15px]" aria-hidden="true" />
+      <span className="pointer-events-none absolute inset-0 flex items-center justify-between px-[15px] text-muted-foreground/70">
+        <Sun className="h-[17px] w-[17px]" aria-hidden="true" />
+        <Moon className="h-[17px] w-[17px]" aria-hidden="true" />
       </span>
 
       {/* 前面的滑块：左右移动，只显示当前选中的模式 */}
       <span
         aria-hidden="true"
         className={cn(
-          'pointer-events-none absolute left-1 top-1 flex h-7 w-[40px] items-center justify-center rounded-full',
+          'pointer-events-none absolute left-1 top-1 flex h-8 w-[44px] items-center justify-center rounded-full',
           'bg-primary text-primary-foreground shadow-sm transition-transform duration-300 ease-out',
-          isDark && 'translate-x-[36px]',
+          isDark && 'translate-x-[40px]',
         )}
       >
         {isDark ? (
-          <Moon className="h-[15px] w-[15px]" />
+          <Moon className="h-[17px] w-[17px]" />
         ) : (
-          <Sun className="h-[15px] w-[15px]" />
+          <Sun className="h-[17px] w-[17px]" />
         )}
       </span>
     </button>

@@ -45,8 +45,15 @@ const navItems: NavItem[] = [
     ],
   },
   { kind: 'leaf', href: '/resume/task-batches', label: '任务管理', icon: ClipboardList },
-  { kind: 'leaf', href: '/resume/about', label: '系统介绍', icon: BookOpen },
 ]
+
+/** 系统介绍入口：不放进可滚动导航，单独钉在侧边栏最底部、深浅色开关上方 */
+const aboutNavItem: NavItem = {
+  kind: 'leaf',
+  href: '/resume/about',
+  label: '系统介绍',
+  icon: BookOpen,
+}
 
 function isItemActive(item: NavItem, pathname: string) {
   if (item.kind === 'group') {
@@ -207,7 +214,7 @@ export default function ResumeLayout({
               </button>
             </div>
             <nav className="space-y-1">
-              {navItems.map((item) => (
+              {[...navItems, aboutNavItem].map((item) => (
                 <NavItemRenderer
                   key={item.kind === 'group' ? item.label : item.href}
                   item={item}
@@ -237,13 +244,24 @@ export default function ResumeLayout({
               />
             ))}
           </nav>
-          {/* 左下角外观开关：左边浅色、右边深色，点击切换并记住选择 */}
-          <div className="border-t border-sidebar-border p-3">
-            <div className="mb-2 flex items-center justify-between px-1">
+          {/* 底部固定区：系统介绍入口（最底，在深浅色开关上方）+ 外观开关（靠右、加大） */}
+          <div className="border-t border-sidebar-border p-3 space-y-2">
+            <Link
+              href="/resume/about"
+              className={cn(
+                'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                pathname.startsWith('/resume/about')
+                  ? 'bg-sidebar-primary/15 text-sidebar-foreground'
+                  : 'text-sidebar-muted-foreground hover:bg-sidebar-muted hover:text-sidebar-foreground'
+              )}
+            >
+              <BookOpen className="h-4 w-4" />
+              <span>系统介绍</span>
+            </Link>
+            <div className="flex items-center justify-between gap-3 px-1">
               <span className="text-xs font-medium text-sidebar-muted-foreground">外观</span>
-              <span className="text-[11px] text-sidebar-muted-foreground/70">浅 / 深</span>
+              <ThemeToggle />
             </div>
-            <ThemeToggle />
           </div>
         </aside>
 

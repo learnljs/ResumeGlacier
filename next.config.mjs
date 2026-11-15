@@ -4,6 +4,8 @@ const nextConfig = {
   // RG_DIST_DIR=.next-verify npm run build
   ...(process.env.RG_DIST_DIR ? { distDir: process.env.RG_DIST_DIR } : {}),
   output: 'standalone',
+  // 关闭左下角 Next.js 内置 dev 指示器（那个 N 气泡），避免遮挡侧边栏底部的开关
+  devIndicators: false,
   reactStrictMode: true,
   serverExternalPackages: [
     'imapflow',
