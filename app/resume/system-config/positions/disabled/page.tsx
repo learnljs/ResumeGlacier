@@ -1,5 +1,6 @@
 'use client'
 
+import { PageSkeleton } from '@/components/ui/page-skeleton'
 import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -9,6 +10,7 @@ import { toast } from 'sonner'
 import { confirmDialog } from '@/components/ui/confirm-dialog'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface Position {
   id: string
@@ -39,7 +41,7 @@ export default function DisabledPositionsPage() {
       if (json.error) throw new Error(json.error)
       setPositions(json.positions)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '加载失败'
+      const msg = apiErrorMessage(err, '加载失败，请稍后重试')
       toast.error(msg)
     } finally {
       setLoading(false)
@@ -64,7 +66,7 @@ export default function DisabledPositionsPage() {
       router.refresh()
       loadPositions()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '启用失败'
+      const msg = apiErrorMessage(err, '启用失败，请稍后重试')
       toast.error(msg)
     } finally {
       setEnablingId(null)
@@ -87,7 +89,7 @@ export default function DisabledPositionsPage() {
       router.refresh()
       loadPositions()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '删除失败'
+      const msg = apiErrorMessage(err, '删除失败，请稍后重试')
       toast.error(msg)
     } finally {
       setDeletingId(null)
@@ -95,11 +97,7 @@ export default function DisabledPositionsPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PageSkeleton variant="table" />
   }
 
   return (

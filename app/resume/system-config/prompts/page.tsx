@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
+import { TableRowsSkeleton } from '@/components/ui/page-skeleton'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Loader2, Search, ChevronDown, ChevronRight, ScrollText, AlertCircle } from 'lucide-react'
@@ -10,6 +11,7 @@ import { confirmDialog } from '@/components/ui/confirm-dialog'
 import { cn } from '@/lib/utils'
 import { PromptEditor } from '@/components/resume/PromptEditor'
 import { ResumePageShell } from '@/components/resume/PageShell'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface PositionPromptStatus {
   id: string
@@ -48,7 +50,7 @@ export default function PromptManagementPage() {
       if (json.error) throw new Error(json.error)
       setPositions(json.positions || [])
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : '加载职位列表失败')
+      toast.error(apiErrorMessage(e, '加载职位列表失败，请稍后重试'))
     } finally {
       setLoading(false)
     }
@@ -79,7 +81,7 @@ export default function PromptManagementPage() {
         version: p.version,
       })
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : '加载提示词失败')
+      toast.error(apiErrorMessage(e, '加载提示词失败，请稍后重试'))
     } finally {
       setPromptLoading(false)
     }
@@ -144,9 +146,7 @@ export default function PromptManagementPage() {
       <Card className="border-border/60">
         <CardContent className="p-0">
           {loading ? (
-            <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground py-12">
-              <Loader2 className="h-5 w-5 animate-spin" /> 加载中…
-            </div>
+            <TableRowsSkeleton rows={4} className="rounded-none border-0" />
           ) : filtered.length === 0 ? (
             <p className="text-sm text-muted-foreground py-12 text-center">
               {positions.length === 0 ? '暂无职位' : '无匹配职位'}

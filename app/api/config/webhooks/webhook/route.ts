@@ -103,7 +103,8 @@ export async function POST(request: NextRequest) {
     }
 
     const result = await testConnection(url, testValues)
-    return NextResponse.json(result)
+    // 测试没通过就是没通过：返回非 2xx，避免任何调用方把 HTTP 200 误读成「配置好了」
+    return NextResponse.json(result, { status: result.success ? 200 : 502 })
   } catch (error: unknown) {
     return webhookErrorResponse(error)
   }

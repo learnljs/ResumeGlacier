@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { confirmDialog } from '@/components/ui/confirm-dialog'
 import { cn } from '@/lib/utils'
 import { apiPatch } from '@/lib/api/client'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // ==================== 类型 ====================
 
@@ -99,7 +100,7 @@ export function InlineTimeEdit({
       if (validate) {
         const err = validate(trimmed)
         if (err) {
-          toast.error(err)
+          toast.error(apiErrorMessage(err))
           return
         }
       }
@@ -145,7 +146,7 @@ export function InlineTimeEdit({
       setEditing(false)
       onSaved()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '保存失败'
+      const msg = apiErrorMessage(err, '保存失败，请稍后重试')
       toast.error(msg)
       // 回滚：保持编辑状态，用户可以重试
     } finally {

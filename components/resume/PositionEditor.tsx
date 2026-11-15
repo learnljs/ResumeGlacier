@@ -19,6 +19,7 @@ import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { apiFetch, apiGet, apiPut, apiDelete } from '@/lib/api/client'
 import type { WeightModelRecord } from '@/types/resume-detail'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface PositionData {
   id: string
@@ -136,7 +137,7 @@ export function PositionEditor({ position }: PositionEditorProps) {
         setHasUnsavedChanges(false)
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '保存失败'
+      const msg = apiErrorMessage(err, '保存失败，请稍后重试')
       toast.error(msg)
     } finally {
       setSaving(false)
@@ -162,7 +163,7 @@ export function PositionEditor({ position }: PositionEditorProps) {
       toast.success(`职位已${actionLabel}`)
       router.refresh()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : `${actionLabel}失败`
+      const msg = apiErrorMessage(err, `${actionLabel}失败，请稍后重试`)
       toast.error(msg)
     } finally {
       setStatusChanging(false)
@@ -191,7 +192,7 @@ export function PositionEditor({ position }: PositionEditorProps) {
       toast.success('职位已永久删除')
       router.push('/resume/system-config/positions')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '删除失败'
+      const msg = apiErrorMessage(err, '删除失败，请稍后重试')
       toast.error(msg)
     } finally {
       setDeleting(false)

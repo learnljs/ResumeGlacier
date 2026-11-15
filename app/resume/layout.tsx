@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 import { Toaster } from '@/components/ui/toaster'
 import { ConfirmDialogHost } from '@/components/ui/confirm-dialog'
 import { DemoModeBanner } from '@/components/resume/DemoModeBanner'
+import { ThemeToggle } from '@/components/ThemeToggle'
 import {
   BarChart3,
   ChevronDown,
@@ -166,9 +167,13 @@ export default function ResumeLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
-    <div className="app-canvas min-h-screen bg-background">
+      <div className="app-canvas min-h-screen bg-background">
       <Toaster />
       <ConfirmDialogHost />
+      {/* 手机上侧边栏收起，主题开关改为左下角悬浮 */}
+      <div className="fixed bottom-4 left-4 z-40 lg:hidden">
+        <ThemeToggle />
+      </div>
       {/* Mobile header */}
       <div className="lg:hidden sticky top-0 z-50 flex items-center justify-between border-b bg-card px-4 h-14">
         <button
@@ -215,12 +220,13 @@ export default function ResumeLayout({
 
       <div className="flex">
         {/* Desktop sidebar */}
-        <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:border-r lg:border-sidebar-border lg:bg-sidebar lg:text-sidebar-foreground lg:min-h-screen lg:sticky lg:top-0">
+        <aside className="hidden lg:flex lg:flex-col lg:w-60 lg:border-r lg:border-sidebar-border lg:bg-sidebar lg:text-sidebar-foreground lg:h-screen lg:sticky lg:top-0">
           <div className="p-4 border-b border-sidebar-border">
             <h1 className="text-lg font-bold text-sidebar-foreground">简历智能筛选</h1>
             <p className="text-xs text-sidebar-muted-foreground mt-1">自动收取 / AI分析 / 智能筛选</p>
           </div>
-          <nav className="flex-1 p-3 space-y-1">
+          {/* 导航自己滚动，确保左下角外观开关始终贴在视口底部，不被长页面顶下去 */}
+          <nav className="flex-1 min-h-0 overflow-y-auto p-3 space-y-1">
             {navItems.map((item) => (
               <NavItemRenderer
                 key={item.kind === 'group' ? item.label : item.href}
@@ -229,6 +235,14 @@ export default function ResumeLayout({
               />
             ))}
           </nav>
+          {/* 左下角外观开关：左边浅色、右边深色，点击切换并记住选择 */}
+          <div className="border-t border-sidebar-border p-3">
+            <div className="mb-2 flex items-center justify-between px-1">
+              <span className="text-xs font-medium text-sidebar-muted-foreground">外观</span>
+              <span className="text-[11px] text-sidebar-muted-foreground/70">浅 / 深</span>
+            </div>
+            <ThemeToggle />
+          </div>
         </aside>
 
         {/* Main content */}

@@ -1,5 +1,6 @@
 'use client'
 
+import { PageSkeleton } from '@/components/ui/page-skeleton'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -18,6 +19,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { confirmDialog } from '@/components/ui/confirm-dialog'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface ResumeSource {
   id: string
@@ -100,7 +102,7 @@ export default function SourcesPage() {
       resetForm()
       loadSources()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '保存失败'
+      const msg = apiErrorMessage(err, '保存失败，请稍后重试')
       toast.error(msg)
     } finally {
       setSaving(false)
@@ -121,17 +123,13 @@ export default function SourcesPage() {
       toast.success('来源已删除')
       loadSources()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '删除失败'
+      const msg = apiErrorMessage(err, '删除失败，请稍后重试')
       toast.error(msg)
     }
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PageSkeleton variant="cards" />
   }
 
   return (

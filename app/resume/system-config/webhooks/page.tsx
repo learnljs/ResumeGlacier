@@ -1,5 +1,6 @@
 'use client'
 
+import { PageSkeleton } from '@/components/ui/page-skeleton'
 import { useState, useEffect } from 'react'
 import { toast } from 'sonner'
 import { confirmDialog } from '@/components/ui/confirm-dialog'
@@ -20,6 +21,7 @@ import {
   UNSUPPORTED_TARGET_FIELD_TYPES,
 } from '@/lib/constants/webhook-fields'
 import type { TransformType, TargetFieldType } from '@/lib/constants/webhook-fields'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // ========== 类型 ==========
 interface MappingRow {
@@ -136,7 +138,7 @@ export default function WebhookConfigPage() {
         toast.success('职位映射已保存')
       }
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '保存失败')
+      toast.error(apiErrorMessage(err, '保存失败，请稍后重试'))
     } finally {
       setSavingPositions(false)
     }
@@ -163,7 +165,7 @@ export default function WebhookConfigPage() {
       if (json.error) throw new Error(json.error)
       toast.success('Webhook 地址已保存')
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '保存失败')
+      toast.error(apiErrorMessage(err, '保存失败，请稍后重试'))
     } finally {
       setSavingUrl(false)
     }
@@ -180,14 +182,14 @@ export default function WebhookConfigPage() {
         body: JSON.stringify(body),
       })
       const json = await res.json()
-      if (json.error) throw new Error(json.error)
-      if (json.success) {
-        toast.success(json.message || '连接成功')
+      const message = json.message || json.error || '测试失败'
+      if (res.ok && json.success === true) {
+        toast.success(message)
       } else {
-        toast.error(json.message || '连接失败')
+        toast.error(message)
       }
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '测试连接失败')
+      toast.error(apiErrorMessage(err, '测试连接失败，请稍后重试'))
     } finally {
       setTesting(false)
     }
@@ -249,7 +251,7 @@ export default function WebhookConfigPage() {
       resetForm()
       loadData()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '保存失败')
+      toast.error(apiErrorMessage(err, '保存失败，请稍后重试'))
     } finally {
       setSaving(false)
     }
@@ -269,7 +271,7 @@ export default function WebhookConfigPage() {
       toast.success('映射已删除')
       loadData()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '删除失败')
+      toast.error(apiErrorMessage(err, '删除失败，请稍后重试'))
     }
   }
 
@@ -294,7 +296,7 @@ export default function WebhookConfigPage() {
       closeImportDialog()
       loadData()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '导入失败')
+      toast.error(apiErrorMessage(err, '导入失败，请稍后重试'))
     } finally {
       setImporting(false)
     }
@@ -313,11 +315,7 @@ export default function WebhookConfigPage() {
 
   // ========== 渲染 ==========
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PageSkeleton variant="table" />
   }
 
   const editingForm = (

@@ -1,13 +1,15 @@
 'use client'
 
+import { PageSkeleton } from '@/components/ui/page-skeleton'
 import { useEffect, useState } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { Plus, Briefcase, Ban, Loader2, ChevronRight } from 'lucide-react'
+import { Plus, Briefcase, Ban, ChevronRight } from 'lucide-react'
 import { toast } from 'sonner'
 import Link from 'next/link'
 import { ResumePageShell } from '@/components/resume/PageShell'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface Position {
   id: string
@@ -31,7 +33,7 @@ export default function PositionsPage() {
       if (json.error) throw new Error(json.error)
       setPositions(json.positions)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '加载失败'
+      const msg = apiErrorMessage(err, '加载失败，请稍后重试')
       toast.error(msg)
     } finally {
       setLoading(false)
@@ -43,11 +45,7 @@ export default function PositionsPage() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PageSkeleton variant="table" className="p-0" />
   }
 
   return (

@@ -1,5 +1,6 @@
 'use client'
 
+import { PageSkeleton } from '@/components/ui/page-skeleton'
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -22,6 +23,7 @@ import {
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { confirmDialog } from '@/components/ui/confirm-dialog'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface AIConfigItem {
   id: string
@@ -145,11 +147,14 @@ export default function AIConfigPage() {
         body: JSON.stringify({ apiKey: form.apiKey, baseUrl: form.baseUrl, model: form.model }),
       })
       const json = await res.json()
-      setTestResult(json)
-      if (json.success) toast.success(json.message)
-      else toast.error(json.message)
+      const message = json.message || json.error || '测试失败'
+      // 只有「HTTP 通过 + 后端明确判定成功」才显示绿色通过，避免假成功
+      const passed = res.ok && json.success === true
+      setTestResult({ success: passed, message })
+      if (passed) toast.success(message)
+      else toast.error(message)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '测试失败'
+      const msg = apiErrorMessage(err, '测试失败，请稍后重试')
       setTestResult({ success: false, message: msg })
       toast.error(msg)
     } finally {
@@ -193,7 +198,7 @@ export default function AIConfigPage() {
       resetForm()
       loadConfigs()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '保存失败'
+      const msg = apiErrorMessage(err, '保存失败，请稍后重试')
       toast.error(msg)
     } finally {
       setSaving(false)
@@ -214,7 +219,7 @@ export default function AIConfigPage() {
       toast.success('配置已删除')
       loadConfigs()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '删除失败'
+      const msg = apiErrorMessage(err, '删除失败，请稍后重试')
       toast.error(msg)
     }
   }
@@ -231,17 +236,13 @@ export default function AIConfigPage() {
       toast.success('已设为默认模型')
       loadConfigs()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '设置失败'
+      const msg = apiErrorMessage(err, '设置失败，请稍后重试')
       toast.error(msg)
     }
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PageSkeleton variant="cards" />
   }
 
   const currentPreset = providerPresets.find((p) => p.label === form.provider)

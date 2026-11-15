@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils'
 import { formatDateTime } from '@/lib/utils/date'
 import type { DiffLine } from '@/lib/services/prompt-service'
 import { apiGet, apiPost, apiDelete } from '@/lib/api/client'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface VersionItem {
   id: string
@@ -76,7 +77,7 @@ export function PromptVersionHistory({
       )
       setVersions(json.versions || [])
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : '加载版本失败')
+      toast.error(apiErrorMessage(e, '加载版本失败，请稍后重试'))
     } finally {
       setLoading(false)
     }
@@ -106,7 +107,7 @@ export function PromptVersionHistory({
         overallRules: json.prompt.overallRules,
       })
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : '加载版本内容失败')
+      toast.error(apiErrorMessage(e, '加载版本内容失败，请稍后重试'))
     } finally {
       setViewLoading(false)
     }
@@ -131,7 +132,7 @@ export function PromptVersionHistory({
       )
       setDiffResult(json.diff)
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : '对比失败')
+      toast.error(apiErrorMessage(e, '对比失败，请稍后重试'))
     } finally {
       setDiffLoading(false)
     }
@@ -156,7 +157,7 @@ export function PromptVersionHistory({
       await loadVersions()
       onRolledBack()
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : '删除失败')
+      toast.error(apiErrorMessage(e, '删除失败，请稍后重试'))
     } finally {
       setDeleting(null)
     }
@@ -181,7 +182,7 @@ export function PromptVersionHistory({
       await loadVersions()
       onRolledBack()
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : '回滚失败')
+      toast.error(apiErrorMessage(e, '回滚失败，请稍后重试'))
     } finally {
       setRollingBack(null)
     }

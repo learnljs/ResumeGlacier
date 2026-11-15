@@ -39,7 +39,7 @@ export function ReevaluateEmptyInitial() {
         </div>
         <h3 className="text-lg font-semibold text-foreground mb-2">开始简历复用评估</h3>
         <p className="text-sm text-muted-foreground text-center max-w-md">
-          选择一个目标岗位，可选设置学历、院校、专业等筛选条件，然后点击"刷新候选人列表"查看候选人
+          选择一个目标岗位，可选设置学历、院校、专业等筛选条件，然后点击「刷新候选人列表」查看候选人
         </p>
         <div className="flex items-center gap-2 mt-6 text-xs text-muted-foreground">
           <div className="flex items-center gap-1">

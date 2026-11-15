@@ -1,5 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // 允许用独立目录做隔离构建（例如本地已有 dev server 占用 .next 时）：
+  // RG_DIST_DIR=.next-verify npm run build
+  ...(process.env.RG_DIST_DIR ? { distDir: process.env.RG_DIST_DIR } : {}),
   output: 'standalone',
   reactStrictMode: true,
   serverExternalPackages: [

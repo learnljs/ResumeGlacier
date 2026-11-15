@@ -5,6 +5,7 @@ import { FlaskConical, Loader2, Trash2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { confirmDialog } from '@/components/ui/confirm-dialog'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface DemoStatus {
   demo: boolean
@@ -63,7 +64,7 @@ export function DemoModeBanner() {
       // 各页面数据都变了，整页刷新最省事也最不容易留下脏状态
       window.location.href = '/resume/system-config/email'
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '删除失败')
+      toast.error(apiErrorMessage(err, '删除失败，请稍后重试'))
       setResetting(false)
     }
   }

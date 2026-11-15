@@ -23,6 +23,7 @@ import { ResumeBatchActions } from '@/components/resume/ResumeBatchActions'
 import { ResumeListItemCard } from '@/components/resume/ResumeListItemCard'
 import { ResumeListToolbar } from '@/components/resume/ResumeListToolbar'
 import type { ResumeItem, ResumeListPagination, PositionOption, FilterOption } from '@/types/resume'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // 简历列表类型（ResumeItem / ResumeListPagination / PositionOption / FilterOption）已移至 types/resume.ts
 // getPrimaryScore / copyName 已移至 components/resume/ResumeListItemCard.tsx
@@ -212,7 +213,7 @@ function ResumeListPageInner() {
       if (!silent) setSelectedIds(new Set())
     } catch (err: unknown) {
       if (!silent) {
-        const msg = err instanceof Error ? err.message : '加载失败'
+        const msg = apiErrorMessage(err, '加载失败，请稍后重试')
         toast.error(msg)
       }
     } finally {
@@ -285,7 +286,7 @@ function ResumeListPageInner() {
       toast.success(`已提交 ${json.queued} 份简历到筛选队列`)
       setActiveTab('all')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '批量筛选失败'
+      const msg = apiErrorMessage(err, '批量筛选失败，请稍后重试')
       toast.error(msg)
     } finally {
       setBatchScreening(false)
@@ -306,7 +307,7 @@ function ResumeListPageInner() {
       toast.success(`已提交 ${json.queued} 份简历到筛选队列`)
       loadResumes()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '操作失败'
+      const msg = apiErrorMessage(err, '操作失败，请稍后重试')
       toast.error(msg)
     } finally {
       setBatchScreening(false)
@@ -327,7 +328,7 @@ function ResumeListPageInner() {
       toast.success(`已提交 ${json.queued} 份简历到解析队列，批次 ${json.batchNo}`)
       loadResumes()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '批量解析失败'
+      const msg = apiErrorMessage(err, '批量解析失败，请稍后重试')
       toast.error(msg)
     } finally {
       setBatchReparsing(false)
@@ -377,7 +378,7 @@ function ResumeListPageInner() {
       }
       toast.success('职位已分配')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '分配失败'
+      const msg = apiErrorMessage(err, '分配失败，请稍后重试')
       toast.error(msg)
     } finally {
       setAssigningId(null)
@@ -409,7 +410,7 @@ function ResumeListPageInner() {
         toast.warning(json.message || '未匹配到职位，请手动选择')
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '匹配失败'
+      const msg = apiErrorMessage(err, '匹配失败，请稍后重试')
       toast.error(msg)
     } finally {
       setMatchingId(null)
@@ -436,7 +437,7 @@ function ResumeListPageInner() {
       )
       loadResumes()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '批量匹配失败'
+      const msg = apiErrorMessage(err, '批量匹配失败，请稍后重试')
       toast.error(msg)
     } finally {
       setBatchMatching(false)
@@ -456,7 +457,7 @@ function ResumeListPageInner() {
       toast.success('已加入解析队列')
       loadResumes()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '解析失败'
+      const msg = apiErrorMessage(err, '解析失败，请稍后重试')
       toast.error(msg)
     } finally {
       setReparsingId(null)
@@ -481,7 +482,7 @@ function ResumeListPageInner() {
       setSelectedIds(new Set())
       loadResumes()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '批量解析失败'
+      const msg = apiErrorMessage(err, '批量解析失败，请稍后重试')
       toast.error(msg)
     } finally {
       setBatchParsing(false)

@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { toast } from 'sonner'
 import { apiPatch } from '@/lib/api/client'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 /**
  * 候选人姓名就地编辑：铅笔进入编辑态，显式「确认」才保存（防误改）
@@ -58,7 +59,7 @@ export default function NameEdit({
       setEditing(false)
       onSaved()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '保存失败')
+      toast.error(apiErrorMessage(err, '保存失败，请稍后重试'))
     } finally {
       setSaving(false)
     }

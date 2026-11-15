@@ -182,12 +182,14 @@ export async function updateRecords(
 
 /**
  * 测试 Webhook 连接
- * 发送一条含真实测试值的 add_records 请求，检查 errcode 是否为 0。
+ * 发送一条真实的 add_records 请求，只有「HTTP 2xx + errcode=0」才算通过。
  *
- * 注意：这会真实写入一条记录到Webhook表格。测试记录可由 HR 在Webhook端手动删除。
+ * 注意：这会真实写入一条记录到 Webhook 表格，测试记录需 HR 在 Webhook 端手动删除。
+ * 旧实现在「没导入字段、写入被拒」时仍返回 success=true（只是说"连接可达"），
+ * 属于典型假成功：地址没错，但这套配置根本推不了数据。现在统一按真实结果判定。
  *
  * @param url Webhook 地址
- * @param testValues 可选的测试字段值（如从第一个映射字段构造）。为空时仅做 HTTP 连通性检查。
+ * @param testValues 可选的测试字段值（从已导入的字段映射构造）
  * @returns { success, message }
  */
 export async function testConnection(
@@ -198,8 +200,6 @@ export async function testConnection(
     return { success: false, message: 'Webhook 地址格式不正确，应以 https://qyapi.weixin.qq.com/ 开头' }
   }
 
-  // 如果有测试值，发送真实写入请求
-  // 否则发空 values 仅检查 HTTP 连通性（不创建记录，仅验证网络可达）
   const values = testValues && Object.keys(testValues).length > 0
     ? testValues
     : {}
@@ -212,36 +212,29 @@ export async function testConnection(
       10000
     )
 
-    if (response.errcode === 0) {
-      return { success: true, message: '连接成功，已写入一条测试记录' }
-    }
-
-    // errcode 非 0 的处理
-    if (hasTestData) {
-      // 有测试数据但写入失败 → 真实错误，可能是字段 ID 与表格不匹配
-      const hint = response.errmsg?.includes('field not exists')
-        ? `\n字段 ID 与目标表格不匹配，请确认导入的示例 JSON 来源与当前 Webhook 地址对应的是同一个表格`
-        : ''
-      return {
-        success: false,
-        message: `写入失败：${response.errmsg || 'errcode ' + response.errcode}${hint}`,
-      }
-    }
-
-    // 无测试数据，仅 HTTP 连通性检查——errcode 非 0 但 HTTP 通了也算连接正常
-    if (status >= 200 && status < 500) {
+    // 唯一成功条件：HTTP 通过，且 Webhook 端明确返回 errcode=0
+    if (status >= 200 && status < 300 && response.errcode === 0) {
       return {
         success: true,
-        message: `连接可达（但未写入记录，建议导入字段后再测试）`,
+        message: hasTestData
+          ? '连接成功：已按当前字段映射写入一条测试记录'
+          : '连接成功：Webhook 地址可用（尚未导入字段映射，测试记录为空值）',
       }
     }
+
+    const fieldHint = response.errmsg?.includes('field not exists')
+      ? '；字段 ID 与目标表格不匹配，请确认示例 JSON 与当前 Webhook 地址属于同一张表'
+      : ''
+    const noMappingHint = !hasTestData
+      ? '；当前还没有导入字段映射，请先点「导入示例 JSON」再测试'
+      : ''
 
     return {
       success: false,
-      message: `连接失败：HTTP ${status}，${response.errmsg || '未知错误'}`,
+      message: `测试未通过：HTTP ${status}，errcode ${response.errcode ?? '未知'}，${response.errmsg || '接口未返回成功'}${fieldHint}${noMappingHint}`,
     }
   } catch (error: unknown) {
     const msg = error instanceof Error ? error.message : '网络请求失败'
-    return { success: false, message: `连接失败：${msg}` }
+    return { success: false, message: `测试未通过：请求未成功发出（${msg}）` }
   }
 }

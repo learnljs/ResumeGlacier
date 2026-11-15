@@ -21,10 +21,7 @@ function decryptPassword(stored: string | null | undefined): string {
 import { createBatch, updateBatchProgress } from '@/lib/services/task-batch-service'
 import * as fs from 'fs'
 import * as path from 'path'
-
-function safeFileName(name: string): string {
-  return name.replace(/[/\\\0]/g, '-')
-}
+import { safeAttachmentName } from '@/lib/utils/file-path'
 
 interface FetchResult {
   fetched: number
@@ -69,8 +66,14 @@ export async function testImapConnection(config: {
 
   try {
     await client.connect()
-    await client.logout()
-    return { success: true, message: 'IMAP协议连接成功，服务器可达且认证通过' }
+    // 只 connect 成功还不足以证明「能收简历」：再读一次文件夹列表，
+    // 确认认证后的 IMAP 会话真的可操作，而不是刚握手就被拒。
+    const mailboxes = await client.list()
+    const folderCount = Array.isArray(mailboxes) ? mailboxes.length : 0
+    return {
+      success: true,
+      message: `连接成功：服务器可达、账号认证通过，已读取到 ${folderCount} 个邮件文件夹`,
+    }
   } catch (error: unknown) {
     const rawMessage = error instanceof Error ? error.message : '未知错误'
     let message: string
@@ -88,6 +91,13 @@ export async function testImapConnection(config: {
     }
 
     return { success: false, message }
+  } finally {
+    // 无论成功失败都断开，避免测试按钮点几次就留下挂着的连接
+    try {
+      await client.logout()
+    } catch {
+      // 连接已经断开或未建立，忽略即可
+    }
   }
 }
 
@@ -268,7 +278,7 @@ async function fetchEmailsForConfig(configId: string, full = false): Promise<Fet
             try {
               const uploadDir = path.join(process.cwd(), 'data', 'uploads', emailRecord.id)
               fs.mkdirSync(uploadDir, { recursive: true })
-              const safeName = safeFileName(att.filename || `attachment-${Date.now()}`)
+              const safeName = safeAttachmentName(att.filename, `attachment-${Date.now()}`)
               const filePath = path.join(uploadDir, safeName)
               fs.writeFileSync(filePath, att.content)
 

@@ -15,13 +15,13 @@ import {
   CircleCheck,
   CircleX,
   Circle,
-  Loader2,
   FileText,
 } from 'lucide-react'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
+import { TableRowsSkeleton } from '@/components/ui/page-skeleton'
 import { Pagination } from '@/components/ui/pagination'
 import { StarRating } from '@/components/resume/StarRating'
 import { DimensionLabel } from '@/components/resume/DimensionLabel'
@@ -39,6 +39,7 @@ import {
 } from '@/lib/services/follow-up-transitions'
 import { apiPost } from '@/lib/api/client'
 import type { Tag, EvaluationDimension, FollowUpRecordItem, PaginationState } from '@/types/follow-up'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // ==================== 操作列配置（派生自 lib/services/follow-up-transitions，B8 A5） ====================
 
@@ -209,11 +210,7 @@ export function FollowUpTable({
   const isCompact = COMPACT_TABS.includes(activeTab)
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-40">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <TableRowsSkeleton rows={6} />
   }
 
   if (records.length === 0) {
@@ -655,7 +652,7 @@ function WebhookSyncCell({
           toast.error(json.message || '同步失败')
         }
       } catch (err: unknown) {
-        toast.error(err instanceof Error ? err.message : '同步请求失败')
+        toast.error(apiErrorMessage(err, '同步请求失败'))
       }
     }
 

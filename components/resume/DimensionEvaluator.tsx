@@ -9,6 +9,7 @@ import { type DimensionKey } from '@/lib/constants/evaluation'
 import { DimensionLabel } from '@/components/resume/DimensionLabel'
 import { StarRating } from '@/components/resume/StarRating'
 import { apiPost } from '@/lib/api/client'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface DimensionEvaluatorProps {
   resumeId: string
@@ -92,7 +93,7 @@ export function DimensionEvaluator({
       onSave()
       onOpenChange(false)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '保存失败'
+      const msg = apiErrorMessage(err, '保存失败，请稍后重试')
       toast.error(msg)
     } finally {
       setSaving(false)

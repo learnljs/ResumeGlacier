@@ -49,12 +49,23 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Lint
+        # 真正的代码规范检查（ESLint），与类型检查分开，避免"只查错别字不查规矩"
+        run: npm run lint
+
       - name: Unit tests
-        # 纯函数单测（分值计算 / 权重换算 / 图表刻度 / 日期工具），不依赖数据库与网络
+        # 纯函数单测（分值计算 / 权重换算 / 图表刻度 / 日期工具 / 连接测试判定）
         run: npm test
 
       - name: Build
         run: npm run build
+
+      - name: Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: E2E smoke
+        # 浏览器里真的打开一次页面：单测全绿但页面点不动的情况由这里兜住
+        run: npm run test:e2e
 
       - name: Report build output
         if: always()

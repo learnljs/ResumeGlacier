@@ -39,6 +39,7 @@ npm run db:generate   # 重新生成 Prisma 客户端
 npm run db:push       # 推送 schema 到 SQLite
 npm run db:studio     # 数据库管理界面
 
-# 提交前自检
-npm run lint
+# 提交前自检（一把跑完 ESLint + 类型检查 + 单测）
+npm run check
+# 单独跑：npm run lint（ESLint） / npm run typecheck（tsc） / npm test（Vitest）
 ```

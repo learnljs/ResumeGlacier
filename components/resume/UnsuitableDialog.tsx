@@ -14,6 +14,7 @@ import { toast } from 'sonner'
 import { REJECT_REASON_PRESETS } from '@/lib/constants/reject-reasons'
 import { apiGet, apiPost, apiPatch } from '@/lib/api/client'
 import type { Tag } from '@/types/follow-up'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // ==================== 类型 ====================
 
@@ -117,7 +118,7 @@ export function UnsuitableDialog({
       onSuccess()
       onClose()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '操作失败')
+      toast.error(apiErrorMessage(err, '操作失败，请稍后重试'))
     } finally {
       setSubmitting(false)
     }

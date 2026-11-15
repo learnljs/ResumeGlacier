@@ -333,3 +333,20 @@ model PromptRecord {
   @@unique([positionId, version])
   @@index([positionId, isCurrent])
 }
+
+/// 可登录系统的 HR 人员名单（预登记，外部无法自助注册）
+/// 手机号是身份标识，密码是凭证；只有名单内且启用的人员才能登录
+model HrUser {
+  id             String    @id @default(cuid())
+  name           String                                         // 姓名
+  phone          String    @unique                               // 手机号（登录名，预登记）
+  passwordHash   String                                         // scrypt 派生，不存明文
+  passwordSalt   String                                         // 每个账号独立随机盐
+  role           String    @default("STAFF")                     // ADMIN / STAFF
+  enabled        Boolean   @default(true)                        // 停用后不能登录
+  lastLoginAt    DateTime?                                      // 最近登录时间
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+
+  @@index([enabled])
+}

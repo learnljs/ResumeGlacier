@@ -1,8 +1,8 @@
 'use client'
 
+import { PageSkeleton } from '@/components/ui/page-skeleton'
 import { useEffect, useState, useCallback, useRef, useMemo, use, Suspense } from 'react'
 import { useSearchParams, useRouter } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
 import { DIMENSION_KEYS, type DimensionKey } from '@/lib/constants/evaluation'
 import {
@@ -28,6 +28,7 @@ import type {
   EvaluationData,
   ResumeDetailTab,
 } from '@/types/resume-detail'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 function ResumeDetailPageInner({ id }: { id: string }) {
   const searchParams = useSearchParams()
@@ -110,7 +111,7 @@ function ResumeDetailPageInner({ id }: { id: string }) {
         }
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '加载失败'
+      const msg = apiErrorMessage(err, '加载失败，请稍后重试')
       toast.error(msg)
     } finally {
       setLoading(false)
@@ -129,7 +130,7 @@ function ResumeDetailPageInner({ id }: { id: string }) {
       const evals = json.evaluations || []
       setEvaluations(evals)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '获取评估数据失败'
+      const msg = apiErrorMessage(err, '获取评估数据失败，请稍后重试')
       toast.error(msg)
     } finally {
       setLoadingEvaluations(false)
@@ -234,7 +235,7 @@ function ResumeDetailPageInner({ id }: { id: string }) {
       loadResume()
       setActiveTab('text')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '解析失败'
+      const msg = apiErrorMessage(err, '解析失败，请稍后重试')
       toast.error(msg)
       // 解析失败后刷新数据，后端已将状态设为 ERROR
       await loadResume()
@@ -254,7 +255,7 @@ function ResumeDetailPageInner({ id }: { id: string }) {
       loadResume()
       setActiveTab('text')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '获取失败'
+      const msg = apiErrorMessage(err, '获取失败，请稍后重试')
       toast.error(msg)
     } finally {
       setRefetching(false)
@@ -276,7 +277,7 @@ function ResumeDetailPageInner({ id }: { id: string }) {
       toast.success('已提交评估，请等待处理...')
       await loadResume()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '评估失败'
+      const msg = apiErrorMessage(err, '评估失败，请稍后重试')
       toast.error(msg)
     } finally {
       setScreening(false)
@@ -307,7 +308,7 @@ function ResumeDetailPageInner({ id }: { id: string }) {
       loadResume()
       setActiveTab('structured')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '提取失败'
+      const msg = apiErrorMessage(err, '提取失败，请稍后重试')
       toast.error(msg)
     } finally {
       setExtracting(false)
@@ -361,7 +362,7 @@ function ResumeDetailPageInner({ id }: { id: string }) {
       toast.success('职位分配成功')
       loadResume()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '分配失败'
+      const msg = apiErrorMessage(err, '分配失败，请稍后重试')
       toast.error(msg)
     } finally {
       setAssigning(false)
@@ -425,11 +426,7 @@ function ResumeDetailPageInner({ id }: { id: string }) {
   }, [selectedPositionId, resume?.evaluations])
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PageSkeleton variant="detail" />
   }
 
   if (!resume) {
@@ -581,7 +578,7 @@ function ResumeDetailPageInner({ id }: { id: string }) {
 export default function ResumeDetailPage(props: { params: Promise<{ id: string }> }) {
   // 使用 use() unwarp Promise，但在 Suspense 边界内
   return (
-    <Suspense fallback={<div className="flex items-center justify-center h-[60vh]"><Loader2 className="h-8 w-8 animate-spin text-muted-foreground" /></div>}>
+    <Suspense fallback={<PageSkeleton variant="detail" />}>
       <ResumeDetailPageWrapper params={props.params} />
     </Suspense>
   )

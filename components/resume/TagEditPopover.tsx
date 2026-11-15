@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils'
 import { CATEGORY_ORDER, CATEGORY_LABELS, CATEGORY_DOT_COLORS, TAG_COLORS } from '@/lib/constants/tags'
 import { apiPost, apiPut, apiDelete } from '@/lib/api/client'
 import type { Tag } from '@/types/follow-up'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // ==================== 类型 ====================
 
@@ -182,7 +183,7 @@ export function TagEditPopover({ recordId, candidateName, currentTags, allTags, 
       onTagCreated?.(newTag)
       toast.success(`标签「${name}」已创建`)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '创建失败'
+      const msg = apiErrorMessage(err, '创建失败，请稍后重试')
       toast.error(msg)
     } finally {
       setCreating(false)
@@ -203,7 +204,7 @@ export function TagEditPopover({ recordId, candidateName, currentTags, allTags, 
       onTagDeleted?.(tag)
       toast.success(`标签「${tag.name}」已删除`)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '删除失败'
+      const msg = apiErrorMessage(err, '删除失败，请稍后重试')
       toast.error(msg)
     }
   }
@@ -218,7 +219,7 @@ export function TagEditPopover({ recordId, candidateName, currentTags, allTags, 
       handleClose()
       onSaved()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '更新失败'
+      const msg = apiErrorMessage(err, '更新失败，请稍后重试')
       toast.error(msg)
     } finally {
       setSaving(false)

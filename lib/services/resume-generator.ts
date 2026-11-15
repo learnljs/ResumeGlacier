@@ -2,10 +2,7 @@ import { prisma } from '@/lib/prisma'
 import { refetchSingleEmailByUid } from '@/lib/services/email-fetcher'
 import * as fs from 'fs'
 import * as path from 'path'
-
-function safeFileName(name: string): string {
-  return name.replace(/[/\\\0]/g, '-')
-}
+import { safeAttachmentName } from '@/lib/utils/file-path'
 
 interface GenerateResult {
   resumes: Array<{ id: string; fileName: string }>
@@ -104,7 +101,7 @@ export async function generateResumeForEmail(emailId: string): Promise<GenerateR
         fs.mkdirSync(uploadDir, { recursive: true })
 
         for (const att of refetched.attachments) {
-          const safeName = safeFileName(att.filename)
+          const safeName = safeAttachmentName(att.filename, `attachment-${Date.now()}`)
           const filePath = path.join(uploadDir, safeName)
           fs.writeFileSync(filePath, att.content)
 

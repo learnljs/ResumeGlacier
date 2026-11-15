@@ -20,6 +20,7 @@ import { ScreenedFilterBar } from '@/components/resume/ScreenedFilterBar'
 import { ScreenedResumeCard } from '@/components/resume/ScreenedResumeCard'
 // 类型定义已移至 types/resume.ts（ScreenedResumeItem / ResumeListPagination / PositionOption / FilterOption）
 import type { ScreenedResumeItem, ResumeListPagination, PositionOption, FilterOption } from '@/types/resume'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // 状态颜色单点（B8）：从 lib/constants/resume-status 导入
 
@@ -301,7 +302,7 @@ function ScreenedPageInner() {
       setSelectedIds(new Set())
       pendingRestoreRef.current = json.resumes.length
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '加载失败'
+      const msg = apiErrorMessage(err, '加载失败，请稍后重试')
       toast.error(msg)
     } finally {
       setLoading(false)

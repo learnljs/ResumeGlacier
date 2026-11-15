@@ -1,10 +1,11 @@
 'use client'
 
+import { PageSkeleton } from '@/components/ui/page-skeleton'
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { Loader2 } from 'lucide-react'
 import { PositionEditor } from '@/components/resume/PositionEditor'
 import { toast } from 'sonner'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface PositionData {
   id: string
@@ -45,18 +46,14 @@ export default function EditPositionPage() {
         setPosition(json.position)
       })
       .catch((err: unknown) => {
-        const msg = err instanceof Error ? err.message : '加载职位失败'
+        const msg = apiErrorMessage(err, '加载职位失败，请稍后重试')
         toast.error(msg)
       })
       .finally(() => setLoading(false))
   }, [id])
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PageSkeleton variant="form" />
   }
 
   if (!position) {

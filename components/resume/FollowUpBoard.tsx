@@ -14,6 +14,7 @@ import {
   STATUS_CN,
 } from '@/lib/services/follow-up-transitions'
 import { apiGet } from '@/lib/api/client'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface FollowUpBoardData {
   statusCounts: Record<string, number>
@@ -67,7 +68,7 @@ export function FollowUpBoard({ emailConfigId, resumeSourceId }: FollowUpBoardPr
     apiGet<{ positions?: { id: string; title: string }[] }>('/api/positions')
       .then((json) => setPositions(json.positions || []))
       .catch((err: unknown) => {
-        const msg = err instanceof Error ? err.message : '加载职位失败'
+        const msg = apiErrorMessage(err, '加载职位失败，请稍后重试')
         toast.error(msg)
       })
   }, [])
@@ -97,7 +98,7 @@ export function FollowUpBoard({ emailConfigId, resumeSourceId }: FollowUpBoardPr
       setFlowData(flowJson)
     } catch (err: unknown) {
       if (reqId !== reqIdRef.current) return // 过期响应，不提示错误
-      const msg = err instanceof Error ? err.message : '加载失败'
+      const msg = apiErrorMessage(err, '加载失败，请稍后重试')
       toast.error(msg)
     } finally {
       // 仅最新请求负责收尾 loading，避免被先返回的旧请求提前关闭

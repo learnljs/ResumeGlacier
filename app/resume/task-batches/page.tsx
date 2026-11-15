@@ -1,5 +1,6 @@
 'use client'
 
+import { PageSkeleton } from '@/components/ui/page-skeleton'
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
@@ -29,6 +30,7 @@ import { SegmentedProgress } from '@/components/ui/segmented-progress'
 import { formatMonthDayTime, formatDateTimeFull } from '@/lib/utils/date'
 import type { BatchDetail, BatchResumeItem, TaskBatch } from '@/types/task-batch'
 import { statusConfig } from '@/components/resume/TaskBatchStatus'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 export default function TaskBatchesPage() {
   const [batches, setBatches] = useState<TaskBatch[]>([])
@@ -164,7 +166,7 @@ export default function TaskBatchesPage() {
       loadBatches()
     } catch (error) {
       console.error('删除批次失败:', error)
-      const message = error instanceof Error ? error.message : '删除批次失败'
+      const message = apiErrorMessage(error, '删除批次失败，请稍后重试')
       toast.error(message)
     } finally {
       setDeletingId(null)
@@ -198,7 +200,7 @@ export default function TaskBatchesPage() {
       loadBatches()
     } catch (error) {
       console.error('停止批次失败:', error)
-      const message = error instanceof Error ? error.message : '停止批次失败'
+      const message = apiErrorMessage(error, '停止批次失败，请稍后重试')
       toast.error(message)
     } finally {
       setStoppingId(null)
@@ -243,11 +245,7 @@ export default function TaskBatchesPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-64">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PageSkeleton variant="table" />
   }
 
   return (
@@ -372,7 +370,7 @@ export default function TaskBatchesPage() {
             </div>
             <h3 className="text-lg font-semibold mb-2">暂无任务批次</h3>
             <p className="text-muted-foreground text-sm mb-6 max-w-md text-center">
-              点击"手动获取"按钮或等待定时任务执行后，将在这里显示任务批次
+              点击「手动获取」按钮或等待定时任务执行后，将在这里显示任务批次
             </p>
             <Button onClick={handleManualFetch} disabled={fetching} className="gap-2">
               {fetching ? (

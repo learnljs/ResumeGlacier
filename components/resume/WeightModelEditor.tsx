@@ -18,6 +18,7 @@ import {
 } from '@/lib/constants/evaluation'
 import { parseWeightsJson, useWeightInput, weightsToNum, weightsToStr } from '@/lib/hooks/use-weight-input'
 import type { WeightModelRecord } from '@/types/resume-detail'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 interface WeightModelEditorProps {
   positionId: string
@@ -113,7 +114,7 @@ export function WeightModelEditor({
       toast.success(`${meta.title}已创建`)
       onChanged()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '创建失败')
+      toast.error(apiErrorMessage(err, '创建失败，请稍后重试'))
     } finally {
       setCreating(false)
     }
@@ -131,7 +132,7 @@ export function WeightModelEditor({
       toast.success('权重已保存')
       onChanged()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '保存失败')
+      toast.error(apiErrorMessage(err, '保存失败，请稍后重试'))
     } finally {
       setSaving(false)
     }

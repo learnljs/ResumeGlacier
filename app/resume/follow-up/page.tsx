@@ -27,6 +27,7 @@ import { contactResultLabel } from '@/lib/constants/contact-result'
 import { saveResumeNavSnapshot } from '@/lib/resume-nav'
 import { FOLLOW_UP_TABS } from '@/lib/constants/follow-up'
 import { formatInterviewTime } from '@/lib/utils/date'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // ==================== 类型定义 ====================
 // EvaluationDimension / FollowUpRecordItem / PaginationState 已移至 types/follow-up.ts
@@ -172,7 +173,7 @@ function FollowUpPageInner() {
       setPagination(json.pagination)
       pendingRestoreRef.current = json.records.length
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '加载失败'
+      const msg = apiErrorMessage(err, '加载失败，请稍后重试')
       toast.error(msg)
     } finally {
       setLoading(false)
@@ -274,7 +275,7 @@ function FollowUpPageInner() {
       loadRecords()
       loadCounts()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '操作失败')
+      toast.error(apiErrorMessage(err, '操作失败，请稍后重试'))
     }
   }
 
@@ -338,7 +339,7 @@ function FollowUpPageInner() {
       loadRecords()
       loadCounts()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '操作失败')
+      toast.error(apiErrorMessage(err, '操作失败，请稍后重试'))
     } finally {
       setInterviewEndSubmitting(false)
     }
@@ -364,7 +365,7 @@ function FollowUpPageInner() {
       loadRecords()
       loadCounts()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '操作失败')
+      toast.error(apiErrorMessage(err, '操作失败，请稍后重试'))
     }
   }
 
@@ -400,7 +401,7 @@ function FollowUpPageInner() {
       loadRecords()
       loadCounts()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '操作失败')
+      toast.error(apiErrorMessage(err, '操作失败，请稍后重试'))
     } finally {
       setResignSubmitting(false)
     }
@@ -422,7 +423,7 @@ function FollowUpPageInner() {
       loadRecords()
       loadCounts()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '操作失败')
+      toast.error(apiErrorMessage(err, '操作失败，请稍后重试'))
     }
   }
 
@@ -449,7 +450,7 @@ function FollowUpPageInner() {
       setNoteValue('')
       loadRecords()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '更新失败')
+      toast.error(apiErrorMessage(err, '更新失败，请稍后重试'))
     } finally {
       setNoteSaving(false)
     }
@@ -483,7 +484,7 @@ function FollowUpPageInner() {
       setReasonEditValue('')
       loadRecords()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '更新失败')
+      toast.error(apiErrorMessage(err, '更新失败，请稍后重试'))
     } finally {
       setReasonEditSaving(false)
     }
@@ -527,7 +528,7 @@ function FollowUpPageInner() {
       loadRecords()
       loadCounts()
     } catch (err: unknown) {
-      toast.error(err instanceof Error ? err.message : '操作失败')
+      toast.error(apiErrorMessage(err, '操作失败，请稍后重试'))
     } finally {
       setRollbackSaving(false)
     }

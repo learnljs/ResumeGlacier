@@ -17,9 +17,9 @@ export function resolveLocalFilePath(filePath: string): string {
 
   // 策略1: 路径本地已存在，且在本地 uploads 目录下，直接返回
   if (fs.existsSync(filePath)) {
-    const resolved = path.resolve(filePath)
-    if (resolved.startsWith(uploadsDir + path.sep) || resolved === uploadsDir) {
-      return filePath
+    const inside = resolveInsideUploads(filePath, uploadsDir)
+    if (inside) {
+      return inside
     }
   }
 
@@ -33,7 +33,7 @@ export function resolveLocalFilePath(filePath: string): string {
   }
 
   if (fs.existsSync(resolvedPath)) {
-    return resolvedPath
+    return requireInsideUploads(resolvedPath, uploadsDir)
   }
 
   // 策略3: 按文件名在 uploads 目录下搜索（处理 emailId 不同的情况）
@@ -41,12 +41,55 @@ export function resolveLocalFilePath(filePath: string): string {
   if (fileName && fs.existsSync(uploadsDir)) {
     const found = searchFileByName(uploadsDir, fileName)
     if (found) {
-      return found
+      return requireInsideUploads(found, uploadsDir)
     }
   }
 
-  // 策略4: 返回替换后的路径
-  return resolvedPath
+  // 策略4: 返回替换后的路径（调用方据此判 404），同样先过边界守卫
+  return requireInsideUploads(resolvedPath, uploadsDir)
+}
+
+/**
+ * 附件目录边界守卫。
+ *
+ * 数据库里的 filePath 可能来自历史迁移、手工导入或外部邮件，若含 ../ 会
+ * 让 path.join 跑出 uploads 目录。原先只有「文件下载」接口做了校验，照片、
+ * 重新解析、解析服务这三个读取入口是裸的；现在统一收敛到路径解析这一层，
+ * 所有调用方自动受保护，不需要每个接口各写一遍。
+ *
+ * 越界时不抛出原始路径，而是返回一个 uploads 内必定不存在的占位路径，
+ * 让调用方按既有的「文件不存在」流程返回 404，不向客户端泄漏服务器目录结构。
+ */
+export function resolveInsideUploads(candidate: string, uploadsDir?: string): string | null {
+  const root = uploadsDir ?? path.resolve(process.cwd(), 'data', 'uploads')
+  const resolved = path.resolve(candidate)
+  return resolved === root || resolved.startsWith(root + path.sep) ? resolved : null
+}
+
+function requireInsideUploads(candidate: string, uploadsDir: string): string {
+  return resolveInsideUploads(candidate, uploadsDir)
+    ?? path.join(uploadsDir, '__outside_uploads__')
+}
+
+/**
+ * 清洗邮件附件名，只保留可安全用于文件系统的一段文件名。
+ *
+ * 附件名完全由外部邮件提供，可能被构造成 ../、绝对路径、控制字符或超长名。
+ * 先取 basename 再剥掉分隔符、控制字符、首尾点号与空白，最后兜底成固定名，
+ * 保证落盘路径永远拼不出附件目录之外的位置。
+ */
+export function safeAttachmentName(name: unknown, fallback = 'attachment'): string {
+  const raw = typeof name === 'string' && name ? name : ''
+  const base = path.basename(raw.replace(/[/\\\0]/g, '-'))
+  const cleaned = base
+    .replace(/[<>:"|?*\x00-\x1f\x7f]/g, '-')
+    .replace(/^[-.\s]+|[-.\s]+$/g, '')
+    .trim()
+
+  if (!cleaned || cleaned === '.' || cleaned === '..') {
+    return fallback
+  }
+  return cleaned.length > 180 ? cleaned.slice(0, 180) : cleaned
 }
 
 /**

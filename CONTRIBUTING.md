@@ -62,7 +62,10 @@ npm run dev         # 启动开发服务
 ```
 
 修改代码后通过浏览器（[http://localhost:3000](http://localhost:3000)）验证。
-纯函数使用 Vitest 单测（`npm test`），页面级端到端验证通过 Playwright（`npm run test:e2e`）或 Playwright MCP 进行。
+提交前跑 `npm run check`（ESLint 规范 + TypeScript 类型 + Vitest 单测）；单项可用 `npm run lint`、`npm run typecheck`、`npm test`。页面级端到端验证通过 Playwright（`npm run test:e2e`）或 Playwright MCP 进行。CI 在每次 push 时也会跑 lint / typecheck / 单测 / 构建 / 浏览器冒烟。
+
+> `npm run lint` 是 ESLint 规范检查，`npm run typecheck` 才是类型检查，两者不是同一件事。
+> 依赖版本在 `package.json` 里全部写死（不用 `latest` / `^`），升级请显式改版本号并同步 lock 文件。
 
 #### 4. 提交规范
 
@@ -197,7 +200,7 @@ hr/
 
 ### 单元测试（Vitest）
 
-不依赖数据库 / 外部服务的纯函数（坐标轴计算、权重校验、得分公式、日期工具等）必须有单测，放在 `tests/unit/`：
+不依赖数据库 / 外部服务的纯函数（坐标轴计算、权重校验、得分公式、日期工具、连接测试判定、分数取值等）必须有单测，放在 `tests/unit/`：
 
 ```bash
 npm test           # 单次运行

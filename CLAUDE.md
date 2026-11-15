@@ -60,10 +60,12 @@ npm run db:studio          # 数据库管理界面
 npm run db:setup           # 首次初始化（generate + push）
 
 # 代码质量
-npm run lint               # 代码检查（应用 + scripts 两轮 tsc）
-npm run typecheck          # 同上
+npm run lint               # ESLint 代码规范检查（Next / React / Hooks / TS 规则）
+npm run lint:fix           # 自动修复可修复的规范问题
+npm run typecheck          # 类型检查（应用 + scripts 两轮 tsc）
 npm run typecheck:app      # 仅应用（tsconfig.json）
 npm run typecheck:scripts  # 仅 scripts/（tsconfig.scripts.json）
+npm run check              # lint + typecheck + 单测，提交前一把跑完
 
 # 脚本
 npx tsx scripts/full-mailbox-sync.ts                  # 列出邮箱配置

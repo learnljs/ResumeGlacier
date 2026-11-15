@@ -19,6 +19,7 @@ import type { Tag } from '@/types/follow-up'
 import { TagChip } from '@/components/resume/TagChip'
 import { TagCreateForm } from '@/components/resume/TagCreateForm'
 import { SelectedTagsPreview } from '@/components/resume/SelectedTagsPreview'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // ==================== 类型 ====================
 
@@ -107,7 +108,7 @@ export function BatchFollowUpDialog({
       setNewTagColor(TAG_COLORS[0])
       toast.success('标签创建成功')
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '创建标签失败'
+      const msg = apiErrorMessage(err, '创建标签失败，请稍后重试')
       toast.error(msg)
     } finally {
       setCreatingTag(false)
@@ -142,7 +143,7 @@ export function BatchFollowUpDialog({
       onSuccess?.()
       onClose()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '批量创建跟进记录失败'
+      const msg = apiErrorMessage(err, '批量创建跟进记录失败，请稍后重试')
       toast.error(msg)
     } finally {
       setSubmitting(false)

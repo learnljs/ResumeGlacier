@@ -139,8 +139,10 @@ Tesseract.js OCR（中文 + 英文）
 
 ### 前置要求
 
-- Node.js 20+ 与 npm
+- Node.js 22+ 与 npm（版本要求写在 `package.json` 的 `engines` 里）
 - 一个 OpenAI 兼容的 AI 服务（推荐 DeepSeek / 通义千问 / OpenAI / Azure OpenAI）
+
+> 依赖全部锁定为精确版本号（`package.json` 里没有 `latest` 或 `^`），配合 `package-lock.json` 可保证今天装和下个月装是同一套包，不会出现「昨天还好好的」。
 
 ### 30 秒跑起来
 
@@ -152,9 +154,10 @@ cd ResumeGlacier
 # 2. 安装依赖
 npm install
 
-# 3. 配置环境变量（生成加密密钥）
+# 3. 配置环境变量（加密密钥 + 首次初始化码）
 cp .env.example .env
 echo "ENCRYPTION_KEY=\"$(openssl rand -hex 32)\"" >> .env
+echo "SETUP_CODE=\"$(openssl rand -hex 16)\"" >> .env
 
 # 4. 初始化数据库（Prisma generate + db push）
 npm run db:setup
@@ -163,7 +166,11 @@ npm run db:setup
 npm run dev
 ```
 
-启动后访问 [http://localhost:3000](http://localhost:3000)。
+启动后访问 [http://localhost:3000](http://localhost:3000)：首次会进入**初始化页**，
+输入 `.env` 里的 `SETUP_CODE`、姓名、手机号和密码，创建第一位管理员。
+之后在「系统配置 → 人员管理」登记其他 HR，详见[登录与人员管理](#登录与人员管理)。
+
+> 只想本机访问、不想让同一 WiFi 的其他人连进来：用 `npm run dev -- -H 127.0.0.1` 启动。
 
 ### 先看效果：演示模式
 
@@ -198,6 +205,9 @@ npm run db:demo
 |------|------|------|
 | `DATABASE_URL` | 是 | SQLite 路径，默认 `file:./data/resume.db` |
 | `ENCRYPTION_KEY` | 是 | 64 位十六进制字符，AES-256-GCM 密钥（生成：`openssl rand -hex 32`）。**一旦丢失无法解密历史数据** |
+| `SETUP_CODE` | 首次部署 | 一次性初始化码；人员名单为空时用来创建第一位管理员，初始化成功后即失效，可从 `.env` 删除 |
+| `SESSION_SECRET` | 否 | 会话签名密钥；不配置时由 `ENCRYPTION_KEY` 派生 |
+| `AUTH_ENABLED` | 否 | 设为 `false` 可整体关闭登录拦截，仅用于本机演示 / 截图 / 自动化测试 |
 | `SCREENING_CONCURRENCY` | 否 | AI 筛选并发数，默认 2 |
 | `PARSING_CONCURRENCY` | 否 | 解析并发数，SQLite 限制下保持 1 |
 | `CRON_SECRET` | 生产 | 定时任务 API 的 Bearer token |
@@ -210,6 +220,30 @@ npm run db:demo
 ---
 
 ## 使用指南
+
+### 登录与人员管理
+
+系统默认开启全站登录拦截：未登录访问任何页面会跳到 `/login`，直接调 API 会返回 401。
+只有管理员在「系统配置 → 人员管理」**预先登记过手机号**且状态启用的人员才能登录，
+不开放自助注册，也不依赖短信或邮件验证码。
+
+首次部署的冷启动流程：
+
+1. 在 `.env` 设置 `SETUP_CODE`（`openssl rand -hex 16` 生成），启动服务
+2. 打开任意页面会自动进入 `/setup`，填入该初始化码、姓名、手机号和密码，创建第一位管理员
+3. 初始化完成后 `/setup` 永久关闭，`SETUP_CODE` 可以从 `.env` 删除
+4. 管理员在「人员管理」登记其他 HR 的手机号与初始密码，线下告知本人
+5. 本人用手机号 + 密码登录，可在同页修改自己的密码
+
+实现要点：
+
+- 密码用 `scrypt` + 每人独立随机盐哈希存储，数据库不含明文
+- 会话是 HMAC-SHA256 签名的 HttpOnly Cookie（8 小时有效），密钥取自 `SESSION_SECRET` 或 `ENCRYPTION_KEY`
+- 停用人员、改密或重置密码后，该人员其他设备上的会话立即失效（会话内含密码指纹）
+- `/api/auth/*`（鉴权自身）、`/api/cron/*`（调度器内部调用，自带 `CRON_SECRET`）、`/api/health` 不拦截
+- 拦截层是根目录的 `proxy.ts`（Next.js 16 约定），只验签名不查库；需要授权的 API 会再回查数据库确认人员状态
+
+> 如果要把服务放到公网或多人共用网络，建议同时启用 HTTPS，否则 Cookie 与密码走明文传输。
 
 ### 邮件收取
 
@@ -295,10 +329,11 @@ Webhook 推送 (5 种字段转换)
 
 ## API 文档
 
-API 路由按模块分组放在 `app/api/` 下，共 11 组：
+API 路由按模块分组放在 `app/api/` 下，共 12 组：
 
 | 模块 | 端点前缀 | 主要功能 |
 |------|---------|---------|
+| 鉴权 | `/api/auth/*` | 登录、初始化、人员管理、修改密码 |
 | 配置 | `/api/config/*` | AI / 邮箱 / 来源 / Webhook 配置 |
 | 定时任务 | `/api/cron/*` | 邮件收取、调度器管理 |
 | 仪表盘 | `/api/dashboard/*` | 统计、趋势、职位对比 |
@@ -315,7 +350,7 @@ API 路由按模块分组放在 `app/api/` 下，共 11 组：
 
 ## 数据模型
 
-16 个核心模型，详见 [prisma/schema.prisma](./prisma/schema.prisma)：
+17 个核心模型，详见 [prisma/schema.prisma](./prisma/schema.prisma)：
 
 | 模型 | 用途 |
 |------|------|
@@ -335,6 +370,7 @@ API 路由按模块分组放在 `app/api/` 下，共 11 组：
 | `FollowUpRecordTag` | 记录-标签关联 |
 | `WebhookIntegration` | Webhook 字段映射配置 |
 | `PromptRecord` | 评估提示词（按职位 + 版本） |
+| `HrUser` | 可登录的 HR 名单（预登记手机号、密码哈希、角色、启用状态） |
 
 ### 关键约束
 
@@ -368,6 +404,12 @@ npm run start               # 端口 3000
 ```
 
 > 定时收取邮件与 Webhook 同步只在打包运行模式下启动，开发模式（`npm run dev`）不启用。SQLite 不支持并发写，保持单实例运行即可。
+
+### 界面与自检
+
+- **深浅色开关**：桌面端在左侧栏左下角，手机端悬浮在页面左下角；左浅色 / 右深色，点击切换并记住选择，未手动选过时跟随系统。
+- **数据概览页**：首屏数字由服务端直接随页面一起返回，不依赖浏览器再发一次请求；切换邮箱 / 来源筛选时才重新取数。
+- **提交前自检**：`npm run check`（ESLint 规范检查 + TypeScript 类型检查 + Vitest 单测）。单项可用 `npm run lint` / `npm run typecheck` / `npm test`；浏览器冒烟用 `npm run test:e2e`。
 
 ### 数据备份
 

@@ -1,5 +1,6 @@
 'use client'
 
+import { PageSkeleton } from '@/components/ui/page-skeleton'
 import { useEffect, useState, useCallback } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
@@ -24,6 +25,7 @@ import { confirmDialog } from '@/components/ui/confirm-dialog'
 import { formatDateTime } from '@/lib/utils/date'
 import { IMAP_PRESETS, DEFAULT_PRESET, EMPTY_EMAIL_CONFIG_FORM } from '@/lib/constants/email-config'
 import type { EmailConfigItem, ResumeSourceOption, EmailConfigFormValues } from '@/types/email-config'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 export default function EmailConfigPage() {
   const [configs, setConfigs] = useState<EmailConfigItem[]>([])
@@ -132,11 +134,13 @@ export default function EmailConfigPage() {
         }),
       })
       const json = await res.json()
-      setTestResult(json)
-      if (json.success) toast.success(json.message)
-      else toast.error(json.message)
+      const message = json.message || json.error || '测试失败'
+      const passed = res.ok && json.success === true
+      setTestResult({ success: passed, message })
+      if (passed) toast.success(message)
+      else toast.error(message)
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '测试失败'
+      const msg = apiErrorMessage(err, '测试失败，请稍后重试')
       setTestResult({ success: false, message: msg })
       toast.error(msg)
     } finally {
@@ -174,7 +178,7 @@ export default function EmailConfigPage() {
         toast.error(json.message || '获取文件夹列表失败')
       }
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '获取文件夹列表失败'
+      const msg = apiErrorMessage(err, '获取文件夹列表失败，请稍后重试')
       toast.error(msg)
     } finally {
       setLoadingFolders(false)
@@ -218,7 +222,7 @@ export default function EmailConfigPage() {
       resetForm()
       loadData()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '保存失败'
+      const msg = apiErrorMessage(err, '保存失败，请稍后重试')
       toast.error(msg)
     } finally {
       setSaving(false)
@@ -239,7 +243,7 @@ export default function EmailConfigPage() {
       toast.success('配置已删除')
       loadData()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '删除失败'
+      const msg = apiErrorMessage(err, '删除失败，请稍后重试')
       toast.error(msg)
     }
   }
@@ -256,7 +260,7 @@ export default function EmailConfigPage() {
       toast.success(currentActive ? '已禁用' : '已启用')
       loadData()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '操作失败'
+      const msg = apiErrorMessage(err, '操作失败，请稍后重试')
       toast.error(msg)
     }
   }
@@ -286,7 +290,7 @@ export default function EmailConfigPage() {
       )
       loadData()
     } catch (err: unknown) {
-      const msg = err instanceof Error ? err.message : '收取失败'
+      const msg = apiErrorMessage(err, '收取失败，请稍后重试')
       toast.error(msg)
     } finally {
       setFetchingConfigId(null)
@@ -294,11 +298,7 @@ export default function EmailConfigPage() {
   }
 
   if (loading) {
-    return (
-      <div className="flex items-center justify-center h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    )
+    return <PageSkeleton variant="cards" />
   }
 
   // 新增 / 编辑共用同一份表单属性

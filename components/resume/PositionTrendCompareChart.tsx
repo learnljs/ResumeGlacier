@@ -23,6 +23,7 @@ import { apiGet } from '@/lib/api/client'
 import { useMediaQuery } from '@/lib/hooks/use-media-query'
 import { CHART_SEMANTIC, chartColor } from '@/lib/constants/chart'
 import { getEvenlySpacedTicks, niceCeil, integerTicks } from '@/lib/utils/chart-axis'
+import { apiErrorMessage } from '@/lib/utils/api-message'
 
 // -------------------------------------------------------
 // 自定义 Tooltip：白卡 + 圆角，日期加粗、数值右对齐
@@ -112,7 +113,7 @@ export function PositionTrendCompareChart({
       const json = await apiGet<TrendResponse>(`/api/dashboard/trends?${params.toString()}`)
       setData(json)
     } catch (e: unknown) {
-      const msg = e instanceof Error ? e.message : '获取趋势数据失败'
+      const msg = apiErrorMessage(e, '获取趋势数据失败，请稍后重试')
       toast.error(msg)
       setData(null)
     } finally {
