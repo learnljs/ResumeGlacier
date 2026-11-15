@@ -31,7 +31,7 @@
 
 ## 相关章节
 
-- 数据库表结构说明 → 项目根目录 [README.md](https://gitee.com/ruiyidafu/y-project/blob/release/hr/README.md)（开发文档 · 数据库模型章节）
+- 数据库表结构说明 → 在本模块左侧树展开各表，即可查看字段名、类型与注释（见上文「一、数据库结构」）
 - 术语对照 → [附录 D · 常用术语对照](../08-appendix/04-terminology.md)
 
 [← 返回系统配置](./README.md) | [← 返回教程目录](../../README.md) | [上一篇：企微同步 ←](./07-wecom-sync.md) | [下一篇：七、常见问题与异常处理 →](../07-faq.md)
