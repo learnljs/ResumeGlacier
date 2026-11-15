@@ -1,11 +1,11 @@
 ---
 name: dev
-description: 本地 npm/npx/prisma 命令直接执行，无需 Docker 包装
+description: 本地 npm/npx/prisma 命令直接执行
 ---
 
 # dev — 本地开发命令
 
-本项目通过 Node.js + npm 直接运行，无需 Docker 包装。所有 npm/npx/prisma 命令直接在项目根目录执行即可。
+本项目通过 Node.js + npm 直接运行，不提供 Docker 部署。所有 npm/npx/prisma 命令直接在项目根目录执行即可。
 
 ## 命令映射
 
@@ -30,7 +30,7 @@ npm run db:setup
 # 启动开发服务器
 npm run dev
 
-# 生产构建
+# 本地打包运行
 npm run build
 npm run start
 
@@ -41,14 +41,4 @@ npm run db:studio     # 数据库管理界面
 
 # 提交前自检
 npm run lint
-```
-
-## 何时用 PM2
-
-生产环境推荐用 PM2 守护：
-
-```bash
-npm install -g pm2
-pm2 start npm --name "resume-glacier" -- run start
-pm2 save
 ```

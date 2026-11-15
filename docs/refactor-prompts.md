@@ -91,7 +91,7 @@
 > 把项目从「实习项目」清理为「个人项目」：
 >
 > 1. 找出并清理公司/实习特定残留：硬编码组织名、专属集成遗留、内部域名/邮箱、内部文档引用
-> 2. 检查 `README.md`、`CONTRIBUTING.md`、`package.json`（name/author/repository/private）、LICENSE 署名、部署文档中的相关表述，改为个人项目口吻
+> 2. 检查 `README.md`、`CONTRIBUTING.md`、`package.json`（name/author/repository/private）、LICENSE 署名、运行说明中的相关表述，改为个人项目口吻
 > 3. 决定项目新名称后全仓统一替换（含 CLAUDE.md / REVIEW.md）
 > 4. 不改变功能行为；每个改动单独列出
 >

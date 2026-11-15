@@ -41,7 +41,7 @@ ResumeGlacier 通过 IMAP 自动收取邮件简历，**两级文本提取回退*
 - [架构概览](#架构概览)
 - [API 文档](#api-文档)
 - [数据模型](#数据模型)
-- [部署](#部署)
+- [运行与备份](#运行与备份)
 - [贡献](#贡献)
 - [许可证](#许可证)
 
@@ -295,7 +295,7 @@ Webhook 推送 (5 种字段转换)
 
 ## API 文档
 
-API 路由按模块分组放在 `app/api/` 下，共 12 组：
+API 路由按模块分组放在 `app/api/` 下，共 11 组：
 
 | 模块 | 端点前缀 | 主要功能 |
 |------|---------|---------|
@@ -310,7 +310,6 @@ API 路由按模块分组放在 `app/api/` 下，共 12 组：
 | 简历 | `/api/resumes/*` | CRUD、解析、筛选、复用 |
 | 任务批次 | `/api/task-batches/*` | 批次管理 |
 | Webhook | `/api/webhooks/*` | 推送手动触发 |
-| 健康检查 | `/api/health` | 进程与数据库探活（容器 healthcheck 用） |
 
 ---
 
@@ -346,62 +345,29 @@ API 路由按模块分组放在 `app/api/` 下，共 12 组：
 
 ### SQLite 三大约束
 
-- **不支持并发写**：解析队列并发=1，PM2 用 fork 单实例
+- **不支持并发写**：解析队列并发=1，保持单进程运行
 - **无迁移**：直接用 `prisma db push`，schema 变更后 `prisma generate`
 - **无 ALTER COLUMN**：改字段需重建表
 
 ---
 
-## 部署
+## 运行与备份
 
-### Docker（推荐）
+本项目定位为**单机本地运行**：一台电脑装好 Node.js 就能用，不提供 Docker 镜像、容器编排，也不区分测试环境 / 正式环境的上线流程。
 
-```bash
-cp .env.example .env          # 务必把示例里全 0 的 ENCRYPTION_KEY 换成 openssl rand -hex 32 的结果
-docker compose up -d --build  # 首次构建约 3-5 分钟
-open http://localhost:3000    # 空库首次访问会自动写入演示数据
-```
+### 日常使用
 
-- 镜像为多阶段构建，运行层只有 Next standalone 产物 + AI 依赖 + OCR 语言包
-- 启动时自动执行 `prisma db push` 对齐表结构，无需手动初始化
-- 数据库与附件挂在宿主机 `./data/`（`data/db`、`data/uploads`），重建容器不丢数据
-- 健康检查走 `GET /api/health`（返回进程与数据库状态，正常 `200`，数据库不可用 `503`）
-- 换端口：`APP_PORT=8080 docker compose up -d`
+按上文「快速开始」的步骤执行 `npm install` → `npm run db:setup` → `npm run dev`，访问 [http://localhost:3000](http://localhost:3000)。空数据库首次打开会自动写入演示数据。
 
-常用运维命令：
+### 打包运行（可选）
 
 ```bash
-docker compose logs -f app        # 看日志
-docker compose down               # 停止（数据保留）
-docker compose up -d --build      # 改代码后重建
-```
-
-### 本地开发
-
-```bash
-npm install              # 安装依赖
-npm run db:setup         # 初始化 Prisma + 数据库
-npm run dev              # 开发服务器（http://localhost:3000）
-```
-
-### 生产构建
-
-```bash
-npm install --production=false   # 安装构建所需依赖
-npm run build                     # 构建产物 .next/
-npm run db:setup                  # 同步数据库 schema
-npm run start                     # 启动生产服务（端口 3000）
-```
-
-### PM2 守护（可选）
-
-```bash
-npm install -g pm2
 npm run build
-pm2 start npm --name "resume-glacier" -- run start
-pm2 save
-pm2 startup   # 开机自启
+npm run db:setup
+npm run start               # 端口 3000
 ```
+
+> 定时收取邮件与 Webhook 同步只在打包运行模式下启动，开发模式（`npm run dev`）不启用。SQLite 不支持并发写，保持单实例运行即可。
 
 ### 数据备份
 

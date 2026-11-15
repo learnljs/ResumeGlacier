@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- 本地 `npm run dev` 运行（**不用 docker / dev.sh**）；所有脚本命令在项目根目录用 `npx tsx` 执行
+- 本地 `npm run dev` 运行；所有脚本命令在项目根目录用 `npx tsx` 执行
 - **不改数据库 schema**：无 `prisma db push`、无 generate
 - tsx 脚本不自动加载 `.env`（Next.js 的职责），脚本需显式加载（`scripts/token-test/load-env.ts`，.env → .env.local 后者覆盖，已有 process.env 不覆盖）
 - 输出文件统一放 `data/logs/`（已被 .gitignore 忽略，不提交）

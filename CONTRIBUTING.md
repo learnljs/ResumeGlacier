@@ -138,7 +138,7 @@ git push origin feat/your-feature
 ### 数据库
 
 - **无迁移**：直接用 `prisma db push`，schema 变更后 `prisma generate`
-- **SQLite 限制**：解析队列并发=1、PM2 fork 单实例
+- **SQLite 限制**：解析队列并发=1、保持单进程运行
 - **改字段**：SQLite 无 ALTER COLUMN，需重建表
 
 ---
@@ -186,8 +186,7 @@ hr/
 │   └── data/                 # SQLite 数据库（运行时生成）
 ├── scripts/                  # 辅助脚本
 ├── types/                    # TypeScript 类型
-├── docs/                     # 项目文档（ARCHITECTURE、DEPLOY 等）
-├── deploy/                   # 部署脚本与环境基准
+├── docs/                     # 项目文档（架构与开发方案）
 ├── data/                     # 运行时数据（uploads/、logs/）
 └── package.json
 ```

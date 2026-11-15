@@ -27,7 +27,7 @@ description: 重构阶段的代码生成约束与执行流程：行为不变、�
 
 ## 三、兼容性红线
 
-- **SQLite 三大约束**：不支持并发写（队列并发=1、PM2 fork 单实例）；无 ALTER COLUMN（改字段需重建表）；无迁移（直接 `prisma db push`）。schema 任何改动必须在计划中显式声明重建表步骤。
+- **SQLite 三大约束**：不支持并发写（队列并发=1、单进程运行）；无 ALTER COLUMN（改字段需重建表）；无迁移（直接 `prisma db push`）。schema 任何改动必须在计划中显式声明重建表步骤。
 - **加密数据**：`ENCRYPTION_KEY` 相关字段（邮箱密码、AI API Key、Webhook URL）的存储格式与解密逻辑不得在重构中顺手改写，除非是专门任务。
 - **废弃字段**：`Resume.initialScore` / `compositeScore` / `screenedDate` 不得重新启用；相关读取必须走 `PositionEvaluation`。
 - **不降级类型安全**：重构后 `npx tsc --noEmit` 必须零错误；禁止用 `any` 规避类型问题。

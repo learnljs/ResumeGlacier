@@ -45,7 +45,7 @@ body:
         - 系统配置
         - 任务管理
         - 导出 / 集成
-        - 部署 / 运维
+        - 运行 / 数据
         - 其他
     validations:
       required: true

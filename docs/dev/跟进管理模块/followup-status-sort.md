@@ -10,7 +10,7 @@
 
 ## Global Constraints
 
-- 所有命令在**本地环境**执行（用户本地直接 `npm run dev`，不用 Docker；Docker 用户等价替换为 `./dev.sh npx ...`）。
+- 所有命令在项目根目录直接执行（本地 `npm run dev` 启动服务，脚本用 `npx tsx` 运行）。
 - 代码注释、UI 文本、commit message 使用**中文**；commit 遵循 Conventional Commits（`feat:`/`fix:` 等）。
 - Prisma 无迁移机制：schema 变更后执行 `npx prisma db push` + `npx prisma generate`。
 - 单字段编辑（备注/面试时间/入职时间/标签/联系结果/原因）**不得**刷新 `statusChangedAt`——仅状态变更刷新。

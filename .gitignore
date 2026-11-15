@@ -36,7 +36,6 @@ next-env.d.ts
 # Uploads
 data/uploads/
 data/logs/
-data/db/
 data/.crash-state-*.json
 public/photos/
 prisma/data/resume.db

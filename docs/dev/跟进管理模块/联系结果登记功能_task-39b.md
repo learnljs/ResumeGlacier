@@ -154,12 +154,6 @@ Row: [标签文本 "联系结果"] [<select> 下拉框]
 
 ---
 
-## 部署产物
+## 交付说明
 
-本次变更涉及数据库结构变更（`FollowUpRecord` 表新增 `contacted` 字段），按环境隔离交付以下部署产物：
-
-| 产物类型 | 测试环境 | 正式环境 | 说明 |
-|----------|----------|----------|------|
-| 环境描述 | `deploy/env/test.md` | `deploy/env/prod.md` | 环境基准配置（分支管理、构建、启动方式），部署文档引用而非改写 |
-| 部署文档 | `deploy/doc/test/联系结果登记-部署文档.md` | `deploy/doc/prod/联系结果登记-部署文档.md` | 变更专用内容（概述、影响、迁移、验证、回滚、验收） |
-| 部署脚本 | `deploy/script/test/001-add-contacted-field.sql` | `deploy/script/prod/001-add-contacted-field.sql` | SQLite ALTER TABLE 语句，新增 contacted 字段 |
+本次变更涉及数据库结构变更（`FollowUpRecord` 表新增 `contacted` 字段）。该字段已写入 `prisma/schema.prisma`，新环境执行 `npm run db:setup` 即可，无需手工 SQL 脚本。本项目按单机本地运行交付，不区分测试环境 / 正式环境，也不产出分环境部署文档。

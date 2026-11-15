@@ -217,7 +217,7 @@ Expected: lint 与 build 均通过（build 可先于端到端确认类型无误�
 
 - [ ] **Step 1: 询问用户后重启服务**
 
-按项目惯例先询问用户是否由我启动/重启 Docker 与 Playwright（用户确认后执行 `./dev.sh stop && ./dev.sh start`，改过 ai-screener 必须重启）。
+按项目惯例先询问用户是否重启本地服务与 Playwright（用户确认后重启 `npm run dev`，改过 ai-screener 必须重启）。
 
 - [ ] **Step 2: 验证点 1 —— 悬停明细**
 

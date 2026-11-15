@@ -14,7 +14,7 @@
 
 ## 2. 技术 Spec 文档
 
-**目录**：`docs/`（通用架构与部署文档）
+**目录**：`docs/`（架构与开发方案文档）
 
 按功能模块组织。审查时应验证实现是否与 Spec 一致，特别注意数据结构、API 设计和状态流转。
 
@@ -118,37 +118,21 @@
 
 ---
 
-## 5. 部署文档和脚本
+## 5. 本地运行与数据变更
 
-### 5.1 部署文档
+本项目定位为单机本地运行，**不提供** Docker 镜像、容器编排、PM2 守护，也不区分测试环境 / 正式环境的上线流程。审查时不要引用 `deploy/` 目录，也不要要求产出分环境部署脚本。
 
-**目录**：`docs/`（通用部署指南）
+### 5.1 启动方式
 
-### 5.2 部署脚本
+- **日常开发**：`npm install` + `npm run db:setup` + `npm run dev`，端口 3000
+- **打包运行**：`npm run build` + `npm run start`，端口 3000
 
-**目录**：`deploy/script/`
+### 5.2 数据库变更与备份
 
-- `prod/` — 生产环境可执行脚本（SQL 等）
-
-### 5.3 环境配置（只读基准）
-
-**目录**：`deploy/env/`
-
-- `prod.md` — 生产环境配置基准（**不可修改**）
-- `test.md` — 测试环境配置基准（**不可修改**）
-
-### 5.4 部署方式
-
-- **本地开发**：`npm install` + `npm run db:setup` + `npm run dev`，端口 3000
-- **生产构建**：`npm run build` + `npm run start`，端口 3000
-- **PM2 守护**：`pm2 start npm --name "resume-glacier" -- run start`（fork 单实例，因 SQLite 限制）
-
-### 5.5 部署注意事项
-
+- schema 变更统一走 `npm run db:setup`（`prisma db push`），不产出分环境 SQL 脚本
 - 需手动创建 `public/photos/`、`data/uploads/` 目录和 `.env` 文件
-- `deploy/env/` 下的环境描述文件为环境基准，**禁止修改**
-- 数据库变更时，部署脚本（SQL）输出至 `deploy/script/`，文档输出至 `docs/`
 - **务必同时备份 `ENCRYPTION_KEY`**，否则加密字段无法恢复
+- SQLite 不支持并发写，保持单实例运行
 
 ---
 

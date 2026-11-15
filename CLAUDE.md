@@ -5,11 +5,11 @@
 ## 项目概述
 
 **ResumeGlacier** — Self-hosted AI resume screening for small HR teams。
-基于 Next.js 16 + TypeScript + SQLite + Prisma 的全栈 Web 应用，通过 IMAP 收取邮件简历，AI 按冰山模型 6 维度筛选候选人。界面全中文。包管理器：**npm**。无认证层（假设内网部署）。纯函数有 Vitest 单测（`npm test`），端到端验证通过 Playwright MCP 或 `npm run test:e2e` 进行。
+基于 Next.js 16 + TypeScript + SQLite + Prisma 的全栈 Web 应用，通过 IMAP 收取邮件简历，AI 按冰山模型 6 维度筛选候选人。界面全中文。包管理器：**npm**。无认证层（按单机本地使用设计）。纯函数有 Vitest 单测（`npm test`），端到端验证通过 Playwright MCP 或 `npm run test:e2e` 进行。
 
 ## 开发环境
 
-本项目通过 Node.js + npm 直接运行，无需 Docker。
+本项目通过 Node.js + npm 直接运行，不提供 Docker 镜像与分环境部署配置。
 
 **前置要求**：Node.js 20+ 与 npm。
 
@@ -131,7 +131,7 @@ IMAP 收取（`imapflow` + `mailparser`），增量 UID 追踪，`messageId` 去
 
 ## 数据模型要点
 
-数据库为 SQLite，注意三大约束：**不支持并发写**（队列并发=1，PM2 用 fork 单实例）、**无迁移**（直接用 `db push`）、**无 ALTER COLUMN**（改字段需重建表）。
+数据库为 SQLite，注意三大约束：**不支持并发写**（队列并发=1，保持单进程运行）、**无迁移**（直接用 `db push`）、**无 ALTER COLUMN**（改字段需重建表）。
 
 ### 核心概念
 
@@ -182,22 +182,22 @@ UNPARSED → PARSING → PENDING → SCREENING → SCREENED
 - **导航**：`app/resume/layout.tsx` 侧边栏 + 移动端顶部，5 组（数据概览→dashboard、系统配置→system-config、招聘中心→list/screened/follow-up/reevaluate、任务管理→task-batches、邮件管理→emails），`usePathname` 活跃检测，`<Toaster />`（sonner）全局通知
 - **样式**：Tailwind CSS + CSS 变量，**石墨主题**配色（深石墨侧边栏 / 蓝紫点缀 accent，极简 · 高级），设计令牌定义在 `app/globals.css` 的 `:root` 中，`tailwind.config.ts` 已注册 `sidebar` / `success` / `warning` / `info` 色系。UI 迭代清单见 `ui重新设计.md`（重构批次 B12 执行子文档）
 
-## 部署
+## 运行方式
+
+本项目定位为单机本地运行，不提供 Docker 镜像、容器编排、PM2 守护，也不区分测试环境 / 正式环境的上线流程。
 
 ### 本地开发（推荐）
 
-`npm run dev`（端口 3000，挂载项目目录，HMR 即时生效）。
+`npm run dev`（端口 3000，HMR 即时生效）。
 
-### 生产构建
+### 本地打包运行
 
 ```bash
 npm run build
 npm run start
 ```
 
-### PM2（可选）
-
-`pm2 start npm --name "resume-glacier" -- run start`，**`exec_mode: 'fork'`**（SQLite 不支持多进程共享）。需手动创建 `public/photos/`、`data/uploads/` 目录和 `.env` 文件。
+SQLite 不支持多进程共享，保持单实例运行即可。需手动创建 `public/photos/`、`data/uploads/` 目录和 `.env` 文件。
 
 ## 文档
 
