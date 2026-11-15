@@ -2,7 +2,8 @@ name: CI
 
 on:
   push:
-    branches: [main]
+    # 所有分支都跑：feature 分支写崩了当场就能发现，不必等到开 PR
+    branches: ['**']
   pull_request:
   workflow_dispatch:
 
@@ -12,7 +13,7 @@ concurrency:
 
 jobs:
   verify:
-    name: Typecheck & Build
+    name: Typecheck, Test & Build
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
@@ -47,6 +48,10 @@ jobs:
 
       - name: Typecheck
         run: npm run typecheck
+
+      - name: Unit tests
+        # 纯函数单测（分值计算 / 权重换算 / 图表刻度 / 日期工具），不依赖数据库与网络
+        run: npm test
 
       - name: Build
         run: npm run build
