@@ -168,8 +168,8 @@ npm run dev
 ### 先看效果：演示模式
 
 数据库是空的时候，第一次打开页面会自动写入一份**虚构的演示数据**（12 份简历、3 个职位、
-6 条跟进记录、完整的评估与权重模型），不需要配置邮箱和 AI Key 就能看到看板、简历列表、
-跟进看板的真实样子。
+6 条跟进记录，以及完整的六维评分、AI 评分依据、权重模型与评估提示词），
+不需要配置邮箱和 AI Key 就能看到看板、简历列表、跟进看板的真实样子。
 
 页面顶部会显示一条「演示数据」提示条，点右侧「删除演示数据」可一键清空并退出演示模式，
 之后就可以接入自己的邮箱。也可以手动播种：
@@ -295,7 +295,7 @@ Webhook 推送 (5 种字段转换)
 
 ## API 文档
 
-API 路由按模块分组放在 `app/api/` 下，共 11 组：
+API 路由按模块分组放在 `app/api/` 下，共 12 组：
 
 | 模块 | 端点前缀 | 主要功能 |
 |------|---------|---------|
@@ -310,6 +310,7 @@ API 路由按模块分组放在 `app/api/` 下，共 11 组：
 | 简历 | `/api/resumes/*` | CRUD、解析、筛选、复用 |
 | 任务批次 | `/api/task-batches/*` | 批次管理 |
 | Webhook | `/api/webhooks/*` | 推送手动触发 |
+| 健康检查 | `/api/health` | 进程与数据库探活（容器 healthcheck 用） |
 
 ---
 
@@ -352,6 +353,28 @@ API 路由按模块分组放在 `app/api/` 下，共 11 组：
 ---
 
 ## 部署
+
+### Docker（推荐）
+
+```bash
+cp .env.example .env          # 务必把示例里全 0 的 ENCRYPTION_KEY 换成 openssl rand -hex 32 的结果
+docker compose up -d --build  # 首次构建约 3-5 分钟
+open http://localhost:3000    # 空库首次访问会自动写入演示数据
+```
+
+- 镜像为多阶段构建，运行层只有 Next standalone 产物 + AI 依赖 + OCR 语言包
+- 启动时自动执行 `prisma db push` 对齐表结构，无需手动初始化
+- 数据库与附件挂在宿主机 `./data/`（`data/db`、`data/uploads`），重建容器不丢数据
+- 健康检查走 `GET /api/health`（返回进程与数据库状态，正常 `200`，数据库不可用 `503`）
+- 换端口：`APP_PORT=8080 docker compose up -d`
+
+常用运维命令：
+
+```bash
+docker compose logs -f app        # 看日志
+docker compose down               # 停止（数据保留）
+docker compose up -d --build      # 改代码后重建
+```
 
 ### 本地开发
 
