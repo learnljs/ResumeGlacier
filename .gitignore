@@ -5,6 +5,8 @@ node_modules/
 .vscode
 # Testing
 /coverage
+/test-results/
+/playwright-report/
 
 # Next.js（含用自定义 distDir 做隔离构建时产生的目录，如 .next-verify）
 /.next*/

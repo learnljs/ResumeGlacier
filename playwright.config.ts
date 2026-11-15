@@ -25,5 +25,8 @@ export default defineConfig({
     url: 'http://127.0.0.1:3000',
     reuseExistingServer: !process.env.CI,
     timeout: 120_000,
+    // 冒烟只验证页面路由本身，登录鉴权另有单测覆盖。
+    // 关掉全站拦截，否则未登录访问根路径会先跳 /login，断言必然失败。
+    env: { AUTH_ENABLED: 'false' },
   },
 })
